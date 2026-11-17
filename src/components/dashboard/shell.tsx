@@ -39,9 +39,9 @@ export function DashboardShell({ workspace, groups, active, onSelect, user, onSi
   // First-login guide: opens once per person on each dashboard, and again on request from Help.
   const [tour, setTour] = useState(false);
   useEffect(() => {
-    if (!me.uid || !dashKey || window.localStorage.getItem(guideSeenKey(dashKey, me.uid))) return;
-    const t = window.setTimeout(() => setTour(true), 700); return () => window.clearTimeout(t);
-  }, [me.uid, dashKey]);
+    if (!me.uid || !dashKey || !me.dashboards || window.localStorage.getItem(guideSeenKey(dashKey, me.uid))) return;
+    const t = window.setTimeout(() => setTour(true), 900); return () => window.clearTimeout(t);
+  }, [me.uid, me.dashboards, dashKey]);
   const closeTour = () => { if (me.uid && dashKey) window.localStorage.setItem(guideSeenKey(dashKey, me.uid), '1'); setTour(false); };
 
   // Soft fade when moving between sections (no remount, so section state and alerts are kept).
