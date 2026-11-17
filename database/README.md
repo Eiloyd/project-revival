@@ -10,6 +10,9 @@
 | `update-2026-11-15-remove-festive.sql` | Retires the Festive theme: deletes festive hero pictures and allows only `dark` / `light` themes. Run once on databases set up before this change. |
 | `update-2026-11-17-sales-pay-volunteer-rewards.sql` | Sales pay + volunteer rewards: daily attendance and daily wage granted only on verified collection days, the "remove your zero" reminder before 12:00 PM, volunteer revenue counted for team targets but never for direct incentive, volunteer reward schemes (Admin / BDM / BDE can launch them), fixed volunteer incentives with a monthly settlement, and the minimum withdrawal floor. Run after `schema.sql` and `update-2026-11-15-volunteers.sql`; safe to run more than once. |
 
+## Existing database with data: ONE file
+Paste `complete-setup-existing-database.sql` in Supabase → SQL Editor and Run (enable pg_cron first). It adds every module the app needs, keeps current rows, and is safe to run again. Do not run `reset.sql` or `seed.sql` on a database with data.
+
 ## Run it (Supabase Dashboard → SQL Editor)
 
 1. **Only if this project already has tables from an earlier attempt** (for example the 3 Drizzle migrations or an older `schema.sql`): paste and run `reset.sql`. Skip on a brand-new project.
