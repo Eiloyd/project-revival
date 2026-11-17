@@ -51,6 +51,8 @@ import { Route as CareersCodeRouteImport } from './routes/careers.$code'
 import { Route as CrmSalesRouteImport } from './routes/crm_.sales'
 import { Route as GlobalPresenceIndexRouteImport } from './routes/global-presence.index'
 import { Route as GlobalPresenceSlugRouteImport } from './routes/global-presence.$slug'
+import { Route as HelpIndexRouteImport } from './routes/help.index'
+import { Route as HelpSlugRouteImport } from './routes/help.$slug'
 import { Route as InvestorsIndexRouteImport } from './routes/investors.index'
 import { Route as InvestorsSlugRouteImport } from './routes/investors.$slug'
 import { Route as MentorsIndexRouteImport } from './routes/mentors.index'
@@ -286,6 +288,16 @@ const GlobalPresenceSlugRoute = GlobalPresenceSlugRouteImport.update({
   path: '/global-presence/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HelpIndexRoute = HelpIndexRouteImport.update({
+  id: '/help/',
+  path: '/help/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpSlugRoute = HelpSlugRouteImport.update({
+  id: '/help/$slug',
+  path: '/help/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InvestorsIndexRoute = InvestorsIndexRouteImport.update({
   id: '/investors/',
   path: '/investors/',
@@ -454,6 +466,7 @@ export interface FileRoutesByFullPath {
   '/careers/$code': typeof CareersCodeRoute
   '/crm/sales': typeof CrmSalesRoute
   '/global-presence/$slug': typeof GlobalPresenceSlugRoute
+  '/help/$slug': typeof HelpSlugRoute
   '/investors/$slug': typeof InvestorsSlugRoute
   '/mentors/$slug': typeof MentorsSlugRoute
   '/register/business': typeof RegisterBusinessRoute
@@ -466,6 +479,7 @@ export interface FileRoutesByFullPath {
   '/businesses/': typeof BusinessesIndexRoute
   '/careers/': typeof CareersIndexRoute
   '/global-presence/': typeof GlobalPresenceIndexRoute
+  '/help/': typeof HelpIndexRoute
   '/investors/': typeof InvestorsIndexRoute
   '/mentors/': typeof MentorsIndexRoute
   '/register/': typeof RegisterIndexRoute
@@ -522,6 +536,7 @@ export interface FileRoutesByTo {
   '/careers/$code': typeof CareersCodeRoute
   '/crm/sales': typeof CrmSalesRoute
   '/global-presence/$slug': typeof GlobalPresenceSlugRoute
+  '/help/$slug': typeof HelpSlugRoute
   '/investors/$slug': typeof InvestorsSlugRoute
   '/mentors/$slug': typeof MentorsSlugRoute
   '/register/business': typeof RegisterBusinessRoute
@@ -534,6 +549,7 @@ export interface FileRoutesByTo {
   '/businesses': typeof BusinessesIndexRoute
   '/careers': typeof CareersIndexRoute
   '/global-presence': typeof GlobalPresenceIndexRoute
+  '/help': typeof HelpIndexRoute
   '/investors': typeof InvestorsIndexRoute
   '/mentors': typeof MentorsIndexRoute
   '/register': typeof RegisterIndexRoute
@@ -591,6 +607,7 @@ export interface FileRoutesById {
   '/careers/$code': typeof CareersCodeRoute
   '/crm_/sales': typeof CrmSalesRoute
   '/global-presence/$slug': typeof GlobalPresenceSlugRoute
+  '/help/$slug': typeof HelpSlugRoute
   '/investors/$slug': typeof InvestorsSlugRoute
   '/mentors/$slug': typeof MentorsSlugRoute
   '/register/business': typeof RegisterBusinessRoute
@@ -603,6 +620,7 @@ export interface FileRoutesById {
   '/businesses/': typeof BusinessesIndexRoute
   '/careers/': typeof CareersIndexRoute
   '/global-presence/': typeof GlobalPresenceIndexRoute
+  '/help/': typeof HelpIndexRoute
   '/investors/': typeof InvestorsIndexRoute
   '/mentors/': typeof MentorsIndexRoute
   '/register/': typeof RegisterIndexRoute
@@ -661,6 +679,7 @@ export interface FileRouteTypes {
     | '/careers/$code'
     | '/crm/sales'
     | '/global-presence/$slug'
+    | '/help/$slug'
     | '/investors/$slug'
     | '/mentors/$slug'
     | '/register/business'
@@ -673,6 +692,7 @@ export interface FileRouteTypes {
     | '/businesses/'
     | '/careers/'
     | '/global-presence/'
+    | '/help/'
     | '/investors/'
     | '/mentors/'
     | '/register/'
@@ -729,6 +749,7 @@ export interface FileRouteTypes {
     | '/careers/$code'
     | '/crm/sales'
     | '/global-presence/$slug'
+    | '/help/$slug'
     | '/investors/$slug'
     | '/mentors/$slug'
     | '/register/business'
@@ -741,6 +762,7 @@ export interface FileRouteTypes {
     | '/businesses'
     | '/careers'
     | '/global-presence'
+    | '/help'
     | '/investors'
     | '/mentors'
     | '/register'
@@ -797,6 +819,7 @@ export interface FileRouteTypes {
     | '/careers/$code'
     | '/crm_/sales'
     | '/global-presence/$slug'
+    | '/help/$slug'
     | '/investors/$slug'
     | '/mentors/$slug'
     | '/register/business'
@@ -809,6 +832,7 @@ export interface FileRouteTypes {
     | '/businesses/'
     | '/careers/'
     | '/global-presence/'
+    | '/help/'
     | '/investors/'
     | '/mentors/'
     | '/register/'
@@ -866,6 +890,7 @@ export interface RootRouteChildren {
   CareersCodeRoute: typeof CareersCodeRoute
   CrmSalesRoute: typeof CrmSalesRoute
   GlobalPresenceSlugRoute: typeof GlobalPresenceSlugRoute
+  HelpSlugRoute: typeof HelpSlugRoute
   InvestorsSlugRoute: typeof InvestorsSlugRoute
   MentorsSlugRoute: typeof MentorsSlugRoute
   RegisterBusinessRoute: typeof RegisterBusinessRoute
@@ -878,6 +903,7 @@ export interface RootRouteChildren {
   BusinessesIndexRoute: typeof BusinessesIndexRoute
   CareersIndexRoute: typeof CareersIndexRoute
   GlobalPresenceIndexRoute: typeof GlobalPresenceIndexRoute
+  HelpIndexRoute: typeof HelpIndexRoute
   InvestorsIndexRoute: typeof InvestorsIndexRoute
   MentorsIndexRoute: typeof MentorsIndexRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
@@ -1191,6 +1217,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GlobalPresenceSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/help/': {
+      id: '/help/'
+      path: '/help'
+      fullPath: '/help/'
+      preLoaderRoute: typeof HelpIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help/$slug': {
+      id: '/help/$slug'
+      path: '/help/$slug'
+      fullPath: '/help/$slug'
+      preLoaderRoute: typeof HelpSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/investors/': {
       id: '/investors/'
       path: '/investors'
@@ -1402,6 +1442,7 @@ const rootRouteChildren: RootRouteChildren = {
   CareersCodeRoute: CareersCodeRoute,
   CrmSalesRoute: CrmSalesRoute,
   GlobalPresenceSlugRoute: GlobalPresenceSlugRoute,
+  HelpSlugRoute: HelpSlugRoute,
   InvestorsSlugRoute: InvestorsSlugRoute,
   MentorsSlugRoute: MentorsSlugRoute,
   RegisterBusinessRoute: RegisterBusinessRoute,
@@ -1414,6 +1455,7 @@ const rootRouteChildren: RootRouteChildren = {
   BusinessesIndexRoute: BusinessesIndexRoute,
   CareersIndexRoute: CareersIndexRoute,
   GlobalPresenceIndexRoute: GlobalPresenceIndexRoute,
+  HelpIndexRoute: HelpIndexRoute,
   InvestorsIndexRoute: InvestorsIndexRoute,
   MentorsIndexRoute: MentorsIndexRoute,
   RegisterIndexRoute: RegisterIndexRoute,

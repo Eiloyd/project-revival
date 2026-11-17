@@ -1,3 +1,10 @@
+## Help centre, first-login guide, README, smoothness (17 Nov 2026)
+- [ ] Help centre at /help: search, topics for every dashboard, step-by-step answers, how to raise a request or ticket
+- [ ] First-login guided tour on every dashboard (shown once per person, can be replayed from the Help button)
+- [ ] Help button in every dashboard top bar; Help links on public site and sign-in page
+- [ ] Smoother feel: page-change progress bar, soft fade between sections and pages
+- [ ] Full README for the repository
+
 ## Collection-linked BDE/BDM pay + volunteer rewards (17 Nov 2026)
 - [x] `/crm/sales` page opens the sales workspace on Collections (Direct vs Volunteer-sourced); pg_cron switch-on note added to database/README.md
 - [x] Rules written and tested in code: attendance/wage only on verified collection days, zero-collection reminder before 12:00 PM, volunteer revenue counts for targets at 0% incentive, no mandatory volunteer target unless a fixed incentive is assigned, ₹3,000 withdrawal floor
