@@ -366,7 +366,7 @@ DECLARE ds text[]:='{}'; dep text; staff boolean; BEGIN IF auth.uid() IS NULL TH
 IF public.has_role(auth.uid(),'admin') THEN ds:=array_append(ds,'admin'); END IF;
 IF EXISTS(SELECT 1 FROM crm_memberships WHERE user_id=auth.uid() AND active) THEN ds:=array_append(ds,'crm'); END IF;
 IF EXISTS(SELECT 1 FROM education_staff_access WHERE user_id=auth.uid() AND active) THEN ds:=array_append(ds,'staff'); END IF;
-IF EXISTS(SELECT 1 FROM volunteers WHERE employee_id=auth.uid()::text) THEN ds:=array_append(ds,'my-volunteers'); END IF;
+IF EXISTS(SELECT 1 FROM volunteers WHERE employee_id=auth.uid()) THEN ds:=array_append(ds,'my-volunteers'); END IF;
 FOR dep IN SELECT DISTINCT department FROM department_staff WHERE user_id=auth.uid() AND active LOOP ds:=array_append(ds,CASE WHEN dep='accounts' THEN 'finance' ELSE dep END); END LOOP;
 staff:=cardinality(ds)>0; IF staff THEN ds:=array_append(ds,'work'); END IF;
 IF EXISTS(SELECT 1 FROM volunteers WHERE user_id=auth.uid() AND status='active') THEN ds:=array_append(ds,'volunteer'); END IF;
