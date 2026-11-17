@@ -1177,7 +1177,7 @@ export type Database = {
           resolved_at?: string | null
           status?: string
           subject: string
-          ticket_code: string
+          ticket_code?: string
           updated_at?: string
         }
         Update: {
