@@ -1,1 +1,0 @@
-ALTER TABLE public.customer_tickets ALTER COLUMN ticket_code SET DEFAULT '';
