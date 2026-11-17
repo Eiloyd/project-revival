@@ -10,10 +10,13 @@ export function searchHelp(query: string, limit = 12): HelpArticle[] {
   if (!words.length) return [];
   const scored = helpArticles.map(a => {
     const title = norm(a.title), kw = norm((a.keywords ?? []).join(' ')), sum = norm(a.summary), body = norm(a.steps.join(' ') + ' ' + (a.tips ?? []).join(' '));
+    const exact = new Set([...title.split(' '), ...kw.split(' ')]);
     let score = 0;
     if (title.includes(q)) score += 20; if (kw.includes(q)) score += 15;
+    if ((a.keywords ?? []).some(k => norm(k) === q)) score += 10;
     for (const w of words) {
       if (title.includes(w)) score += 6; if (kw.includes(w)) score += 5; if (sum.includes(w)) score += 3; if (body.includes(w)) score += 1;
+      if (exact.has(w)) score += 2;
     }
     return { a, score };
   }).filter(x => x.score > 0);
