@@ -10,33 +10,876 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as BecomeAVolunteerRouteImport } from './routes/become-a-volunteer'
+import { Route as CandidatePortalRouteImport } from './routes/candidate-portal'
+import { Route as ClientPortalRouteImport } from './routes/client-portal'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CrmRouteImport } from './routes/crm'
+import { Route as DownloadsRouteImport } from './routes/downloads'
+import { Route as EducationGrievanceRouteImport } from './routes/education-grievance'
+import { Route as EducationPrivacyRouteImport } from './routes/education-privacy'
+import { Route as EducationRefundsRouteImport } from './routes/education-refunds'
+import { Route as EducationSupportRouteImport } from './routes/education-support'
+import { Route as EducationSyllabusRouteImport } from './routes/education-syllabus'
+import { Route as EducationTermsRouteImport } from './routes/education-terms'
+import { Route as FinanceRouteImport } from './routes/finance'
+import { Route as FoundationRouteImport } from './routes/foundation'
+import { Route as FundingProgrammeRouteImport } from './routes/funding-programme'
+import { Route as HrRouteImport } from './routes/hr'
+import { Route as InstitutePortalRouteImport } from './routes/institute-portal'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ManpowerRouteImport } from './routes/manpower'
+import { Route as MyVolunteersRouteImport } from './routes/my-volunteers'
+import { Route as PaymentRouteImport } from './routes/payment'
+import { Route as PaymentCompleteRouteImport } from './routes/payment-complete'
+import { Route as PrototypeFundingRouteImport } from './routes/prototype-funding'
+import { Route as ResearchRouteImport } from './routes/research'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as StaffRouteImport } from './routes/staff'
+import { Route as SupportDeskRouteImport } from './routes/support-desk'
+import { Route as VenturesRouteImport } from './routes/ventures'
+import { Route as VolunteerRouteImport } from './routes/volunteer'
+import { Route as WorkRouteImport } from './routes/work'
+import { Route as YoungInnovators2026RouteImport } from './routes/young-innovators-2026'
+import { Route as BusinessesIndexRouteImport } from './routes/businesses.index'
+import { Route as BusinessesSlugRouteImport } from './routes/businesses.$slug'
+import { Route as CareersIndexRouteImport } from './routes/careers.index'
+import { Route as CareersCodeRouteImport } from './routes/careers.$code'
+import { Route as GlobalPresenceIndexRouteImport } from './routes/global-presence.index'
+import { Route as GlobalPresenceSlugRouteImport } from './routes/global-presence.$slug'
+import { Route as InvestorsIndexRouteImport } from './routes/investors.index'
+import { Route as InvestorsSlugRouteImport } from './routes/investors.$slug'
+import { Route as MentorsIndexRouteImport } from './routes/mentors.index'
+import { Route as MentorsSlugRouteImport } from './routes/mentors.$slug'
+import { Route as RegisterIndexRouteImport } from './routes/register/index'
+import { Route as RegisterBusinessRouteImport } from './routes/register/business'
+import { Route as RegisterInvestorRouteImport } from './routes/register/investor'
+import { Route as RegisterMentorRouteImport } from './routes/register/mentor'
+import { Route as RegisterStartupRouteImport } from './routes/register/startup'
+import { Route as ServicesIndexRouteImport } from './routes/services.index'
+import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
+import { Route as StartupsIndexRouteImport } from './routes/startups.index'
+import { Route as StartupsSlugRouteImport } from './routes/startups.$slug'
+import { Route as TeamIndexRouteImport } from './routes/team.index'
+import { Route as TeamSlugRouteImport } from './routes/team.$slug'
+import { Route as ApiPublicMetaLeadsRouteImport } from './routes/api/public/meta-leads'
+import { Route as ApiPublicPrototypeAssessmentRouteImport } from './routes/api/public/prototype-assessment'
+import { Route as ApiPublicStudentProjectIdeasRouteImport } from './routes/api/public/student-project-ideas'
+import { Route as ApiPublicTrackRouteImport } from './routes/api/public/track'
+import { Route as ApiPublicYoungMarketPlanRouteImport } from './routes/api/public/young-market-plan'
+import { Route as ApiPublicEducationActionRouteImport } from './routes/api/public/education.$action'
+import { Route as ApiPublicJobsEducationSheetSyncRouteImport } from './routes/api/public/jobs/education-sheet-sync'
+import { Route as ApiPublicJobsGoogleSheetCopyRouteImport } from './routes/api/public/jobs/google-sheet-copy'
+import { Route as ApiPublicJobsWorkEscalationsRouteImport } from './routes/api/public/jobs/work-escalations'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BecomeAVolunteerRoute = BecomeAVolunteerRouteImport.update({
+  id: '/become-a-volunteer',
+  path: '/become-a-volunteer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CandidatePortalRoute = CandidatePortalRouteImport.update({
+  id: '/candidate-portal',
+  path: '/candidate-portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientPortalRoute = ClientPortalRouteImport.update({
+  id: '/client-portal',
+  path: '/client-portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CrmRoute = CrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadsRoute = DownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EducationGrievanceRoute = EducationGrievanceRouteImport.update({
+  id: '/education-grievance',
+  path: '/education-grievance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EducationPrivacyRoute = EducationPrivacyRouteImport.update({
+  id: '/education-privacy',
+  path: '/education-privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EducationRefundsRoute = EducationRefundsRouteImport.update({
+  id: '/education-refunds',
+  path: '/education-refunds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EducationSupportRoute = EducationSupportRouteImport.update({
+  id: '/education-support',
+  path: '/education-support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EducationSyllabusRoute = EducationSyllabusRouteImport.update({
+  id: '/education-syllabus',
+  path: '/education-syllabus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EducationTermsRoute = EducationTermsRouteImport.update({
+  id: '/education-terms',
+  path: '/education-terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinanceRoute = FinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FoundationRoute = FoundationRouteImport.update({
+  id: '/foundation',
+  path: '/foundation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FundingProgrammeRoute = FundingProgrammeRouteImport.update({
+  id: '/funding-programme',
+  path: '/funding-programme',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HrRoute = HrRouteImport.update({
+  id: '/hr',
+  path: '/hr',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstitutePortalRoute = InstitutePortalRouteImport.update({
+  id: '/institute-portal',
+  path: '/institute-portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManpowerRoute = ManpowerRouteImport.update({
+  id: '/manpower',
+  path: '/manpower',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyVolunteersRoute = MyVolunteersRouteImport.update({
+  id: '/my-volunteers',
+  path: '/my-volunteers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentRoute = PaymentRouteImport.update({
+  id: '/payment',
+  path: '/payment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentCompleteRoute = PaymentCompleteRouteImport.update({
+  id: '/payment-complete',
+  path: '/payment-complete',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrototypeFundingRoute = PrototypeFundingRouteImport.update({
+  id: '/prototype-funding',
+  path: '/prototype-funding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResearchRoute = ResearchRouteImport.update({
+  id: '/research',
+  path: '/research',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StaffRoute = StaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportDeskRoute = SupportDeskRouteImport.update({
+  id: '/support-desk',
+  path: '/support-desk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenturesRoute = VenturesRouteImport.update({
+  id: '/ventures',
+  path: '/ventures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VolunteerRoute = VolunteerRouteImport.update({
+  id: '/volunteer',
+  path: '/volunteer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkRoute = WorkRouteImport.update({
+  id: '/work',
+  path: '/work',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const YoungInnovators2026Route = YoungInnovators2026RouteImport.update({
+  id: '/young-innovators-2026',
+  path: '/young-innovators-2026',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BusinessesIndexRoute = BusinessesIndexRouteImport.update({
+  id: '/businesses/',
+  path: '/businesses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BusinessesSlugRoute = BusinessesSlugRouteImport.update({
+  id: '/businesses/$slug',
+  path: '/businesses/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareersIndexRoute = CareersIndexRouteImport.update({
+  id: '/careers/',
+  path: '/careers/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareersCodeRoute = CareersCodeRouteImport.update({
+  id: '/careers/$code',
+  path: '/careers/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GlobalPresenceIndexRoute = GlobalPresenceIndexRouteImport.update({
+  id: '/global-presence/',
+  path: '/global-presence/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GlobalPresenceSlugRoute = GlobalPresenceSlugRouteImport.update({
+  id: '/global-presence/$slug',
+  path: '/global-presence/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvestorsIndexRoute = InvestorsIndexRouteImport.update({
+  id: '/investors/',
+  path: '/investors/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvestorsSlugRoute = InvestorsSlugRouteImport.update({
+  id: '/investors/$slug',
+  path: '/investors/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentorsIndexRoute = MentorsIndexRouteImport.update({
+  id: '/mentors/',
+  path: '/mentors/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentorsSlugRoute = MentorsSlugRouteImport.update({
+  id: '/mentors/$slug',
+  path: '/mentors/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterIndexRoute = RegisterIndexRouteImport.update({
+  id: '/register/',
+  path: '/register/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterBusinessRoute = RegisterBusinessRouteImport.update({
+  id: '/register/business',
+  path: '/register/business',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterInvestorRoute = RegisterInvestorRouteImport.update({
+  id: '/register/investor',
+  path: '/register/investor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterMentorRoute = RegisterMentorRouteImport.update({
+  id: '/register/mentor',
+  path: '/register/mentor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterStartupRoute = RegisterStartupRouteImport.update({
+  id: '/register/startup',
+  path: '/register/startup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesSlugRoute = ServicesSlugRouteImport.update({
+  id: '/services/$slug',
+  path: '/services/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StartupsIndexRoute = StartupsIndexRouteImport.update({
+  id: '/startups/',
+  path: '/startups/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StartupsSlugRoute = StartupsSlugRouteImport.update({
+  id: '/startups/$slug',
+  path: '/startups/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamIndexRoute = TeamIndexRouteImport.update({
+  id: '/team/',
+  path: '/team/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamSlugRoute = TeamSlugRouteImport.update({
+  id: '/team/$slug',
+  path: '/team/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicMetaLeadsRoute = ApiPublicMetaLeadsRouteImport.update({
+  id: '/api/public/meta-leads',
+  path: '/api/public/meta-leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicPrototypeAssessmentRoute =
+  ApiPublicPrototypeAssessmentRouteImport.update({
+    id: '/api/public/prototype-assessment',
+    path: '/api/public/prototype-assessment',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicStudentProjectIdeasRoute =
+  ApiPublicStudentProjectIdeasRouteImport.update({
+    id: '/api/public/student-project-ideas',
+    path: '/api/public/student-project-ideas',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicTrackRoute = ApiPublicTrackRouteImport.update({
+  id: '/api/public/track',
+  path: '/api/public/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicYoungMarketPlanRoute =
+  ApiPublicYoungMarketPlanRouteImport.update({
+    id: '/api/public/young-market-plan',
+    path: '/api/public/young-market-plan',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicEducationActionRoute =
+  ApiPublicEducationActionRouteImport.update({
+    id: '/api/public/education/$action',
+    path: '/api/public/education/$action',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicJobsEducationSheetSyncRoute =
+  ApiPublicJobsEducationSheetSyncRouteImport.update({
+    id: '/api/public/jobs/education-sheet-sync',
+    path: '/api/public/jobs/education-sheet-sync',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicJobsGoogleSheetCopyRoute =
+  ApiPublicJobsGoogleSheetCopyRouteImport.update({
+    id: '/api/public/jobs/google-sheet-copy',
+    path: '/api/public/jobs/google-sheet-copy',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicJobsWorkEscalationsRoute =
+  ApiPublicJobsWorkEscalationsRouteImport.update({
+    id: '/api/public/jobs/work-escalations',
+    path: '/api/public/jobs/work-escalations',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
+  '/become-a-volunteer': typeof BecomeAVolunteerRoute
+  '/candidate-portal': typeof CandidatePortalRoute
+  '/client-portal': typeof ClientPortalRoute
+  '/contact': typeof ContactRoute
+  '/crm': typeof CrmRoute
+  '/downloads': typeof DownloadsRoute
+  '/education-grievance': typeof EducationGrievanceRoute
+  '/education-privacy': typeof EducationPrivacyRoute
+  '/education-refunds': typeof EducationRefundsRoute
+  '/education-support': typeof EducationSupportRoute
+  '/education-syllabus': typeof EducationSyllabusRoute
+  '/education-terms': typeof EducationTermsRoute
+  '/finance': typeof FinanceRoute
+  '/foundation': typeof FoundationRoute
+  '/funding-programme': typeof FundingProgrammeRoute
+  '/hr': typeof HrRoute
+  '/institute-portal': typeof InstitutePortalRoute
+  '/login': typeof LoginRoute
+  '/manpower': typeof ManpowerRoute
+  '/my-volunteers': typeof MyVolunteersRoute
+  '/payment': typeof PaymentRoute
+  '/payment-complete': typeof PaymentCompleteRoute
+  '/prototype-funding': typeof PrototypeFundingRoute
+  '/research': typeof ResearchRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/staff': typeof StaffRoute
+  '/support-desk': typeof SupportDeskRoute
+  '/ventures': typeof VenturesRoute
+  '/volunteer': typeof VolunteerRoute
+  '/work': typeof WorkRoute
+  '/young-innovators-2026': typeof YoungInnovators2026Route
+  '/businesses/$slug': typeof BusinessesSlugRoute
+  '/careers/$code': typeof CareersCodeRoute
+  '/global-presence/$slug': typeof GlobalPresenceSlugRoute
+  '/investors/$slug': typeof InvestorsSlugRoute
+  '/mentors/$slug': typeof MentorsSlugRoute
+  '/register/business': typeof RegisterBusinessRoute
+  '/register/investor': typeof RegisterInvestorRoute
+  '/register/mentor': typeof RegisterMentorRoute
+  '/register/startup': typeof RegisterStartupRoute
+  '/services/$slug': typeof ServicesSlugRoute
+  '/startups/$slug': typeof StartupsSlugRoute
+  '/team/$slug': typeof TeamSlugRoute
+  '/businesses/': typeof BusinessesIndexRoute
+  '/careers/': typeof CareersIndexRoute
+  '/global-presence/': typeof GlobalPresenceIndexRoute
+  '/investors/': typeof InvestorsIndexRoute
+  '/mentors/': typeof MentorsIndexRoute
+  '/register/': typeof RegisterIndexRoute
+  '/services/': typeof ServicesIndexRoute
+  '/startups/': typeof StartupsIndexRoute
+  '/team/': typeof TeamIndexRoute
+  '/api/public/meta-leads': typeof ApiPublicMetaLeadsRoute
+  '/api/public/prototype-assessment': typeof ApiPublicPrototypeAssessmentRoute
+  '/api/public/student-project-ideas': typeof ApiPublicStudentProjectIdeasRoute
+  '/api/public/track': typeof ApiPublicTrackRoute
+  '/api/public/young-market-plan': typeof ApiPublicYoungMarketPlanRoute
+  '/api/public/education/$action': typeof ApiPublicEducationActionRoute
+  '/api/public/jobs/education-sheet-sync': typeof ApiPublicJobsEducationSheetSyncRoute
+  '/api/public/jobs/google-sheet-copy': typeof ApiPublicJobsGoogleSheetCopyRoute
+  '/api/public/jobs/work-escalations': typeof ApiPublicJobsWorkEscalationsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
+  '/become-a-volunteer': typeof BecomeAVolunteerRoute
+  '/candidate-portal': typeof CandidatePortalRoute
+  '/client-portal': typeof ClientPortalRoute
+  '/contact': typeof ContactRoute
+  '/crm': typeof CrmRoute
+  '/downloads': typeof DownloadsRoute
+  '/education-grievance': typeof EducationGrievanceRoute
+  '/education-privacy': typeof EducationPrivacyRoute
+  '/education-refunds': typeof EducationRefundsRoute
+  '/education-support': typeof EducationSupportRoute
+  '/education-syllabus': typeof EducationSyllabusRoute
+  '/education-terms': typeof EducationTermsRoute
+  '/finance': typeof FinanceRoute
+  '/foundation': typeof FoundationRoute
+  '/funding-programme': typeof FundingProgrammeRoute
+  '/hr': typeof HrRoute
+  '/institute-portal': typeof InstitutePortalRoute
+  '/login': typeof LoginRoute
+  '/manpower': typeof ManpowerRoute
+  '/my-volunteers': typeof MyVolunteersRoute
+  '/payment': typeof PaymentRoute
+  '/payment-complete': typeof PaymentCompleteRoute
+  '/prototype-funding': typeof PrototypeFundingRoute
+  '/research': typeof ResearchRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/staff': typeof StaffRoute
+  '/support-desk': typeof SupportDeskRoute
+  '/ventures': typeof VenturesRoute
+  '/volunteer': typeof VolunteerRoute
+  '/work': typeof WorkRoute
+  '/young-innovators-2026': typeof YoungInnovators2026Route
+  '/businesses/$slug': typeof BusinessesSlugRoute
+  '/careers/$code': typeof CareersCodeRoute
+  '/global-presence/$slug': typeof GlobalPresenceSlugRoute
+  '/investors/$slug': typeof InvestorsSlugRoute
+  '/mentors/$slug': typeof MentorsSlugRoute
+  '/register/business': typeof RegisterBusinessRoute
+  '/register/investor': typeof RegisterInvestorRoute
+  '/register/mentor': typeof RegisterMentorRoute
+  '/register/startup': typeof RegisterStartupRoute
+  '/services/$slug': typeof ServicesSlugRoute
+  '/startups/$slug': typeof StartupsSlugRoute
+  '/team/$slug': typeof TeamSlugRoute
+  '/businesses': typeof BusinessesIndexRoute
+  '/careers': typeof CareersIndexRoute
+  '/global-presence': typeof GlobalPresenceIndexRoute
+  '/investors': typeof InvestorsIndexRoute
+  '/mentors': typeof MentorsIndexRoute
+  '/register': typeof RegisterIndexRoute
+  '/services': typeof ServicesIndexRoute
+  '/startups': typeof StartupsIndexRoute
+  '/team': typeof TeamIndexRoute
+  '/api/public/meta-leads': typeof ApiPublicMetaLeadsRoute
+  '/api/public/prototype-assessment': typeof ApiPublicPrototypeAssessmentRoute
+  '/api/public/student-project-ideas': typeof ApiPublicStudentProjectIdeasRoute
+  '/api/public/track': typeof ApiPublicTrackRoute
+  '/api/public/young-market-plan': typeof ApiPublicYoungMarketPlanRoute
+  '/api/public/education/$action': typeof ApiPublicEducationActionRoute
+  '/api/public/jobs/education-sheet-sync': typeof ApiPublicJobsEducationSheetSyncRoute
+  '/api/public/jobs/google-sheet-copy': typeof ApiPublicJobsGoogleSheetCopyRoute
+  '/api/public/jobs/work-escalations': typeof ApiPublicJobsWorkEscalationsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
+  '/become-a-volunteer': typeof BecomeAVolunteerRoute
+  '/candidate-portal': typeof CandidatePortalRoute
+  '/client-portal': typeof ClientPortalRoute
+  '/contact': typeof ContactRoute
+  '/crm': typeof CrmRoute
+  '/downloads': typeof DownloadsRoute
+  '/education-grievance': typeof EducationGrievanceRoute
+  '/education-privacy': typeof EducationPrivacyRoute
+  '/education-refunds': typeof EducationRefundsRoute
+  '/education-support': typeof EducationSupportRoute
+  '/education-syllabus': typeof EducationSyllabusRoute
+  '/education-terms': typeof EducationTermsRoute
+  '/finance': typeof FinanceRoute
+  '/foundation': typeof FoundationRoute
+  '/funding-programme': typeof FundingProgrammeRoute
+  '/hr': typeof HrRoute
+  '/institute-portal': typeof InstitutePortalRoute
+  '/login': typeof LoginRoute
+  '/manpower': typeof ManpowerRoute
+  '/my-volunteers': typeof MyVolunteersRoute
+  '/payment': typeof PaymentRoute
+  '/payment-complete': typeof PaymentCompleteRoute
+  '/prototype-funding': typeof PrototypeFundingRoute
+  '/research': typeof ResearchRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/staff': typeof StaffRoute
+  '/support-desk': typeof SupportDeskRoute
+  '/ventures': typeof VenturesRoute
+  '/volunteer': typeof VolunteerRoute
+  '/work': typeof WorkRoute
+  '/young-innovators-2026': typeof YoungInnovators2026Route
+  '/businesses/$slug': typeof BusinessesSlugRoute
+  '/careers/$code': typeof CareersCodeRoute
+  '/global-presence/$slug': typeof GlobalPresenceSlugRoute
+  '/investors/$slug': typeof InvestorsSlugRoute
+  '/mentors/$slug': typeof MentorsSlugRoute
+  '/register/business': typeof RegisterBusinessRoute
+  '/register/investor': typeof RegisterInvestorRoute
+  '/register/mentor': typeof RegisterMentorRoute
+  '/register/startup': typeof RegisterStartupRoute
+  '/services/$slug': typeof ServicesSlugRoute
+  '/startups/$slug': typeof StartupsSlugRoute
+  '/team/$slug': typeof TeamSlugRoute
+  '/businesses/': typeof BusinessesIndexRoute
+  '/careers/': typeof CareersIndexRoute
+  '/global-presence/': typeof GlobalPresenceIndexRoute
+  '/investors/': typeof InvestorsIndexRoute
+  '/mentors/': typeof MentorsIndexRoute
+  '/register/': typeof RegisterIndexRoute
+  '/services/': typeof ServicesIndexRoute
+  '/startups/': typeof StartupsIndexRoute
+  '/team/': typeof TeamIndexRoute
+  '/api/public/meta-leads': typeof ApiPublicMetaLeadsRoute
+  '/api/public/prototype-assessment': typeof ApiPublicPrototypeAssessmentRoute
+  '/api/public/student-project-ideas': typeof ApiPublicStudentProjectIdeasRoute
+  '/api/public/track': typeof ApiPublicTrackRoute
+  '/api/public/young-market-plan': typeof ApiPublicYoungMarketPlanRoute
+  '/api/public/education/$action': typeof ApiPublicEducationActionRoute
+  '/api/public/jobs/education-sheet-sync': typeof ApiPublicJobsEducationSheetSyncRoute
+  '/api/public/jobs/google-sheet-copy': typeof ApiPublicJobsGoogleSheetCopyRoute
+  '/api/public/jobs/work-escalations': typeof ApiPublicJobsWorkEscalationsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/become-a-volunteer'
+    | '/candidate-portal'
+    | '/client-portal'
+    | '/contact'
+    | '/crm'
+    | '/downloads'
+    | '/education-grievance'
+    | '/education-privacy'
+    | '/education-refunds'
+    | '/education-support'
+    | '/education-syllabus'
+    | '/education-terms'
+    | '/finance'
+    | '/foundation'
+    | '/funding-programme'
+    | '/hr'
+    | '/institute-portal'
+    | '/login'
+    | '/manpower'
+    | '/my-volunteers'
+    | '/payment'
+    | '/payment-complete'
+    | '/prototype-funding'
+    | '/research'
+    | '/reset-password'
+    | '/sitemap.xml'
+    | '/staff'
+    | '/support-desk'
+    | '/ventures'
+    | '/volunteer'
+    | '/work'
+    | '/young-innovators-2026'
+    | '/businesses/$slug'
+    | '/careers/$code'
+    | '/global-presence/$slug'
+    | '/investors/$slug'
+    | '/mentors/$slug'
+    | '/register/business'
+    | '/register/investor'
+    | '/register/mentor'
+    | '/register/startup'
+    | '/services/$slug'
+    | '/startups/$slug'
+    | '/team/$slug'
+    | '/businesses/'
+    | '/careers/'
+    | '/global-presence/'
+    | '/investors/'
+    | '/mentors/'
+    | '/register/'
+    | '/services/'
+    | '/startups/'
+    | '/team/'
+    | '/api/public/meta-leads'
+    | '/api/public/prototype-assessment'
+    | '/api/public/student-project-ideas'
+    | '/api/public/track'
+    | '/api/public/young-market-plan'
+    | '/api/public/education/$action'
+    | '/api/public/jobs/education-sheet-sync'
+    | '/api/public/jobs/google-sheet-copy'
+    | '/api/public/jobs/work-escalations'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/become-a-volunteer'
+    | '/candidate-portal'
+    | '/client-portal'
+    | '/contact'
+    | '/crm'
+    | '/downloads'
+    | '/education-grievance'
+    | '/education-privacy'
+    | '/education-refunds'
+    | '/education-support'
+    | '/education-syllabus'
+    | '/education-terms'
+    | '/finance'
+    | '/foundation'
+    | '/funding-programme'
+    | '/hr'
+    | '/institute-portal'
+    | '/login'
+    | '/manpower'
+    | '/my-volunteers'
+    | '/payment'
+    | '/payment-complete'
+    | '/prototype-funding'
+    | '/research'
+    | '/reset-password'
+    | '/sitemap.xml'
+    | '/staff'
+    | '/support-desk'
+    | '/ventures'
+    | '/volunteer'
+    | '/work'
+    | '/young-innovators-2026'
+    | '/businesses/$slug'
+    | '/careers/$code'
+    | '/global-presence/$slug'
+    | '/investors/$slug'
+    | '/mentors/$slug'
+    | '/register/business'
+    | '/register/investor'
+    | '/register/mentor'
+    | '/register/startup'
+    | '/services/$slug'
+    | '/startups/$slug'
+    | '/team/$slug'
+    | '/businesses'
+    | '/careers'
+    | '/global-presence'
+    | '/investors'
+    | '/mentors'
+    | '/register'
+    | '/services'
+    | '/startups'
+    | '/team'
+    | '/api/public/meta-leads'
+    | '/api/public/prototype-assessment'
+    | '/api/public/student-project-ideas'
+    | '/api/public/track'
+    | '/api/public/young-market-plan'
+    | '/api/public/education/$action'
+    | '/api/public/jobs/education-sheet-sync'
+    | '/api/public/jobs/google-sheet-copy'
+    | '/api/public/jobs/work-escalations'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/become-a-volunteer'
+    | '/candidate-portal'
+    | '/client-portal'
+    | '/contact'
+    | '/crm'
+    | '/downloads'
+    | '/education-grievance'
+    | '/education-privacy'
+    | '/education-refunds'
+    | '/education-support'
+    | '/education-syllabus'
+    | '/education-terms'
+    | '/finance'
+    | '/foundation'
+    | '/funding-programme'
+    | '/hr'
+    | '/institute-portal'
+    | '/login'
+    | '/manpower'
+    | '/my-volunteers'
+    | '/payment'
+    | '/payment-complete'
+    | '/prototype-funding'
+    | '/research'
+    | '/reset-password'
+    | '/sitemap.xml'
+    | '/staff'
+    | '/support-desk'
+    | '/ventures'
+    | '/volunteer'
+    | '/work'
+    | '/young-innovators-2026'
+    | '/businesses/$slug'
+    | '/careers/$code'
+    | '/global-presence/$slug'
+    | '/investors/$slug'
+    | '/mentors/$slug'
+    | '/register/business'
+    | '/register/investor'
+    | '/register/mentor'
+    | '/register/startup'
+    | '/services/$slug'
+    | '/startups/$slug'
+    | '/team/$slug'
+    | '/businesses/'
+    | '/careers/'
+    | '/global-presence/'
+    | '/investors/'
+    | '/mentors/'
+    | '/register/'
+    | '/services/'
+    | '/startups/'
+    | '/team/'
+    | '/api/public/meta-leads'
+    | '/api/public/prototype-assessment'
+    | '/api/public/student-project-ideas'
+    | '/api/public/track'
+    | '/api/public/young-market-plan'
+    | '/api/public/education/$action'
+    | '/api/public/jobs/education-sheet-sync'
+    | '/api/public/jobs/google-sheet-copy'
+    | '/api/public/jobs/work-escalations'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRoute
+  BecomeAVolunteerRoute: typeof BecomeAVolunteerRoute
+  CandidatePortalRoute: typeof CandidatePortalRoute
+  ClientPortalRoute: typeof ClientPortalRoute
+  ContactRoute: typeof ContactRoute
+  CrmRoute: typeof CrmRoute
+  DownloadsRoute: typeof DownloadsRoute
+  EducationGrievanceRoute: typeof EducationGrievanceRoute
+  EducationPrivacyRoute: typeof EducationPrivacyRoute
+  EducationRefundsRoute: typeof EducationRefundsRoute
+  EducationSupportRoute: typeof EducationSupportRoute
+  EducationSyllabusRoute: typeof EducationSyllabusRoute
+  EducationTermsRoute: typeof EducationTermsRoute
+  FinanceRoute: typeof FinanceRoute
+  FoundationRoute: typeof FoundationRoute
+  FundingProgrammeRoute: typeof FundingProgrammeRoute
+  HrRoute: typeof HrRoute
+  InstitutePortalRoute: typeof InstitutePortalRoute
+  LoginRoute: typeof LoginRoute
+  ManpowerRoute: typeof ManpowerRoute
+  MyVolunteersRoute: typeof MyVolunteersRoute
+  PaymentRoute: typeof PaymentRoute
+  PaymentCompleteRoute: typeof PaymentCompleteRoute
+  PrototypeFundingRoute: typeof PrototypeFundingRoute
+  ResearchRoute: typeof ResearchRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StaffRoute: typeof StaffRoute
+  SupportDeskRoute: typeof SupportDeskRoute
+  VenturesRoute: typeof VenturesRoute
+  VolunteerRoute: typeof VolunteerRoute
+  WorkRoute: typeof WorkRoute
+  YoungInnovators2026Route: typeof YoungInnovators2026Route
+  BusinessesSlugRoute: typeof BusinessesSlugRoute
+  CareersCodeRoute: typeof CareersCodeRoute
+  GlobalPresenceSlugRoute: typeof GlobalPresenceSlugRoute
+  InvestorsSlugRoute: typeof InvestorsSlugRoute
+  MentorsSlugRoute: typeof MentorsSlugRoute
+  RegisterBusinessRoute: typeof RegisterBusinessRoute
+  RegisterInvestorRoute: typeof RegisterInvestorRoute
+  RegisterMentorRoute: typeof RegisterMentorRoute
+  RegisterStartupRoute: typeof RegisterStartupRoute
+  ServicesSlugRoute: typeof ServicesSlugRoute
+  StartupsSlugRoute: typeof StartupsSlugRoute
+  TeamSlugRoute: typeof TeamSlugRoute
+  BusinessesIndexRoute: typeof BusinessesIndexRoute
+  CareersIndexRoute: typeof CareersIndexRoute
+  GlobalPresenceIndexRoute: typeof GlobalPresenceIndexRoute
+  InvestorsIndexRoute: typeof InvestorsIndexRoute
+  MentorsIndexRoute: typeof MentorsIndexRoute
+  RegisterIndexRoute: typeof RegisterIndexRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
+  StartupsIndexRoute: typeof StartupsIndexRoute
+  TeamIndexRoute: typeof TeamIndexRoute
+  ApiPublicMetaLeadsRoute: typeof ApiPublicMetaLeadsRoute
+  ApiPublicPrototypeAssessmentRoute: typeof ApiPublicPrototypeAssessmentRoute
+  ApiPublicStudentProjectIdeasRoute: typeof ApiPublicStudentProjectIdeasRoute
+  ApiPublicTrackRoute: typeof ApiPublicTrackRoute
+  ApiPublicYoungMarketPlanRoute: typeof ApiPublicYoungMarketPlanRoute
+  ApiPublicEducationActionRoute: typeof ApiPublicEducationActionRoute
+  ApiPublicJobsEducationSheetSyncRoute: typeof ApiPublicJobsEducationSheetSyncRoute
+  ApiPublicJobsGoogleSheetCopyRoute: typeof ApiPublicJobsGoogleSheetCopyRoute
+  ApiPublicJobsWorkEscalationsRoute: typeof ApiPublicJobsWorkEscalationsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +891,523 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/become-a-volunteer': {
+      id: '/become-a-volunteer'
+      path: '/become-a-volunteer'
+      fullPath: '/become-a-volunteer'
+      preLoaderRoute: typeof BecomeAVolunteerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/candidate-portal': {
+      id: '/candidate-portal'
+      path: '/candidate-portal'
+      fullPath: '/candidate-portal'
+      preLoaderRoute: typeof CandidatePortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client-portal': {
+      id: '/client-portal'
+      path: '/client-portal'
+      fullPath: '/client-portal'
+      preLoaderRoute: typeof ClientPortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/crm': {
+      id: '/crm'
+      path: '/crm'
+      fullPath: '/crm'
+      preLoaderRoute: typeof CrmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/education-grievance': {
+      id: '/education-grievance'
+      path: '/education-grievance'
+      fullPath: '/education-grievance'
+      preLoaderRoute: typeof EducationGrievanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/education-privacy': {
+      id: '/education-privacy'
+      path: '/education-privacy'
+      fullPath: '/education-privacy'
+      preLoaderRoute: typeof EducationPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/education-refunds': {
+      id: '/education-refunds'
+      path: '/education-refunds'
+      fullPath: '/education-refunds'
+      preLoaderRoute: typeof EducationRefundsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/education-support': {
+      id: '/education-support'
+      path: '/education-support'
+      fullPath: '/education-support'
+      preLoaderRoute: typeof EducationSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/education-syllabus': {
+      id: '/education-syllabus'
+      path: '/education-syllabus'
+      fullPath: '/education-syllabus'
+      preLoaderRoute: typeof EducationSyllabusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/education-terms': {
+      id: '/education-terms'
+      path: '/education-terms'
+      fullPath: '/education-terms'
+      preLoaderRoute: typeof EducationTermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/finance': {
+      id: '/finance'
+      path: '/finance'
+      fullPath: '/finance'
+      preLoaderRoute: typeof FinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/foundation': {
+      id: '/foundation'
+      path: '/foundation'
+      fullPath: '/foundation'
+      preLoaderRoute: typeof FoundationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/funding-programme': {
+      id: '/funding-programme'
+      path: '/funding-programme'
+      fullPath: '/funding-programme'
+      preLoaderRoute: typeof FundingProgrammeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hr': {
+      id: '/hr'
+      path: '/hr'
+      fullPath: '/hr'
+      preLoaderRoute: typeof HrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/institute-portal': {
+      id: '/institute-portal'
+      path: '/institute-portal'
+      fullPath: '/institute-portal'
+      preLoaderRoute: typeof InstitutePortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manpower': {
+      id: '/manpower'
+      path: '/manpower'
+      fullPath: '/manpower'
+      preLoaderRoute: typeof ManpowerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-volunteers': {
+      id: '/my-volunteers'
+      path: '/my-volunteers'
+      fullPath: '/my-volunteers'
+      preLoaderRoute: typeof MyVolunteersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment': {
+      id: '/payment'
+      path: '/payment'
+      fullPath: '/payment'
+      preLoaderRoute: typeof PaymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-complete': {
+      id: '/payment-complete'
+      path: '/payment-complete'
+      fullPath: '/payment-complete'
+      preLoaderRoute: typeof PaymentCompleteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prototype-funding': {
+      id: '/prototype-funding'
+      path: '/prototype-funding'
+      fullPath: '/prototype-funding'
+      preLoaderRoute: typeof PrototypeFundingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/research': {
+      id: '/research'
+      path: '/research'
+      fullPath: '/research'
+      preLoaderRoute: typeof ResearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/staff': {
+      id: '/staff'
+      path: '/staff'
+      fullPath: '/staff'
+      preLoaderRoute: typeof StaffRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support-desk': {
+      id: '/support-desk'
+      path: '/support-desk'
+      fullPath: '/support-desk'
+      preLoaderRoute: typeof SupportDeskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ventures': {
+      id: '/ventures'
+      path: '/ventures'
+      fullPath: '/ventures'
+      preLoaderRoute: typeof VenturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/volunteer': {
+      id: '/volunteer'
+      path: '/volunteer'
+      fullPath: '/volunteer'
+      preLoaderRoute: typeof VolunteerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/work': {
+      id: '/work'
+      path: '/work'
+      fullPath: '/work'
+      preLoaderRoute: typeof WorkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/young-innovators-2026': {
+      id: '/young-innovators-2026'
+      path: '/young-innovators-2026'
+      fullPath: '/young-innovators-2026'
+      preLoaderRoute: typeof YoungInnovators2026RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/businesses/': {
+      id: '/businesses/'
+      path: '/businesses'
+      fullPath: '/businesses/'
+      preLoaderRoute: typeof BusinessesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/businesses/$slug': {
+      id: '/businesses/$slug'
+      path: '/businesses/$slug'
+      fullPath: '/businesses/$slug'
+      preLoaderRoute: typeof BusinessesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/careers/': {
+      id: '/careers/'
+      path: '/careers'
+      fullPath: '/careers/'
+      preLoaderRoute: typeof CareersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/careers/$code': {
+      id: '/careers/$code'
+      path: '/careers/$code'
+      fullPath: '/careers/$code'
+      preLoaderRoute: typeof CareersCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/global-presence/': {
+      id: '/global-presence/'
+      path: '/global-presence'
+      fullPath: '/global-presence/'
+      preLoaderRoute: typeof GlobalPresenceIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/global-presence/$slug': {
+      id: '/global-presence/$slug'
+      path: '/global-presence/$slug'
+      fullPath: '/global-presence/$slug'
+      preLoaderRoute: typeof GlobalPresenceSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/investors/': {
+      id: '/investors/'
+      path: '/investors'
+      fullPath: '/investors/'
+      preLoaderRoute: typeof InvestorsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/investors/$slug': {
+      id: '/investors/$slug'
+      path: '/investors/$slug'
+      fullPath: '/investors/$slug'
+      preLoaderRoute: typeof InvestorsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentors/': {
+      id: '/mentors/'
+      path: '/mentors'
+      fullPath: '/mentors/'
+      preLoaderRoute: typeof MentorsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentors/$slug': {
+      id: '/mentors/$slug'
+      path: '/mentors/$slug'
+      fullPath: '/mentors/$slug'
+      preLoaderRoute: typeof MentorsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register/': {
+      id: '/register/'
+      path: '/register'
+      fullPath: '/register/'
+      preLoaderRoute: typeof RegisterIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register/business': {
+      id: '/register/business'
+      path: '/register/business'
+      fullPath: '/register/business'
+      preLoaderRoute: typeof RegisterBusinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register/investor': {
+      id: '/register/investor'
+      path: '/register/investor'
+      fullPath: '/register/investor'
+      preLoaderRoute: typeof RegisterInvestorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register/mentor': {
+      id: '/register/mentor'
+      path: '/register/mentor'
+      fullPath: '/register/mentor'
+      preLoaderRoute: typeof RegisterMentorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register/startup': {
+      id: '/register/startup'
+      path: '/register/startup'
+      fullPath: '/register/startup'
+      preLoaderRoute: typeof RegisterStartupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/$slug': {
+      id: '/services/$slug'
+      path: '/services/$slug'
+      fullPath: '/services/$slug'
+      preLoaderRoute: typeof ServicesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/startups/': {
+      id: '/startups/'
+      path: '/startups'
+      fullPath: '/startups/'
+      preLoaderRoute: typeof StartupsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/startups/$slug': {
+      id: '/startups/$slug'
+      path: '/startups/$slug'
+      fullPath: '/startups/$slug'
+      preLoaderRoute: typeof StartupsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/': {
+      id: '/team/'
+      path: '/team'
+      fullPath: '/team/'
+      preLoaderRoute: typeof TeamIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/$slug': {
+      id: '/team/$slug'
+      path: '/team/$slug'
+      fullPath: '/team/$slug'
+      preLoaderRoute: typeof TeamSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/meta-leads': {
+      id: '/api/public/meta-leads'
+      path: '/api/public/meta-leads'
+      fullPath: '/api/public/meta-leads'
+      preLoaderRoute: typeof ApiPublicMetaLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/prototype-assessment': {
+      id: '/api/public/prototype-assessment'
+      path: '/api/public/prototype-assessment'
+      fullPath: '/api/public/prototype-assessment'
+      preLoaderRoute: typeof ApiPublicPrototypeAssessmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/student-project-ideas': {
+      id: '/api/public/student-project-ideas'
+      path: '/api/public/student-project-ideas'
+      fullPath: '/api/public/student-project-ideas'
+      preLoaderRoute: typeof ApiPublicStudentProjectIdeasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/track': {
+      id: '/api/public/track'
+      path: '/api/public/track'
+      fullPath: '/api/public/track'
+      preLoaderRoute: typeof ApiPublicTrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/young-market-plan': {
+      id: '/api/public/young-market-plan'
+      path: '/api/public/young-market-plan'
+      fullPath: '/api/public/young-market-plan'
+      preLoaderRoute: typeof ApiPublicYoungMarketPlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/education/$action': {
+      id: '/api/public/education/$action'
+      path: '/api/public/education/$action'
+      fullPath: '/api/public/education/$action'
+      preLoaderRoute: typeof ApiPublicEducationActionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/jobs/education-sheet-sync': {
+      id: '/api/public/jobs/education-sheet-sync'
+      path: '/api/public/jobs/education-sheet-sync'
+      fullPath: '/api/public/jobs/education-sheet-sync'
+      preLoaderRoute: typeof ApiPublicJobsEducationSheetSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/jobs/google-sheet-copy': {
+      id: '/api/public/jobs/google-sheet-copy'
+      path: '/api/public/jobs/google-sheet-copy'
+      fullPath: '/api/public/jobs/google-sheet-copy'
+      preLoaderRoute: typeof ApiPublicJobsGoogleSheetCopyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/jobs/work-escalations': {
+      id: '/api/public/jobs/work-escalations'
+      path: '/api/public/jobs/work-escalations'
+      fullPath: '/api/public/jobs/work-escalations'
+      preLoaderRoute: typeof ApiPublicJobsWorkEscalationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AdminRoute: AdminRoute,
+  BecomeAVolunteerRoute: BecomeAVolunteerRoute,
+  CandidatePortalRoute: CandidatePortalRoute,
+  ClientPortalRoute: ClientPortalRoute,
+  ContactRoute: ContactRoute,
+  CrmRoute: CrmRoute,
+  DownloadsRoute: DownloadsRoute,
+  EducationGrievanceRoute: EducationGrievanceRoute,
+  EducationPrivacyRoute: EducationPrivacyRoute,
+  EducationRefundsRoute: EducationRefundsRoute,
+  EducationSupportRoute: EducationSupportRoute,
+  EducationSyllabusRoute: EducationSyllabusRoute,
+  EducationTermsRoute: EducationTermsRoute,
+  FinanceRoute: FinanceRoute,
+  FoundationRoute: FoundationRoute,
+  FundingProgrammeRoute: FundingProgrammeRoute,
+  HrRoute: HrRoute,
+  InstitutePortalRoute: InstitutePortalRoute,
+  LoginRoute: LoginRoute,
+  ManpowerRoute: ManpowerRoute,
+  MyVolunteersRoute: MyVolunteersRoute,
+  PaymentRoute: PaymentRoute,
+  PaymentCompleteRoute: PaymentCompleteRoute,
+  PrototypeFundingRoute: PrototypeFundingRoute,
+  ResearchRoute: ResearchRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StaffRoute: StaffRoute,
+  SupportDeskRoute: SupportDeskRoute,
+  VenturesRoute: VenturesRoute,
+  VolunteerRoute: VolunteerRoute,
+  WorkRoute: WorkRoute,
+  YoungInnovators2026Route: YoungInnovators2026Route,
+  BusinessesSlugRoute: BusinessesSlugRoute,
+  CareersCodeRoute: CareersCodeRoute,
+  GlobalPresenceSlugRoute: GlobalPresenceSlugRoute,
+  InvestorsSlugRoute: InvestorsSlugRoute,
+  MentorsSlugRoute: MentorsSlugRoute,
+  RegisterBusinessRoute: RegisterBusinessRoute,
+  RegisterInvestorRoute: RegisterInvestorRoute,
+  RegisterMentorRoute: RegisterMentorRoute,
+  RegisterStartupRoute: RegisterStartupRoute,
+  ServicesSlugRoute: ServicesSlugRoute,
+  StartupsSlugRoute: StartupsSlugRoute,
+  TeamSlugRoute: TeamSlugRoute,
+  BusinessesIndexRoute: BusinessesIndexRoute,
+  CareersIndexRoute: CareersIndexRoute,
+  GlobalPresenceIndexRoute: GlobalPresenceIndexRoute,
+  InvestorsIndexRoute: InvestorsIndexRoute,
+  MentorsIndexRoute: MentorsIndexRoute,
+  RegisterIndexRoute: RegisterIndexRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
+  StartupsIndexRoute: StartupsIndexRoute,
+  TeamIndexRoute: TeamIndexRoute,
+  ApiPublicMetaLeadsRoute: ApiPublicMetaLeadsRoute,
+  ApiPublicPrototypeAssessmentRoute: ApiPublicPrototypeAssessmentRoute,
+  ApiPublicStudentProjectIdeasRoute: ApiPublicStudentProjectIdeasRoute,
+  ApiPublicTrackRoute: ApiPublicTrackRoute,
+  ApiPublicYoungMarketPlanRoute: ApiPublicYoungMarketPlanRoute,
+  ApiPublicEducationActionRoute: ApiPublicEducationActionRoute,
+  ApiPublicJobsEducationSheetSyncRoute: ApiPublicJobsEducationSheetSyncRoute,
+  ApiPublicJobsGoogleSheetCopyRoute: ApiPublicJobsGoogleSheetCopyRoute,
+  ApiPublicJobsWorkEscalationsRoute: ApiPublicJobsWorkEscalationsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
