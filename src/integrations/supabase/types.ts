@@ -1394,6 +1394,432 @@ export type Database = {
         }
         Relationships: []
       }
+      volunteer_commissions: {
+        Row: {
+          amount: number
+          application_code: string
+          created_at: string
+          credited_at: string | null
+          fee_amount: number
+          flat_amount: number
+          form_key: string
+          id: string
+          percent: number
+          reversed_at: string | null
+          source_id: string
+          status: string
+          updated_at: string
+          volunteer_id: string
+        }
+        Insert: {
+          amount: number
+          application_code?: string
+          created_at?: string
+          credited_at?: string | null
+          fee_amount?: number
+          flat_amount?: number
+          form_key: string
+          id?: string
+          percent?: number
+          reversed_at?: string | null
+          source_id: string
+          status?: string
+          updated_at?: string
+          volunteer_id: string
+        }
+        Update: {
+          amount?: number
+          application_code?: string
+          created_at?: string
+          credited_at?: string | null
+          fee_amount?: number
+          flat_amount?: number
+          form_key?: string
+          id?: string
+          percent?: number
+          reversed_at?: string | null
+          source_id?: string
+          status?: string
+          updated_at?: string
+          volunteer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "volunteer_commissions_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: false
+            referencedRelation: "volunteers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      volunteer_form_commissions: {
+        Row: {
+          active: boolean
+          flat_amount: number
+          form_key: string
+          label: string
+          percent: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          active?: boolean
+          flat_amount?: number
+          form_key: string
+          label: string
+          percent?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          active?: boolean
+          flat_amount?: number
+          form_key?: string
+          label?: string
+          percent?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      volunteer_notices: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          kind: string
+          read_at: string | null
+          sender_id: string | null
+          title: string
+          volunteer_id: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind: string
+          read_at?: string | null
+          sender_id?: string | null
+          title: string
+          volunteer_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          read_at?: string | null
+          sender_id?: string | null
+          title?: string
+          volunteer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "volunteer_notices_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: false
+            referencedRelation: "volunteers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      volunteer_payout_details: {
+        Row: {
+          account_holder: string
+          account_number: string
+          bank_name: string
+          ifsc: string
+          updated_at: string
+          updated_by: string | null
+          upi_id: string
+          volunteer_id: string
+        }
+        Insert: {
+          account_holder?: string
+          account_number?: string
+          bank_name?: string
+          ifsc?: string
+          updated_at?: string
+          updated_by?: string | null
+          upi_id?: string
+          volunteer_id: string
+        }
+        Update: {
+          account_holder?: string
+          account_number?: string
+          bank_name?: string
+          ifsc?: string
+          updated_at?: string
+          updated_by?: string | null
+          upi_id?: string
+          volunteer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "volunteer_payout_details_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: true
+            referencedRelation: "volunteers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      volunteer_settings: {
+        Row: {
+          id: boolean
+          max_percent: number
+          min_withdrawal: number
+          payout_note: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          id?: boolean
+          max_percent?: number
+          min_withdrawal?: number
+          payout_note?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          id?: boolean
+          max_percent?: number
+          min_withdrawal?: number
+          payout_note?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      volunteer_ticket_messages: {
+        Row: {
+          author_id: string
+          author_role: string
+          body: string
+          created_at: string
+          id: string
+          ticket_id: string
+        }
+        Insert: {
+          author_id: string
+          author_role: string
+          body: string
+          created_at?: string
+          id?: string
+          ticket_id: string
+        }
+        Update: {
+          author_id?: string
+          author_role?: string
+          body?: string
+          created_at?: string
+          id?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "volunteer_ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "volunteer_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      volunteer_tickets: {
+        Row: {
+          category: string
+          created_at: string
+          escalated: boolean
+          id: string
+          status: string
+          subject: string
+          ticket_number: string
+          updated_at: string
+          volunteer_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          escalated?: boolean
+          id?: string
+          status?: string
+          subject: string
+          ticket_number?: string
+          updated_at?: string
+          volunteer_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          escalated?: boolean
+          id?: string
+          status?: string
+          subject?: string
+          ticket_number?: string
+          updated_at?: string
+          volunteer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "volunteer_tickets_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: false
+            referencedRelation: "volunteers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      volunteer_withdrawals: {
+        Row: {
+          amount: number
+          escalated_at: string | null
+          escalation_note: string
+          id: string
+          method: string
+          paid_at: string | null
+          payout_masked: string
+          processed_at: string | null
+          rejection_reason: string
+          request_number: string
+          requested_at: string
+          status: string
+          transaction_id: string
+          updated_by: string | null
+          volunteer_id: string
+        }
+        Insert: {
+          amount: number
+          escalated_at?: string | null
+          escalation_note?: string
+          id?: string
+          method: string
+          paid_at?: string | null
+          payout_masked?: string
+          processed_at?: string | null
+          rejection_reason?: string
+          request_number?: string
+          requested_at?: string
+          status?: string
+          transaction_id?: string
+          updated_by?: string | null
+          volunteer_id: string
+        }
+        Update: {
+          amount?: number
+          escalated_at?: string | null
+          escalation_note?: string
+          id?: string
+          method?: string
+          paid_at?: string | null
+          payout_masked?: string
+          processed_at?: string | null
+          rejection_reason?: string
+          request_number?: string
+          requested_at?: string
+          status?: string
+          transaction_id?: string
+          updated_by?: string | null
+          volunteer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "volunteer_withdrawals_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: false
+            referencedRelation: "volunteers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      volunteers: {
+        Row: {
+          activated_at: string | null
+          address: string
+          commission_percent: number | null
+          created_at: string
+          date_of_birth: string | null
+          district: string
+          email: string
+          employee_id: string
+          full_name: string
+          gender: string
+          id: string
+          kyc_note: string
+          kyc_status: string
+          last_login_at: string | null
+          mobile: string
+          monthly_target: number
+          payout_masked: string
+          payout_method: string | null
+          photo_path: string | null
+          qualification: string
+          referral_code: string
+          state: string
+          status: string
+          updated_at: string
+          user_id: string | null
+          volunteer_code: string
+        }
+        Insert: {
+          activated_at?: string | null
+          address?: string
+          commission_percent?: number | null
+          created_at?: string
+          date_of_birth?: string | null
+          district?: string
+          email: string
+          employee_id: string
+          full_name: string
+          gender?: string
+          id?: string
+          kyc_note?: string
+          kyc_status?: string
+          last_login_at?: string | null
+          mobile: string
+          monthly_target?: number
+          payout_masked?: string
+          payout_method?: string | null
+          photo_path?: string | null
+          qualification?: string
+          referral_code?: string
+          state?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+          volunteer_code?: string
+        }
+        Update: {
+          activated_at?: string | null
+          address?: string
+          commission_percent?: number | null
+          created_at?: string
+          date_of_birth?: string | null
+          district?: string
+          email?: string
+          employee_id?: string
+          full_name?: string
+          gender?: string
+          id?: string
+          kyc_note?: string
+          kyc_status?: string
+          last_login_at?: string | null
+          mobile?: string
+          monthly_target?: number
+          payout_masked?: string
+          payout_method?: string | null
+          photo_path?: string | null
+          qualification?: string
+          referral_code?: string
+          state?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+          volunteer_code?: string
+        }
+        Relationships: []
+      }
       young_innovators_registrations: {
         Row: {
           application_code: string
@@ -1556,6 +1982,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_active_employee: { Args: { _uid: string }; Returns: boolean }
       issue_ack_number: {
         Args: { _form: string; _state: string }
         Returns: string
@@ -1578,6 +2005,93 @@ export type Database = {
           valid_until: string
         }[]
       }
+      volunteer_access: { Args: { _volunteer: string }; Returns: string }
+      volunteer_available_balance: {
+        Args: { _volunteer: string }
+        Returns: number
+      }
+      volunteer_claim_account: { Args: never; Returns: string }
+      volunteer_escalate_withdrawal: {
+        Args: { _id: string; _note: string }
+        Returns: undefined
+      }
+      volunteer_folder_access: { Args: { _name: string }; Returns: string }
+      volunteer_mark_notices_read: { Args: never; Returns: undefined }
+      volunteer_notify: {
+        Args: {
+          _body: string
+          _kind: string
+          _sender?: string
+          _title: string
+          _volunteer: string
+        }
+        Returns: undefined
+      }
+      volunteer_open_ticket: {
+        Args: { _body: string; _category: string; _subject: string }
+        Returns: string
+      }
+      volunteer_process_withdrawal: {
+        Args: {
+          _id: string
+          _reason?: string
+          _status: string
+          _transaction_id?: string
+        }
+        Returns: undefined
+      }
+      volunteer_referrals: {
+        Args: { _volunteer?: string }
+        Returns: {
+          application_code: string
+          commission_amount: number
+          commission_status: string
+          completed_at: string
+          form_key: string
+          form_status: string
+          payment_status: string
+          review_status: string
+          source_id: string
+          status_reason: string
+          student_name: string
+          submitted_at: string
+          volunteer_id: string
+        }[]
+      }
+      volunteer_reply_ticket: {
+        Args: { _body: string; _ticket: string }
+        Returns: undefined
+      }
+      volunteer_request_withdrawal: {
+        Args: { _amount: number; _method: string }
+        Returns: string
+      }
+      volunteer_send_message: {
+        Args: {
+          _body: string
+          _kind: string
+          _title: string
+          _volunteers: string[]
+        }
+        Returns: number
+      }
+      volunteer_set_payout: {
+        Args: {
+          _account: string
+          _bank: string
+          _holder: string
+          _ifsc: string
+          _upi: string
+          _volunteer: string
+        }
+        Returns: string
+      }
+      volunteer_set_ticket_status: {
+        Args: { _status: string; _ticket: string }
+        Returns: undefined
+      }
+      volunteer_submit_kyc: { Args: never; Returns: undefined }
+      volunteer_touch_login: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
