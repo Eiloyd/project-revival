@@ -28,3 +28,5 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- WhatsApp share links and CSV export text come from `src/lib/share/whatsapp.ts` (tested), so every screen escapes messages and spreadsheet formulas the same way.
