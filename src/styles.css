@@ -674,8 +674,9 @@ html[data-dash-theme="dark"] .dash-logo-on-dark { display: block; }
 html[data-dash-theme="dark"] .dash-logo-on-light { display: none; }
 
 /* First-login guided tour (dashboards): the spotlight cuts a hole in a dimmed screen and glides between targets. */
-.guide-spot { position: fixed; border-radius: 0.75rem; box-shadow: 0 0 0 9999px color-mix(in oklab, var(--foreground) 55%, transparent), 0 0 0 3px var(--primary); transition: top .32s cubic-bezier(.2,.7,.2,1), left .32s cubic-bezier(.2,.7,.2,1), width .32s cubic-bezier(.2,.7,.2,1), height .32s cubic-bezier(.2,.7,.2,1); pointer-events: none; }
-.guide-shade { position: fixed; inset: 0; background: color-mix(in oklab, var(--foreground) 55%, transparent); animation: guide-fade .2s ease-out; }
+:root { --guide-shade: oklch(0.12 0.005 260 / 0.62); }
+.guide-spot { position: fixed; border-radius: 0.75rem; box-shadow: 0 0 0 9999px var(--guide-shade), 0 0 0 3px var(--primary); transition: top .32s cubic-bezier(.2,.7,.2,1), left .32s cubic-bezier(.2,.7,.2,1), width .32s cubic-bezier(.2,.7,.2,1), height .32s cubic-bezier(.2,.7,.2,1); pointer-events: none; }
+.guide-shade { position: fixed; inset: 0; background: var(--guide-shade); animation: guide-fade .2s ease-out; }
 .guide-card { animation: guide-pop .24s cubic-bezier(.2,.7,.2,1); }
 @keyframes guide-fade { from { opacity: 0; } }
 @keyframes guide-pop { from { opacity: 0; translate: 0 8px; } }
