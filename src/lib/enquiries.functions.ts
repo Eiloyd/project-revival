@@ -31,7 +31,7 @@ export const submitCustomerTicket = createServerFn({ method: "POST" })
     const { limitSubmission } = await import("./submissions.server");
     await limitSubmission(data.email);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: saved, error } = await supabaseAdmin.from("customer_tickets").insert({ full_name: data.name, email: data.email, phone: data.phone, customer_reference: data.reference || null, category: data.category, priority: data.priority, subject: data.subject, description: data.description }).select("ticket_code").single();
+    const { data: saved, error } = await supabaseAdmin.from("customer_tickets").insert({ ticket_code: "", /* replaced by the database ticket-number trigger */ full_name: data.name, email: data.email, phone: data.phone, customer_reference: data.reference || null, category: data.category, priority: data.priority, subject: data.subject, description: data.description }).select("ticket_code").single();
     if (error || !saved) { const { submissionFailure } = await import("./db-errors.server"); throw submissionFailure("Your ticket could not be created. Please try again.", "insert", "customer_tickets", error ?? new Error("No row returned")); }
     return { ok: true, ticketCode: saved.ticket_code };
   });
