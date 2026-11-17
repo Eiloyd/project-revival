@@ -3430,6 +3430,7 @@ export type Database = {
         }
       }
       c_department_access: { Args: { _department: string }; Returns: boolean }
+      c_staff_name: { Args: { _uid: string }; Returns: string }
       can_view_people_profiles: { Args: never; Returns: boolean }
       claim_first_admin: { Args: never; Returns: boolean }
       consume_form_submission_limit: {
@@ -3644,6 +3645,9 @@ export type Database = {
         }
         Returns: boolean
       }
+      hr_is_manager: { Args: never; Returns: boolean }
+      hr_or_finance: { Args: never; Returns: boolean }
+      hr_staff: { Args: never; Returns: boolean }
       integration_report: {
         Args: {
           _items?: number
@@ -3654,6 +3658,11 @@ export type Database = {
         Returns: undefined
       }
       is_active_employee: { Args: { _uid: string }; Returns: boolean }
+      is_linked_volunteer: {
+        Args: { _active_only?: boolean; _uid: string }
+        Returns: boolean
+      }
+      is_staff_member: { Args: { _uid: string }; Returns: boolean }
       issue_ack_number: {
         Args: { _form: string; _state: string }
         Returns: string
@@ -3858,6 +3867,7 @@ export type Database = {
       }
       research_reverify: { Args: { _lead: string }; Returns: boolean }
       run_request_escalations: { Args: never; Returns: number }
+      support_is_manager: { Args: never; Returns: boolean }
       team_attendance: {
         Args: { _from: string; _to: string }
         Returns: {

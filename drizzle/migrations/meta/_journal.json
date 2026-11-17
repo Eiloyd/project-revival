@@ -50,6 +50,13 @@
       "when": 1794906249107,
       "tag": "0006_research_settings_support",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794906298045,
+      "tag": "0007_alerts_and_shared_helpers",
+      "breakpoints": true
     }
   ]
 }
