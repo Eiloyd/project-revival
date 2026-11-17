@@ -28,6 +28,7 @@ export const volunteerSections = [
   { key: "students", label: "My students", icon: Users },
   { key: "wallet", label: "Earnings & wallet", icon: Wallet },
   { key: "performance", label: "Performance", icon: Trophy },
+  { key: "rewards", label: "Rewards", icon: Award },
   { key: "availability", label: "Availability", icon: CalendarCheck },
   { key: "requests", label: "Absence & requests", icon: ClipboardList },
   { key: "meetings", label: "Meetings & feedback", icon: CalendarDays },

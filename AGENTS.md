@@ -33,3 +33,4 @@ use the editor.
 
 - Database changes go through the Lovable migration tool (recorded in `drizzle/migrations/`); storage buckets are created with the storage tool, never SQL. All buckets stay private and files are served by signed URLs, because the workspace blocks public buckets.
 - In PL/pgSQL triggers shared across tables, read table-specific `NEW.<column>` only inside an `IF TG_TABLE_NAME = ...` branch: conditions are not short-circuited, so a combined `AND` crashes on other tables.
+- New database work ships as a re-runnable SQL file in `database/` for the owner to apply to his own database; never apply it to Lovable Cloud, and app code must keep working when those tables or functions are absent (show a setup note instead of breaking the screen).

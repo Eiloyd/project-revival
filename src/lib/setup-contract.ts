@@ -70,6 +70,10 @@ export const expectedTables: Table[] = [
     baseline('contact_submissions', 'id:uuid name:text email:text phone:text service:text industry:text message:text status:text admin_notes:text created_at:timestamptz'),
     baseline('customer_reports', 'id:uuid report_number:text publish_date:date title:text category:text file_path:text file_name:text file_size:int4 active:bool created_at:timestamptz'),
     baseline('form_submission_limits', 'key_hash:text window_started_at:timestamptz attempts:int4'),
+    // Website telemetry and the Drive copy queue live in the database but are not declared in any SQL file this checkout keeps.
+    baseline('site_errors', 'id:bigint session_id:text? path:text kind:text name:text? message:text source:text? browser:text? device:text? resolved:boolean created_at:timestamptz'),
+    baseline('site_page_views', 'id:bigint session_id:text path:text referrer_host:text? source:text device:text? browser:text? os:text? country:text? load_ms:integer? created_at:timestamptz'),
+    baseline('uploaded_files', 'id:uuid bucket:text object_path:text section:text file_name:text file_type:text size_bytes:bigint uploaded_at:timestamptz status:text drive_file_id:text? drive_link:text? attempts:integer last_error:text copied_at:timestamptz?'),
     baseline('registration_applications', 'id:uuid application_code:text category:text full_name:text email:text phone:text details:jsonb document_path:text? document_name:text? status:text admin_notes:text created_at:timestamptz'),
     baseline('user_roles', 'id:uuid user_id:uuid role:app_role'),
     baseline('prototype_ai_access_state', 'model_id:text status_code:integer message:text blocked_at:timestamptz'),

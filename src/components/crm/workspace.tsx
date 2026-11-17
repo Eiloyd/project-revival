@@ -19,7 +19,7 @@ import { CrmClock } from './clock';
 import { ManufacturersPanel } from './manufacturers';
 import { CrmPipeline } from './pipeline';
 import { CrmEnquiryAssistant } from './enquiry-assistant';
-import { CollectionKpis, CollectionsPanel, IncentivePanel, MyBdePanel, teamOf } from './sales-money';
+import { CollectionKpis, CollectionsPanel, IncentivePanel, MyBdePanel, teamOf, volRevenue } from './sales-money';
 import { collectionTotals } from '@/lib/crm/incentives';
 import { SalesLeaderboard } from './leaderboard';
 import { CallCoachPanel } from './call-coach';
@@ -79,7 +79,7 @@ export function CrmWorkspace(){
   {title:'Sales',items:[navItem('overview'),{...navItem('my-day'),badge:d.tasks.filter(t=>t.owner_id===d.userId&&t.status==='open'&&t.due_date<=d.today).length},navItem('call-coach'),navItem('pipeline'),navItem('contacts'),navItem('manufacturers'),{...navItem('tasks'),badge:openMine},navItem('dsr'),{...navItem('collections'),badge:d.collections.filter(c=>c.status==='unverified').length},navItem('refunds')]},
   {title:'Team',items:[navItem('my-bde'),navItem('team-compare'),navItem('workload'),{...navItem('coaching'),badge:d.coaching.filter(n=>n.employee_id===d.userId&&!n.acknowledged_at).length}]},
   {title:'Service',items:[{...navItem('support'),badge:d.tickets.filter(t=>t.status!=='resolved').length}]},
-  {title:'Performance',items:[navItem('targets'),navItem('incentives'),navItem('sources')]},
+  {title:'Performance',items:[navItem('targets'),navItem('incentives'),navItem('pay'),navItem('sources')]},
   {title:'Management',items:[navItem('team'),{...navItem('inbox'),badge:d.role==='admin'?unassigned:0},navItem('ai')]},
  ].map(g=>({...g,items:g.items.filter(i=>allowedNav.some(n=>n.key===i.key))})).filter(g=>g.items.length) as ShellGroup[]).concat([{title:'My Work',items:workItems({manager:d.role==='BDM'||d.role==='admin'})}]);
  // Overview figures: only records this account may see (own, team or all for admin), from the CRM itself.
@@ -90,7 +90,7 @@ export function CrmWorkspace(){
  const teamIds=d.role==='admin'?d.members.filter(m=>m.active).map(m=>m.user_id):owners;
  const showTeam=d.role==='admin'||d.role==='BDM';
  const gaugeSet=(ids:string[],label:string)=>{const t=targetSum(ids,thisMonth);const won=wonIn(ids,thisMonth);return [
-  <TargetGauge key="v" title={`${label} verified collection`} achieved={collectionTotals(d.collections,ids,undefined,thisMonth).verified} target={t.revenue} format={money} onClick={()=>setView('collections')}/>,
+  <TargetGauge key="v" title={`${label} verified collection (incl. volunteer)`} achieved={collectionTotals(d.collections,ids,undefined,thisMonth).verified+volRevenue(d,ids,thisMonth).revenue} target={t.revenue} format={money} onClick={()=>setView('collections')}/>,
   <TargetGauge key="r" title={`${label} revenue`} achieved={won.reduce((n,l)=>n+l.amount,0)} target={t.revenue} format={money} onClick={()=>setView('targets')}/>,
   <TargetGauge key="w" title={`${label} won deals`} achieved={won.length} target={t.wins} onClick={()=>setView('targets')}/>,
   <TargetGauge key="c" title={`${label} calls`} achieved={callsIn(ids,thisMonth)} target={t.calls} onClick={()=>setView('targets')}/>,

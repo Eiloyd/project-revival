@@ -11,7 +11,7 @@ import type { getCrm } from '@/lib/crm.functions';
 import { sourceLabels, stageLabels, stages } from '@/lib/crm/rules';
 import { calculateIncentive, collectionTotals, readSlabs } from '@/lib/crm/incentives';
 import { paceStatus, previousWorkday, sourceReport, underperformanceAlerts } from '@/lib/crm/performance';
-import { money, modeLabels } from './sales-money';
+import { money, modeLabels, volRevenue } from './sales-money';
 
 type Data = Awaited<ReturnType<typeof getCrm>>;
 type NameFn = (id: string | null) => string;
@@ -204,12 +204,14 @@ export function TeamComparePanel({ d, name }: { d: Data; name: NameFn }) {
   const rows = team.map(m => {
     const id = m.user_id; const t = d.targets.find(x => x.owner_id === id && x.month.startsWith(month));
     const verified = collectionTotals(d.collections, [id], undefined, month).verified;
+    // Target pace counts volunteer-sourced revenue too (it closes the target); the incentive itself is paid on direct collection only.
+    const vol = volRevenue(d, [id], month).revenue;
     const won = d.leads.filter(l => l.owner_id === id && l.stage === 'won' && l.updated_at.startsWith(month));
     const calls = d.activities.filter(a => a.actor_id === id && a.kind === 'call' && a.created_at.startsWith(month)).length;
     const meetings = d.activities.filter(a => a.actor_id === id && a.kind === 'meeting' && a.created_at.startsWith(month)).length;
     const open = d.leads.filter(l => l.owner_id === id && !['won', 'lost'].includes(l.stage)).length;
     const overdue = d.tasks.filter(x => x.owner_id === id && x.status === 'open' && x.due_date < d.today).length;
-    const pace = paceStatus(verified, Number(t?.revenue_target ?? 0), dayOfMonth, daysInMonth);
+    const pace = paceStatus(verified + vol, Number(t?.revenue_target ?? 0), dayOfMonth, daysInMonth);
     const reports = d.reports.filter(r => r.owner_id === id && r.report_date.startsWith(month)).length;
     const att = d.attendance.find(x => x.user_id === id && x.day === d.today);
     const alerts = isCurrent ? underperformanceAlerts({ pace: pace.zone, callsToday: dayCounts(d, id, d.today).calls, overdueTasks: overdue, reportYesterday: d.reports.some(r => r.owner_id === id && r.report_date === lastWorkday), workday }) : [];

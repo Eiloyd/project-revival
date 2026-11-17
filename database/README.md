@@ -8,6 +8,7 @@
 | `update-2026-11-15-admin-controls.sql` | For databases set up **before 15 Nov 2026**: adds admin fees, payment embed codes, hero pictures per theme and the admin role for abhinav@riloyd.in. Safe to run more than once. (A fresh `schema.sql` already includes the first two parts; still run section 3 for the admin role.) |
 | `update-2026-11-15-volunteers.sql` | Volunteer programme: volunteers owned by the employee who created them, payout details, commission per form (max 10%), commission ledger, withdrawals (minimum ₹3,000, admin-only approval), tickets, notifications and private photo/KYC buckets. Run after `schema.sql`; safe to run more than once. |
 | `update-2026-11-15-remove-festive.sql` | Retires the Festive theme: deletes festive hero pictures and allows only `dark` / `light` themes. Run once on databases set up before this change. |
+| `update-2026-11-17-sales-pay-volunteer-rewards.sql` | Sales pay + volunteer rewards: daily attendance and daily wage granted only on verified collection days, the "remove your zero" reminder before 12:00 PM, volunteer revenue counted for team targets but never for direct incentive, volunteer reward schemes (Admin / BDM / BDE can launch them), fixed volunteer incentives with a monthly settlement, and the minimum withdrawal floor. Run after `schema.sql` and `update-2026-11-15-volunteers.sql`; safe to run more than once. |
 
 ## Run it (Supabase Dashboard → SQL Editor)
 

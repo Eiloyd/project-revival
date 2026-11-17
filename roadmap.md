@@ -1,3 +1,10 @@
+## Collection-linked BDE/BDM pay + volunteer rewards (17 Nov 2026)
+- [x] Rules written and tested in code: attendance/wage only on verified collection days, zero-collection reminder before 12:00 PM, volunteer revenue counts for targets at 0% incentive, no mandatory volunteer target unless a fixed incentive is assigned, ₹3,000 withdrawal floor
+- [x] Sales dashboard: "Remove your zero" banner + reminder popup, Daily wage & attendance screen, Direct BDE vs Volunteer-sourced collection breakdown, target pace now includes volunteer revenue
+- [x] Volunteer dashboard: Rewards section with live progress; My Volunteers: Reward schemes tab, fixed-incentive setting, ₹3,000 minimum on withdrawal requests
+- [ ] Owner: run `database/update-2026-11-17-sales-pay-volunteer-rewards.sql` on his own database (the screens show a setup note until then)
+- [ ] Owner: remove the leftover inactive test volunteer record `VOL-00001` (a maker-checker rule blocks deleting it from here)
+
 ## Move to new Lovable Cloud (17 Nov 2026)
 - [x] Website, admin and all department screens copied; all database tables, rules and file folders rebuilt; starter settings loaded
 - [x] Fixed: approved fee / payout / commission changes were crashing
