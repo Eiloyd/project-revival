@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { authenticateCronRequest } from "@/integrations/supabase/cron-auth";
 import { fillServerEnvAliases } from "@/lib/server-env";
 
-/** Scheduled every 15 minutes: escalates requests past their allowed hours, sends overdue reminders, and refreshes Zoho invoices every 6 hours. */
+/** Scheduled hourly (at :05): escalates requests past their allowed hours, sends overdue reminders, and refreshes Zoho invoices every 6 hours. */
 async function run({ request }: { request: Request }) {
   fillServerEnvAliases(process.env as Record<string, string | undefined>);
   const authFailure = await authenticateCronRequest(request);
