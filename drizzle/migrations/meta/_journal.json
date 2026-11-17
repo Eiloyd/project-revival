@@ -43,6 +43,13 @@
       "when": 1794906101495,
       "tag": "0005_finance_desk",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794906249107,
+      "tag": "0006_research_settings_support",
+      "breakpoints": true
     }
   ]
 }

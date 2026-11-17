@@ -109,6 +109,21 @@ export type Database = {
         }
         Relationships: []
       }
+      c_critical_write_context: {
+        Row: {
+          actor: string
+          tx: number
+        }
+        Insert: {
+          actor: string
+          tx: number
+        }
+        Update: {
+          actor?: string
+          tx?: number
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           ack_number: string
@@ -240,6 +255,54 @@ export type Database = {
           country?: string
           currency?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      critical_changes: {
+        Row: {
+          code: string
+          current: Json
+          decided_at: string | null
+          decided_by: string | null
+          id: string
+          kind: string
+          note: string
+          payload: Json
+          requested_at: string
+          requested_by: string
+          status: string
+          summary: string
+          target: string
+        }
+        Insert: {
+          code?: string
+          current?: Json
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          kind: string
+          note?: string
+          payload: Json
+          requested_at?: string
+          requested_by: string
+          status?: string
+          summary?: string
+          target: string
+        }
+        Update: {
+          code?: string
+          current?: Json
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          kind?: string
+          note?: string
+          payload?: Json
+          requested_at?: string
+          requested_by?: string
+          status?: string
+          summary?: string
+          target?: string
         }
         Relationships: []
       }
@@ -699,6 +762,63 @@ export type Database = {
           publish_date?: string
           report_number?: string
           title?: string
+        }
+        Relationships: []
+      }
+      customer_tickets: {
+        Row: {
+          assigned_to: string | null
+          category: string
+          created_at: string
+          customer_reference: string | null
+          description: string
+          email: string
+          full_name: string
+          id: string
+          phone: string
+          priority: string
+          private_notes: string
+          resolution: string
+          status: string
+          subject: string
+          ticket_code: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          category: string
+          created_at?: string
+          customer_reference?: string | null
+          description: string
+          email: string
+          full_name: string
+          id?: string
+          phone?: string
+          priority?: string
+          private_notes?: string
+          resolution?: string
+          status?: string
+          subject: string
+          ticket_code: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          category?: string
+          created_at?: string
+          customer_reference?: string | null
+          description?: string
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string
+          priority?: string
+          private_notes?: string
+          resolution?: string
+          status?: string
+          subject?: string
+          ticket_code?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1480,6 +1600,39 @@ export type Database = {
           },
         ]
       }
+      global_settings: {
+        Row: {
+          category: string
+          description: string
+          is_public: boolean
+          key: string
+          label: string
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          category?: string
+          description?: string
+          is_public?: boolean
+          key: string
+          label?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Update: {
+          category?: string
+          description?: string
+          is_public?: boolean
+          key?: string
+          label?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
       google_copy_settings: {
         Row: {
           drive_folder_id: string | null
@@ -1534,6 +1687,87 @@ export type Database = {
           theme?: string
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      integration_connections: {
+        Row: {
+          config: Json
+          connected_at: string | null
+          connected_by: string | null
+          created_at: string
+          enabled: boolean
+          last_error: string
+          last_sync_at: string | null
+          last_tested_at: string | null
+          provider: string
+          secret_cipher: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          config?: Json
+          connected_at?: string | null
+          connected_by?: string | null
+          created_at?: string
+          enabled?: boolean
+          last_error?: string
+          last_sync_at?: string | null
+          last_tested_at?: string | null
+          provider: string
+          secret_cipher?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          config?: Json
+          connected_at?: string | null
+          connected_by?: string | null
+          created_at?: string
+          enabled?: boolean
+          last_error?: string
+          last_sync_at?: string | null
+          last_tested_at?: string | null
+          provider?: string
+          secret_cipher?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      integration_sync_logs: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          id: string
+          items: number
+          message: string
+          ok: boolean
+          provider: string
+        }
+        Insert: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          items?: number
+          message?: string
+          ok: boolean
+          provider: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          items?: number
+          message?: string
+          ok?: boolean
+          provider?: string
         }
         Relationships: []
       }
@@ -2250,6 +2484,224 @@ export type Database = {
           },
         ]
       }
+      research_feedback: {
+        Row: {
+          comment: string
+          created_at: string
+          created_by: string
+          id: string
+          relevance: number
+          request_id: string
+          usefulness: number
+        }
+        Insert: {
+          comment?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          relevance: number
+          request_id: string
+          usefulness: number
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          relevance?: number
+          request_id?: string
+          usefulness?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_feedback_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: true
+            referencedRelation: "research_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      research_leads: {
+        Row: {
+          company: string
+          contact_name: string
+          created_at: string
+          created_by: string | null
+          designation: string
+          email: string
+          id: string
+          industry: string
+          location: string
+          notes: string
+          phone: string
+          updated_at: string
+          verified_at: string | null
+          verified_by: string | null
+          website: string
+        }
+        Insert: {
+          company: string
+          contact_name?: string
+          created_at?: string
+          created_by?: string | null
+          designation?: string
+          email?: string
+          id?: string
+          industry?: string
+          location?: string
+          notes?: string
+          phone?: string
+          updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          website?: string
+        }
+        Update: {
+          company?: string
+          contact_name?: string
+          created_at?: string
+          created_by?: string | null
+          designation?: string
+          email?: string
+          id?: string
+          industry?: string
+          location?: string
+          notes?: string
+          phone?: string
+          updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          website?: string
+        }
+        Relationships: []
+      }
+      research_request_leads: {
+        Row: {
+          created_at: string
+          delivered_at: string | null
+          lead_id: string
+          request_id: string
+          reused: boolean
+        }
+        Insert: {
+          created_at?: string
+          delivered_at?: string | null
+          lead_id: string
+          request_id: string
+          reused?: boolean
+        }
+        Update: {
+          created_at?: string
+          delivered_at?: string | null
+          lead_id?: string
+          request_id?: string
+          reused?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_request_leads_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "research_leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "research_request_leads_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "research_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      research_requests: {
+        Row: {
+          code: string
+          created_at: string
+          criteria: string
+          department: string
+          difficulty: string
+          due_date: string
+          id: string
+          industry: string
+          location: string
+          quantity: number
+          requested_by: string
+          requester_name: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string
+          created_at?: string
+          criteria?: string
+          department?: string
+          difficulty: string
+          due_date: string
+          id?: string
+          industry?: string
+          location?: string
+          quantity: number
+          requested_by?: string
+          requester_name?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          criteria?: string
+          department?: string
+          difficulty?: string
+          due_date?: string
+          id?: string
+          industry?: string
+          location?: string
+          quantity?: number
+          requested_by?: string
+          requester_name?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      settings_change_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_name: string
+          area: string
+          changes: Json
+          created_at: string
+          id: string
+          item: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_name?: string
+          area: string
+          changes?: Json
+          created_at?: string
+          id?: string
+          item: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_name?: string
+          area?: string
+          changes?: Json
+          created_at?: string
+          id?: string
+          item?: string
+        }
+        Relationships: []
+      }
       sheet_mirror_queue: {
         Row: {
           attempts: number
@@ -2919,6 +3371,19 @@ export type Database = {
         Args: { _rows: Json; _table: string }
         Returns: Json
       }
+      admin_integration_status: {
+        Args: never
+        Returns: {
+          config: Json
+          enabled: boolean
+          has_secret: boolean
+          last_error: string
+          last_sync_at: string
+          last_tested_at: string
+          provider: string
+          status: string
+        }[]
+      }
       admin_save_employee: {
         Args: {
           _code: string
@@ -2964,6 +3429,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      c_department_access: { Args: { _department: string }; Returns: boolean }
       can_view_people_profiles: { Args: never; Returns: boolean }
       claim_first_admin: { Args: never; Returns: boolean }
       consume_form_submission_limit: {
@@ -2978,6 +3444,19 @@ export type Database = {
           leads: number
           submitted: number
         }[]
+      }
+      critical_change_decide: {
+        Args: { _approve: boolean; _id: string; _note?: string }
+        Returns: boolean
+      }
+      critical_change_propose: {
+        Args: {
+          _kind: string
+          _payload: Json
+          _summary: string
+          _target: string
+        }
+        Returns: string
       }
       crm_assign_lead: {
         Args: { _lead: string; _owner: string }
@@ -3165,6 +3644,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      integration_report: {
+        Args: {
+          _items?: number
+          _message?: string
+          _ok: boolean
+          _provider: string
+        }
+        Returns: undefined
+      }
       is_active_employee: { Args: { _uid: string }; Returns: boolean }
       issue_ack_number: {
         Args: { _form: string; _state: string }
@@ -3346,6 +3834,29 @@ export type Database = {
         Args: { _include_documents?: boolean }
         Returns: number
       }
+      research_add_lead: {
+        Args: { _lead: Json; _request: string; _verified: boolean }
+        Returns: string
+      }
+      research_cancel: { Args: { _request: string }; Returns: boolean }
+      research_deliver: { Args: { _request: string }; Returns: number }
+      research_request_create: {
+        Args: {
+          _criteria: string
+          _department: string
+          _difficulty: string
+          _industry: string
+          _location: string
+          _quantity: number
+          _title: string
+        }
+        Returns: string
+      }
+      research_reuse_leads: {
+        Args: { _limit: number; _request: string }
+        Returns: number
+      }
+      research_reverify: { Args: { _lead: string }; Returns: boolean }
       run_request_escalations: { Args: never; Returns: number }
       team_attendance: {
         Args: { _from: string; _to: string }
