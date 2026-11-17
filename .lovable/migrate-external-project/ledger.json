@@ -1,0 +1,16 @@
+[
+ {"capability":"code","source":"project-migration-studio-main.zip (TanStack Start: RILOYD website, admin, CRM, HR/HRMS, finance, ventures, volunteers, support, research)","outcome":"migrate","status":"in_progress","next_action":"copy source into project, keep target TanStack versions"},
+ {"capability":"schema","source":"database/schema.sql, update-2026-11-15-*.sql, rebuild/A-C, drizzle 0000-0004; 57 tables + 75 functions only in generated types","outcome":"migrate","status":"in_progress","next_action":"recreate in Lovable Cloud"},
+ {"capability":"records","source":"previous Lovable Cloud backend (no export in archive)","outcome":"migrate","status":"pending","next_action":"owner sends per-table CSV/JSON exports, or says skip"},
+ {"capability":"starter settings","source":"seed.sql, restore-starter.sql","outcome":"migrate","status":"in_progress","next_action":"seed counters and starter settings"},
+ {"capability":"auth identities","source":"previous backend auth users (not in archive)","outcome":"migrate","status":"pending","next_action":"owner sends user export (id, email); imported users verify email and set new password on first visit"},
+ {"capability":"authorization","source":"user_roles/has_role, crm_memberships, education_staff_access, department_staff, volunteers ownership, first-admin claim","outcome":"migrate","status":"in_progress","next_action":"recreate RLS and role functions"},
+ {"capability":"file bytes","source":"private buckets (registration-documents, customer-reports, country-logos, hero-images, hr-resumes, venture-docs, request-files, finance-proofs, volunteer photo/KYC)","outcome":"migrate","status":"pending","next_action":"recreate buckets; old files need an export"},
+ {"capability":"AI","source":"Lovable AI Gateway (LOVABLE_API_KEY)","outcome":"preserve","status":"pending","next_action":"enable gateway key"},
+ {"capability":"public endpoints","source":"/api/public/* (education, meta-leads, prototype-assessment, student-project-ideas, young-market-plan, track, jobs), sitemap.xml","outcome":"preserve","status":"pending","next_action":"copy routes"},
+ {"capability":"external providers","source":"Google Sheets/Drive, Zoho embeds, Meta Lead Ads","outcome":"preserve","status":"pending","next_action":"request keys securely before live checks"},
+ {"capability":"schedules","source":"/api/public/jobs: google-sheet-copy, education-sheet-sync, work-escalations (LOVABLE_CRON_SECRET)","outcome":"preserve","status":"pending","next_action":"recreate schedules"},
+ {"capability":"secrets","source":".env (excluded); encryption keys, provider keys","outcome":"migrate","status":"pending","next_action":"add through secure form"},
+ {"capability":"cutover","source":"-","outcome":"pending","status":"pending","next_action":"publish; reconnect riloyd.in; update Meta webhook URL"},
+ {"capability":"verification","source":"-","outcome":"verify","status":"pending","next_action":"build, tests, key routes, signed-in flows"}
+]
