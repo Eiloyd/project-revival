@@ -85,6 +85,13 @@
       "when": 1794906968560,
       "tag": "0011_ventures_funding_manpower",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1794907035298,
+      "tag": "0012_settings_access_drive_copy_analytics",
+      "breakpoints": true
     }
   ]
 }

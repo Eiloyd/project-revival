@@ -5199,6 +5199,90 @@ export type Database = {
         }
         Relationships: []
       }
+      site_errors: {
+        Row: {
+          browser: string | null
+          created_at: string
+          device: string | null
+          id: number
+          kind: string
+          message: string
+          name: string | null
+          path: string
+          resolved: boolean
+          session_id: string | null
+          source: string | null
+        }
+        Insert: {
+          browser?: string | null
+          created_at?: string
+          device?: string | null
+          id?: never
+          kind: string
+          message: string
+          name?: string | null
+          path: string
+          resolved?: boolean
+          session_id?: string | null
+          source?: string | null
+        }
+        Update: {
+          browser?: string | null
+          created_at?: string
+          device?: string | null
+          id?: never
+          kind?: string
+          message?: string
+          name?: string | null
+          path?: string
+          resolved?: boolean
+          session_id?: string | null
+          source?: string | null
+        }
+        Relationships: []
+      }
+      site_page_views: {
+        Row: {
+          browser: string | null
+          country: string | null
+          created_at: string
+          device: string | null
+          id: number
+          load_ms: number | null
+          os: string | null
+          path: string
+          referrer_host: string | null
+          session_id: string
+          source: string
+        }
+        Insert: {
+          browser?: string | null
+          country?: string | null
+          created_at?: string
+          device?: string | null
+          id?: never
+          load_ms?: number | null
+          os?: string | null
+          path: string
+          referrer_host?: string | null
+          session_id: string
+          source?: string
+        }
+        Update: {
+          browser?: string | null
+          country?: string | null
+          created_at?: string
+          device?: string | null
+          id?: never
+          load_ms?: number | null
+          os?: string | null
+          path?: string
+          referrer_host?: string | null
+          session_id?: string
+          source?: string
+        }
+        Relationships: []
+      }
       support_kb_articles: {
         Row: {
           body: string
@@ -5292,6 +5376,57 @@ export type Database = {
           old_wins?: number | null
           owner_id?: string
           reason?: string
+        }
+        Relationships: []
+      }
+      uploaded_files: {
+        Row: {
+          attempts: number
+          bucket: string
+          copied_at: string | null
+          drive_file_id: string | null
+          drive_link: string | null
+          file_name: string
+          file_type: string
+          id: string
+          last_error: string
+          object_path: string
+          section: string
+          size_bytes: number
+          status: string
+          uploaded_at: string
+        }
+        Insert: {
+          attempts?: number
+          bucket: string
+          copied_at?: string | null
+          drive_file_id?: string | null
+          drive_link?: string | null
+          file_name: string
+          file_type?: string
+          id?: string
+          last_error?: string
+          object_path: string
+          section: string
+          size_bytes?: number
+          status?: string
+          uploaded_at?: string
+        }
+        Update: {
+          attempts?: number
+          bucket?: string
+          copied_at?: string | null
+          drive_file_id?: string | null
+          drive_link?: string | null
+          file_name?: string
+          file_type?: string
+          id?: string
+          last_error?: string
+          object_path?: string
+          section?: string
+          size_bytes?: number
+          status?: string
+          uploaded_at?: string
         }
         Relationships: []
       }
@@ -7039,6 +7174,7 @@ export type Database = {
           photo_url: string
         }[]
       }
+      queue_new_uploaded_files: { Args: never; Returns: number }
       request_act: {
         Args: {
           _account_id?: string
