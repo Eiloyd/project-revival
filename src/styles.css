@@ -699,3 +699,4 @@ a, button, [role="button"], summary, label { -webkit-tap-highlight-color: transp
 .help-card:hover { border-color: color-mix(in oklab, var(--primary) 55%, var(--border)); transform: translateY(-2px); box-shadow: 0 10px 30px color-mix(in oklab, var(--foreground) 8%, transparent); }
 .help-step { counter-increment: help-step; }
 .help-step::before { content: counter(help-step); display: grid; place-items: center; flex-shrink: 0; width: 1.75rem; height: 1.75rem; border-radius: 9999px; background: var(--primary); color: var(--primary-foreground); font-size: .8rem; font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; } }
