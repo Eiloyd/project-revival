@@ -124,6 +124,36 @@ export type Database = {
         }
         Relationships: []
       }
+      company_policies: {
+        Row: {
+          active: boolean
+          body: string
+          created_by: string | null
+          id: string
+          title: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          active?: boolean
+          body: string
+          created_by?: string | null
+          id?: string
+          title: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          active?: boolean
+          body?: string
+          created_by?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           ack_number: string
@@ -1131,6 +1161,9 @@ export type Database = {
       }
       employees: {
         Row: {
+          card_issued_at: string | null
+          card_reprints: number
+          card_status: string
           code_hash: string
           created_at: string
           department: string
@@ -1138,12 +1171,17 @@ export type Database = {
           employee_id: string
           full_name: string
           id: string
+          joining_date: string | null
           photo_url: string | null
+          public_listing: boolean
           status: string
           updated_at: string
           valid_until: string | null
         }
         Insert: {
+          card_issued_at?: string | null
+          card_reprints?: number
+          card_status?: string
           code_hash: string
           created_at?: string
           department: string
@@ -1151,12 +1189,17 @@ export type Database = {
           employee_id: string
           full_name: string
           id?: string
+          joining_date?: string | null
           photo_url?: string | null
+          public_listing?: boolean
           status?: string
           updated_at?: string
           valid_until?: string | null
         }
         Update: {
+          card_issued_at?: string | null
+          card_reprints?: number
+          card_status?: string
           code_hash?: string
           created_at?: string
           department?: string
@@ -1164,7 +1207,9 @@ export type Database = {
           employee_id?: string
           full_name?: string
           id?: string
+          joining_date?: string | null
           photo_url?: string | null
+          public_listing?: boolean
           status?: string
           updated_at?: string
           valid_until?: string | null
@@ -1690,6 +1735,562 @@ export type Database = {
         }
         Relationships: []
       }
+      hr_advances: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          id: string
+          monthly_recovery: number
+          note: string
+          request_id: string | null
+          start_month: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          monthly_recovery: number
+          note?: string
+          request_id?: string | null
+          start_month: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          monthly_recovery?: number
+          note?: string
+          request_id?: string | null
+          start_month?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_advances_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: true
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_appraisals: {
+        Row: {
+          created_at: string
+          id: string
+          improvements: string
+          increment_percent: number
+          kpi_score: number | null
+          period: string
+          rating: number | null
+          reviewer_id: string | null
+          status: string
+          strengths: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          improvements?: string
+          increment_percent?: number
+          kpi_score?: number | null
+          period: string
+          rating?: number | null
+          reviewer_id?: string | null
+          status?: string
+          strengths?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          improvements?: string
+          increment_percent?: number
+          kpi_score?: number | null
+          period?: string
+          rating?: number | null
+          reviewer_id?: string | null
+          status?: string
+          strengths?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      hr_attendance_corrections: {
+        Row: {
+          check_in: string | null
+          check_out: string | null
+          created_at: string
+          day: string
+          id: string
+          reason: string
+          requested_status: string
+          review_note: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          check_in?: string | null
+          check_out?: string | null
+          created_at?: string
+          day: string
+          id?: string
+          reason: string
+          requested_status: string
+          review_note?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id?: string
+        }
+        Update: {
+          check_in?: string | null
+          check_out?: string | null
+          created_at?: string
+          day?: string
+          id?: string
+          reason?: string
+          requested_status?: string
+          review_note?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      hr_employee_master: {
+        Row: {
+          bank_last4: string
+          department: string
+          designation: string
+          emergency_contact: string
+          employee_code: string
+          employee_record_id: string | null
+          employment_type: string
+          full_name: string
+          joining_date: string | null
+          pan_last4: string
+          reporting_manager: string | null
+          shift: string
+          status: string
+          updated_at: string
+          user_id: string
+          work_location: string
+        }
+        Insert: {
+          bank_last4?: string
+          department?: string
+          designation?: string
+          emergency_contact?: string
+          employee_code: string
+          employee_record_id?: string | null
+          employment_type?: string
+          full_name: string
+          joining_date?: string | null
+          pan_last4?: string
+          reporting_manager?: string | null
+          shift?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          work_location?: string
+        }
+        Update: {
+          bank_last4?: string
+          department?: string
+          designation?: string
+          emergency_contact?: string
+          employee_code?: string
+          employee_record_id?: string | null
+          employment_type?: string
+          full_name?: string
+          joining_date?: string | null
+          pan_last4?: string
+          reporting_manager?: string | null
+          shift?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          work_location?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_employee_master_employee_record_id_fkey"
+            columns: ["employee_record_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_exits: {
+        Row: {
+          assets_returned: boolean
+          fnf_amount: number | null
+          id: string
+          last_working_day: string | null
+          leave_encashment: number
+          other_dues: number
+          pending_salary: number
+          reason: string
+          recoveries: number
+          resignation_date: string
+          settled_at: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assets_returned?: boolean
+          fnf_amount?: number | null
+          id?: string
+          last_working_day?: string | null
+          leave_encashment?: number
+          other_dues?: number
+          pending_salary?: number
+          reason?: string
+          recoveries?: number
+          resignation_date?: string
+          settled_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assets_returned?: boolean
+          fnf_amount?: number | null
+          id?: string
+          last_working_day?: string | null
+          leave_encashment?: number
+          other_dues?: number
+          pending_salary?: number
+          reason?: string
+          recoveries?: number
+          resignation_date?: string
+          settled_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      hr_grievances: {
+        Row: {
+          anonymous: boolean
+          category: string
+          created_at: string
+          details: string
+          hr_response: string | null
+          id: string
+          status: string
+          submitted_by: string | null
+          tracking_code: string
+          updated_at: string
+        }
+        Insert: {
+          anonymous?: boolean
+          category: string
+          created_at?: string
+          details: string
+          hr_response?: string | null
+          id?: string
+          status?: string
+          submitted_by?: string | null
+          tracking_code: string
+          updated_at?: string
+        }
+        Update: {
+          anonymous?: boolean
+          category?: string
+          created_at?: string
+          details?: string
+          hr_response?: string | null
+          id?: string
+          status?: string
+          submitted_by?: string | null
+          tracking_code?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      hr_holidays: {
+        Row: {
+          created_at: string
+          day: string
+          kind: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          kind?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          kind?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      hr_payslip_items: {
+        Row: {
+          advance_id: string | null
+          amount: number
+          created_at: string
+          id: string
+          kind: string
+          label: string
+          payslip_id: string
+          request_id: string | null
+          user_id: string
+        }
+        Insert: {
+          advance_id?: string | null
+          amount: number
+          created_at?: string
+          id?: string
+          kind: string
+          label?: string
+          payslip_id: string
+          request_id?: string | null
+          user_id: string
+        }
+        Update: {
+          advance_id?: string | null
+          amount?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          label?: string
+          payslip_id?: string
+          request_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_payslip_items_advance_id_fkey"
+            columns: ["advance_id"]
+            isOneToOne: false
+            referencedRelation: "hr_advances"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_payslip_items_payslip_id_fkey"
+            columns: ["payslip_id"]
+            isOneToOne: false
+            referencedRelation: "hr_payslips"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_payslip_items_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_payslips: {
+        Row: {
+          advance_recovery: number
+          allowances: number
+          basic: number
+          created_by: string | null
+          deductions: number
+          gross: number
+          hra: number
+          id: string
+          incentive: number
+          lop_amount: number
+          lop_days: number
+          month: string
+          net: number
+          paid_ref: string
+          reimbursement: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          advance_recovery?: number
+          allowances?: number
+          basic?: number
+          created_by?: string | null
+          deductions?: number
+          gross?: number
+          hra?: number
+          id?: string
+          incentive?: number
+          lop_amount?: number
+          lop_days?: number
+          month: string
+          net?: number
+          paid_ref?: string
+          reimbursement?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          advance_recovery?: number
+          allowances?: number
+          basic?: number
+          created_by?: string | null
+          deductions?: number
+          gross?: number
+          hra?: number
+          id?: string
+          incentive?: number
+          lop_amount?: number
+          lop_days?: number
+          month?: string
+          net?: number
+          paid_ref?: string
+          reimbursement?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      hr_roster: {
+        Row: {
+          day: string
+          note: string
+          shift_code: string
+          updated_at: string
+          updated_by: string | null
+          user_id: string
+        }
+        Insert: {
+          day: string
+          note?: string
+          shift_code: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id: string
+        }
+        Update: {
+          day?: string
+          note?: string
+          shift_code?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_roster_shift_code_fkey"
+            columns: ["shift_code"]
+            isOneToOne: false
+            referencedRelation: "hr_shifts"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      hr_salary_structures: {
+        Row: {
+          allowances: number
+          basic: number
+          deductions: number
+          effective_from: string
+          hra: number
+          monthly_gross: number
+          note: string
+          updated_at: string
+          updated_by: string | null
+          user_id: string
+        }
+        Insert: {
+          allowances?: number
+          basic?: number
+          deductions?: number
+          effective_from?: string
+          hra?: number
+          monthly_gross?: number
+          note?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id: string
+        }
+        Update: {
+          allowances?: number
+          basic?: number
+          deductions?: number
+          effective_from?: string
+          hra?: number
+          monthly_gross?: number
+          note?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      hr_settings: {
+        Row: {
+          card_color: string
+          card_footer: string
+          id: boolean
+          updated_at: string
+        }
+        Insert: {
+          card_color?: string
+          card_footer?: string
+          id?: boolean
+          updated_at?: string
+        }
+        Update: {
+          card_color?: string
+          card_footer?: string
+          id?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      hr_shifts: {
+        Row: {
+          active: boolean
+          code: string
+          end_time: string | null
+          is_off: boolean
+          name: string
+          sort_order: number
+          start_time: string | null
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          end_time?: string | null
+          is_off?: boolean
+          name: string
+          sort_order?: number
+          start_time?: string | null
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          end_time?: string | null
+          is_off?: boolean
+          name?: string
+          sort_order?: number
+          start_time?: string | null
+        }
+        Relationships: []
+      }
       integration_connections: {
         Row: {
           config: Json
@@ -2005,6 +2606,38 @@ export type Database = {
             columns: ["source_application_id"]
             isOneToOne: true
             referencedRelation: "registration_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      policy_acknowledgements: {
+        Row: {
+          acknowledged_at: string
+          id: string
+          policy_id: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          acknowledged_at?: string
+          id?: string
+          policy_id: string
+          user_id?: string
+          version: number
+        }
+        Update: {
+          acknowledged_at?: string
+          id?: string
+          policy_id?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "policy_acknowledgements_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "company_policies"
             referencedColumns: ["id"]
           },
         ]
@@ -3154,6 +3787,7 @@ export type Database = {
           payout_masked: string
           payout_method: string | null
           photo_path: string | null
+          public_listing: boolean
           qualification: string
           referral_code: string
           state: string
@@ -3182,6 +3816,7 @@ export type Database = {
           payout_masked?: string
           payout_method?: string | null
           photo_path?: string | null
+          public_listing?: boolean
           qualification?: string
           referral_code?: string
           state?: string
@@ -3210,6 +3845,7 @@ export type Database = {
           payout_masked?: string
           payout_method?: string | null
           photo_path?: string | null
+          public_listing?: boolean
           qualification?: string
           referral_code?: string
           state?: string
@@ -3638,6 +4274,18 @@ export type Database = {
         }[]
       }
       first_admin_setup_status: { Args: never; Returns: string }
+      grievance_status: {
+        Args: { _code: string }
+        Returns: {
+          hr_response: string
+          status: string
+          updated_at: string
+        }[]
+      }
+      grievance_submit: {
+        Args: { _anonymous: boolean; _category: string; _details: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -3645,8 +4293,87 @@ export type Database = {
         }
         Returns: boolean
       }
+      hr_advance_balances: {
+        Args: never
+        Returns: {
+          amount: number
+          balance: number
+          created_at: string
+          id: string
+          monthly_recovery: number
+          note: string
+          recovered: number
+          request_id: string
+          start_month: string
+          status: string
+          user_id: string
+        }[]
+      }
+      hr_advance_cancel: {
+        Args: { _id: string; _reason: string }
+        Returns: undefined
+      }
+      hr_advance_plan: {
+        Args: {
+          _amount: number
+          _monthly: number
+          _note?: string
+          _request?: string
+          _start: string
+          _user: string
+        }
+        Returns: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          id: string
+          monthly_recovery: number
+          note: string
+          request_id: string | null
+          start_month: string
+          status: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "hr_advances"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      hr_correction_review: {
+        Args: { _approve: boolean; _id: string; _note?: string }
+        Returns: undefined
+      }
+      hr_generate_payroll: { Args: { _month: string }; Returns: number }
       hr_is_manager: { Args: never; Returns: boolean }
       hr_or_finance: { Args: never; Returns: boolean }
+      hr_people_overview: {
+        Args: { _month?: string }
+        Returns: {
+          absent: number
+          deductions: number
+          departments: string
+          designation: string
+          employee_code: string
+          full_name: string
+          half_days: number
+          leave_days: number
+          manager_name: string
+          marked_days: number
+          monthly_gross: number
+          net_pay: number
+          plan_active: boolean
+          plan_slabs: Json
+          present: number
+          revenue_target: number
+          team_role: string
+          unverified_revenue: number
+          user_id: string
+          verified_revenue: number
+          wfh: number
+        }[]
+      }
       hr_staff: { Args: never; Returns: boolean }
       integration_report: {
         Args: {
@@ -3737,9 +4464,35 @@ export type Database = {
         }
       }
       my_dashboards: { Args: never; Returns: string[] }
+      my_id_card: {
+        Args: never
+        Returns: {
+          card_color: string
+          card_footer: string
+          department: string
+          designation: string
+          employee_id: string
+          full_name: string
+          joining_date: string
+          photo_url: string
+          valid_until: string
+        }[]
+      }
       notifications_mark_read: { Args: { _id?: string }; Returns: undefined }
       people_profile_safe_text: { Args: { _value: string }; Returns: string }
       person_name: { Args: { _uid: string }; Returns: string }
+      public_team_directory: {
+        Args: never
+        Returns: {
+          department: string
+          designation: string
+          full_name: string
+          kind: string
+          location: string
+          member_id: string
+          photo_url: string
+        }[]
+      }
       request_act: {
         Args: {
           _account_id?: string
