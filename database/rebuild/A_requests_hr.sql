@@ -16,7 +16,7 @@ REVOKE ALL ON FUNCTION public._work_department(text) FROM PUBLIC, anon, authenti
 GRANT EXECUTE ON FUNCTION public._work_department(text) TO authenticated, service_role;
 
 CREATE OR REPLACE FUNCTION public._work_manager(_uid uuid) RETURNS uuid LANGUAGE sql SECURITY DEFINER SET search_path = public AS $fn$
-SELECT coalesce((SELECT manager_id FROM crm_memberships WHERE user_id=_uid AND active),(SELECT u.id FROM volunteers v JOIN auth.users u ON u.id::text=v.employee_id WHERE v.user_id=_uid LIMIT 1)) WHERE auth.uid() IS NOT NULL
+SELECT coalesce((SELECT manager_id FROM crm_memberships WHERE user_id=_uid AND active),(SELECT u.id FROM volunteers v JOIN auth.users u ON u.id=v.employee_id WHERE v.user_id=_uid LIMIT 1)) WHERE auth.uid() IS NOT NULL
 $fn$;
 REVOKE ALL ON FUNCTION public._work_manager(uuid) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public._work_manager(uuid) TO authenticated, service_role;

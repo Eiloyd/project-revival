@@ -176,12 +176,12 @@ BEGIN
  IF NOT FOUND OR l.status='reconciled' THEN RAISE EXCEPTION 'Line not found or locked'; END IF;
  IF _action='match' THEN
   SELECT * INTO t FROM public.fin_transactions WHERE id=_txn FOR UPDATE;
-  IF NOT FOUND OR t.status NOT IN ('recorded','verified') OR t.account_id IS DISTINCT FROM l.account_id OR t.amount<>abs(l.amount) OR t.direction<>CASE WHEN l.amount>0 THEN 'in' ELSE 'out' END THEN RAISE EXCEPTION 'Entry does not match account, amount or direction'; END IF;
+  IF NOT FOUND OR t.status NOT IN ('recorded','verified') OR t.account_id IS DISTINCT FROM l.account_id OR t.amount<>abs(l.amount) OR t.direction<>(CASE WHEN l.amount>0 THEN 'in' ELSE 'out' END) THEN RAISE EXCEPTION 'Entry does not match account, amount or direction'; END IF;
   UPDATE public.fin_bank_lines SET transaction_id=_txn,status='matched',note=coalesce(_note,'') WHERE id=_line;
  ELSIF _action='reconcile' THEN
   IF l.status<>'matched' THEN RAISE EXCEPTION 'Match the line first'; END IF;
   SELECT * INTO t FROM public.fin_transactions WHERE id=l.transaction_id FOR UPDATE;
-  IF t.status<>'verified' OR t.account_id IS DISTINCT FROM l.account_id OR t.amount<>abs(l.amount) OR t.direction<>CASE WHEN l.amount>0 THEN 'in' ELSE 'out' END THEN RAISE EXCEPTION 'Matched entry must be verified and consistent'; END IF;
+  IF t.status<>'verified' OR t.account_id IS DISTINCT FROM l.account_id OR t.amount<>abs(l.amount) OR t.direction<>(CASE WHEN l.amount>0 THEN 'in' ELSE 'out' END) THEN RAISE EXCEPTION 'Matched entry must be verified and consistent'; END IF;
   UPDATE public.fin_transactions SET status='reconciled',reconciled_by=auth.uid(),reconciled_at=now() WHERE id=t.id;
   UPDATE public.fin_bank_lines SET status='reconciled',reconciled_by=auth.uid(),reconciled_at=now() WHERE id=_line;
  ELSIF _action='unmatch' THEN
