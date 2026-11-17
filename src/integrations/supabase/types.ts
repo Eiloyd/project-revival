@@ -291,6 +291,71 @@ export type Database = {
           },
         ]
       }
+      crm_collections: {
+        Row: {
+          amount: number
+          code: string
+          collected_on: string
+          created_at: string
+          id: string
+          lead_id: string | null
+          mode: string
+          note: string
+          owner_id: string
+          payer_name: string
+          recorded_by: string
+          reference: string
+          status: string
+          verified_at: string | null
+          verified_by: string | null
+          verify_note: string
+        }
+        Insert: {
+          amount: number
+          code?: string
+          collected_on: string
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          mode: string
+          note?: string
+          owner_id: string
+          payer_name?: string
+          recorded_by?: string
+          reference?: string
+          status?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          verify_note?: string
+        }
+        Update: {
+          amount?: number
+          code?: string
+          collected_on?: string
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          mode?: string
+          note?: string
+          owner_id?: string
+          payer_name?: string
+          recorded_by?: string
+          reference?: string
+          status?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          verify_note?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_collections_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "crm_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crm_customers: {
         Row: {
           acknowledgement: string | null
@@ -364,6 +429,30 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      crm_incentive_plans: {
+        Row: {
+          active: boolean
+          role: string
+          slabs: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          active?: boolean
+          role: string
+          slabs?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          active?: boolean
+          role?: string
+          slabs?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       crm_leads: {
         Row: {
@@ -959,6 +1048,364 @@ export type Database = {
           status?: string
           updated_at?: string
           valid_until?: string | null
+        }
+        Relationships: []
+      }
+      fin_accounts: {
+        Row: {
+          account_last4: string
+          active: boolean
+          bank_name: string
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          low_balance_alert: number
+          name: string
+          opening_balance: number
+          opening_date: string
+        }
+        Insert: {
+          account_last4?: string
+          active?: boolean
+          bank_name?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          low_balance_alert?: number
+          name: string
+          opening_balance?: number
+          opening_date?: string
+        }
+        Update: {
+          account_last4?: string
+          active?: boolean
+          bank_name?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          low_balance_alert?: number
+          name?: string
+          opening_balance?: number
+          opening_date?: string
+        }
+        Relationships: []
+      }
+      fin_bank_lines: {
+        Row: {
+          account_id: string
+          amount: number
+          created_at: string
+          description: string
+          id: string
+          imported_by: string | null
+          line_date: string
+          note: string
+          reconciled_at: string | null
+          reconciled_by: string | null
+          ref: string
+          status: string
+          transaction_id: string | null
+        }
+        Insert: {
+          account_id: string
+          amount: number
+          created_at?: string
+          description?: string
+          id?: string
+          imported_by?: string | null
+          line_date: string
+          note?: string
+          reconciled_at?: string | null
+          reconciled_by?: string | null
+          ref?: string
+          status?: string
+          transaction_id?: string | null
+        }
+        Update: {
+          account_id?: string
+          amount?: number
+          created_at?: string
+          description?: string
+          id?: string
+          imported_by?: string | null
+          line_date?: string
+          note?: string
+          reconciled_at?: string | null
+          reconciled_by?: string | null
+          ref?: string
+          status?: string
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fin_bank_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "fin_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fin_bank_lines_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "fin_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fin_budgets: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          created_by: string | null
+          department: string
+          id: string
+          month: string
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string
+          created_by?: string | null
+          department?: string
+          id?: string
+          month: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          department?: string
+          id?: string
+          month?: string
+        }
+        Relationships: []
+      }
+      fin_dues: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          description: string
+          direction: string
+          due_date: string
+          hold_status: string
+          id: string
+          invoice_ref: string
+          next_follow_up: string | null
+          party_id: string | null
+          party_name: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          direction: string
+          due_date: string
+          hold_status?: string
+          id?: string
+          invoice_ref?: string
+          next_follow_up?: string | null
+          party_id?: string | null
+          party_name?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          direction?: string
+          due_date?: string
+          hold_status?: string
+          id?: string
+          invoice_ref?: string
+          next_follow_up?: string | null
+          party_id?: string | null
+          party_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fin_dues_party_id_fkey"
+            columns: ["party_id"]
+            isOneToOne: false
+            referencedRelation: "fin_vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fin_transactions: {
+        Row: {
+          account_id: string | null
+          amount: number
+          category: string
+          corrects_id: string | null
+          created_at: string
+          created_by: string | null
+          department: string
+          description: string
+          direction: string
+          due_id: string | null
+          id: string
+          mode: string
+          party_id: string | null
+          party_name: string
+          proof_path: string
+          reconciled_at: string | null
+          reconciled_by: string | null
+          ref: string
+          source: string
+          source_id: string | null
+          status: string
+          txn_date: string
+          type: string
+          utr: string
+          verified_at: string | null
+          verified_by: string | null
+          void_reason: string
+          voided_at: string | null
+          voided_by: string | null
+        }
+        Insert: {
+          account_id?: string | null
+          amount: number
+          category?: string
+          corrects_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          department?: string
+          description?: string
+          direction: string
+          due_id?: string | null
+          id?: string
+          mode?: string
+          party_id?: string | null
+          party_name?: string
+          proof_path?: string
+          reconciled_at?: string | null
+          reconciled_by?: string | null
+          ref?: string
+          source?: string
+          source_id?: string | null
+          status?: string
+          txn_date?: string
+          type: string
+          utr?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          void_reason?: string
+          voided_at?: string | null
+          voided_by?: string | null
+        }
+        Update: {
+          account_id?: string | null
+          amount?: number
+          category?: string
+          corrects_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          department?: string
+          description?: string
+          direction?: string
+          due_id?: string | null
+          id?: string
+          mode?: string
+          party_id?: string | null
+          party_name?: string
+          proof_path?: string
+          reconciled_at?: string | null
+          reconciled_by?: string | null
+          ref?: string
+          source?: string
+          source_id?: string | null
+          status?: string
+          txn_date?: string
+          type?: string
+          utr?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          void_reason?: string
+          voided_at?: string | null
+          voided_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fin_transactions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "fin_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fin_transactions_corrects_id_fkey"
+            columns: ["corrects_id"]
+            isOneToOne: false
+            referencedRelation: "fin_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fin_transactions_due_id_fkey"
+            columns: ["due_id"]
+            isOneToOne: false
+            referencedRelation: "fin_dues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fin_transactions_party_id_fkey"
+            columns: ["party_id"]
+            isOneToOne: false
+            referencedRelation: "fin_vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fin_vendors: {
+        Row: {
+          active: boolean
+          bank_last4: string
+          contact_name: string
+          created_at: string
+          created_by: string | null
+          email: string
+          gstin: string
+          id: string
+          kind: string
+          name: string
+          notes: string
+          phone: string
+        }
+        Insert: {
+          active?: boolean
+          bank_last4?: string
+          contact_name?: string
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          gstin?: string
+          id?: string
+          kind?: string
+          name: string
+          notes?: string
+          phone?: string
+        }
+        Update: {
+          active?: boolean
+          bank_last4?: string
+          contact_name?: string
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          gstin?: string
+          id?: string
+          kind?: string
+          name?: string
+          notes?: string
+          phone?: string
         }
         Relationships: []
       }
@@ -2173,12 +2620,15 @@ export type Database = {
           paid_at: string | null
           payout_masked: string
           processed_at: string | null
+          proof_path: string | null
           rejection_reason: string
           request_number: string
           requested_at: string
           status: string
           transaction_id: string
           updated_by: string | null
+          verified_at: string | null
+          verified_by: string | null
           volunteer_id: string
         }
         Insert: {
@@ -2190,12 +2640,15 @@ export type Database = {
           paid_at?: string | null
           payout_masked?: string
           processed_at?: string | null
+          proof_path?: string | null
           rejection_reason?: string
           request_number?: string
           requested_at?: string
           status?: string
           transaction_id?: string
           updated_by?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
           volunteer_id: string
         }
         Update: {
@@ -2207,12 +2660,15 @@ export type Database = {
           paid_at?: string | null
           payout_masked?: string
           processed_at?: string | null
+          proof_path?: string | null
           rejection_reason?: string
           request_number?: string
           requested_at?: string
           status?: string
           transaction_id?: string
           updated_by?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
           volunteer_id?: string
         }
         Relationships: [
@@ -2389,6 +2845,48 @@ export type Database = {
           },
         ]
       }
+      zoho_invoices: {
+        Row: {
+          balance: number
+          currency: string
+          customer_name: string
+          due_date: string | null
+          id: string
+          invoice_date: string | null
+          invoice_number: string
+          status: string
+          synced_at: string
+          total: number
+          zoho_id: string
+        }
+        Insert: {
+          balance?: number
+          currency?: string
+          customer_name?: string
+          due_date?: string | null
+          id?: string
+          invoice_date?: string | null
+          invoice_number?: string
+          status?: string
+          synced_at?: string
+          total?: number
+          zoho_id: string
+        }
+        Update: {
+          balance?: number
+          currency?: string
+          customer_name?: string
+          due_date?: string | null
+          id?: string
+          invoice_date?: string | null
+          invoice_number?: string
+          status?: string
+          synced_at?: string
+          total?: number
+          zoho_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -2498,6 +2996,19 @@ export type Database = {
         Returns: undefined
       }
       crm_owner_for_code: { Args: { _code: string }; Returns: string }
+      crm_record_collection: {
+        Args: {
+          _amount: number
+          _date: string
+          _lead: string
+          _mode: string
+          _note: string
+          _owner: string
+          _payer: string
+          _reference: string
+        }
+        Returns: string
+      }
       crm_role: { Args: never; Returns: string }
       crm_route_submission: {
         Args: {
@@ -2517,6 +3028,10 @@ export type Database = {
       }
       crm_submission_lead: {
         Args: { _kind: string; _owner?: string; r: Json }
+        Returns: string
+      }
+      crm_verify_collection: {
+        Args: { _approve: boolean; _id: string; _note?: string }
         Returns: string
       }
       department_requests: {
@@ -2557,6 +3072,91 @@ export type Database = {
         }
       }
       escalation_enabled: { Args: never; Returns: boolean }
+      fin_access: { Args: { _scope?: string }; Returns: boolean }
+      fin_account_balances: {
+        Args: never
+        Returns: {
+          account_last4: string
+          active: boolean
+          balance: number
+          bank_name: string
+          id: string
+          kind: string
+          low_balance_alert: number
+          name: string
+          opening_balance: number
+          opening_date: string
+          unreconciled: number
+        }[]
+      }
+      fin_bank_line_action: {
+        Args: { _action: string; _line: string; _note?: string; _txn?: string }
+        Returns: undefined
+      }
+      fin_budget_status: {
+        Args: { _month?: string }
+        Returns: {
+          amount: number
+          category: string
+          department: string
+          id: string
+          month: string
+          percent: number
+          spent: number
+        }[]
+      }
+      fin_dues_list: {
+        Args: never
+        Returns: {
+          amount: number
+          description: string
+          direction: string
+          due_date: string
+          hold_status: string
+          id: string
+          invoice_ref: string
+          next_follow_up: string
+          outstanding: number
+          party_name: string
+          settled: number
+          status: string
+        }[]
+      }
+      fin_import_bank_lines: {
+        Args: { _account: string; _lines: Json }
+        Returns: Json
+      }
+      fin_overview: { Args: never; Returns: Json }
+      fin_record_transaction: { Args: { _input: Json }; Returns: string }
+      fin_verify_transaction: { Args: { _id: string }; Returns: undefined }
+      fin_void_transaction: {
+        Args: { _id: string; _reason: string }
+        Returns: undefined
+      }
+      finance_withdrawals: {
+        Args: never
+        Returns: {
+          amount: number
+          id: string
+          kyc_status: string
+          method: string
+          paid_at: string
+          payout_masked: string
+          processed_at: string
+          proof_path: string
+          rejection_reason: string
+          request_number: string
+          requested_at: string
+          status: string
+          transaction_id: string
+          verified_at: string
+          verified_by: string
+          verified_by_name: string
+          volunteer_code: string
+          volunteer_id: string
+          volunteer_name: string
+        }[]
+      }
       first_admin_setup_status: { Args: never; Returns: string }
       has_role: {
         Args: {
@@ -2835,7 +3435,9 @@ export type Database = {
       }
       volunteer_process_withdrawal: {
         Args: {
+          _account_id?: string
           _id: string
+          _proof_path?: string
           _reason?: string
           _status: string
           _transaction_id?: string

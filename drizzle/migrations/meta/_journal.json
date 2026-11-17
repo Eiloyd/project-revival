@@ -36,6 +36,13 @@
       "when": 1794905953778,
       "tag": "0004_work_requests_hr",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794906101495,
+      "tag": "0005_finance_desk",
+      "breakpoints": true
     }
   ]
 }
