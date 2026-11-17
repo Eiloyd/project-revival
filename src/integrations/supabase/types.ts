@@ -32,6 +32,83 @@ export type Database = {
         }
         Relationships: []
       }
+      attendance_records: {
+        Row: {
+          check_in: string | null
+          check_out: string | null
+          created_at: string
+          day: string
+          id: string
+          note: string
+          request_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          check_in?: string | null
+          check_out?: string | null
+          created_at?: string
+          day: string
+          id?: string
+          note?: string
+          request_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          check_in?: string | null
+          check_out?: string | null
+          created_at?: string
+          day?: string
+          id?: string
+          note?: string
+          request_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_records_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          details: Json
+          entity: string
+          entity_id: string
+          id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          entity: string
+          entity_id?: string
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          entity?: string
+          entity_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           ack_number: string
@@ -405,8 +482,10 @@ export type Database = {
       }
       crm_tasks: {
         Row: {
+          assigned_by: string | null
           created_at: string
           customer_id: string | null
+          description: string
           due_date: string
           id: string
           owner_id: string
@@ -415,8 +494,10 @@ export type Database = {
           title: string
         }
         Insert: {
+          assigned_by?: string | null
           created_at?: string
           customer_id?: string | null
+          description?: string
           due_date: string
           id?: string
           owner_id: string
@@ -425,8 +506,10 @@ export type Database = {
           title: string
         }
         Update: {
+          assigned_by?: string | null
           created_at?: string
           customer_id?: string | null
+          description?: string
           due_date?: string
           id?: string
           owner_id?: string
@@ -527,6 +610,36 @@ export type Database = {
           publish_date?: string
           report_number?: string
           title?: string
+        }
+        Relationships: []
+      }
+      department_staff: {
+        Row: {
+          active: boolean
+          approval_limit: number | null
+          created_at: string
+          department: string
+          level: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          approval_limit?: number | null
+          created_at?: string
+          department: string
+          level?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          approval_limit?: number | null
+          created_at?: string
+          department?: string
+          level?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -977,6 +1090,131 @@ export type Database = {
         }
         Relationships: []
       }
+      leave_policies: {
+        Row: {
+          days_per_year: number
+          label: string
+          leave_type: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          days_per_year: number
+          label: string
+          leave_type: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          days_per_year?: number
+          label?: string
+          leave_type?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      meeting_attendees: {
+        Row: {
+          meeting_id: string
+          response: string
+          user_id: string
+        }
+        Insert: {
+          meeting_id: string
+          response?: string
+          user_id: string
+        }
+        Update: {
+          meeting_id?: string
+          response?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_attendees_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "meetings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meetings: {
+        Row: {
+          agenda: string
+          created_at: string
+          duration_min: number
+          id: string
+          location: string
+          minutes: string
+          organizer_id: string
+          starts_at: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          agenda?: string
+          created_at?: string
+          duration_min?: number
+          id?: string
+          location?: string
+          minutes?: string
+          organizer_id: string
+          starts_at: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          agenda?: string
+          created_at?: string
+          duration_min?: number
+          id?: string
+          location?: string
+          minutes?: string
+          organizer_id?: string
+          starts_at?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          kind: string
+          link: string
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       payment_options: {
         Row: {
           amount: number | null
@@ -1346,6 +1584,225 @@ export type Database = {
           },
         ]
       }
+      request_attachments: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number
+          id: string
+          request_id: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size: number
+          id?: string
+          request_id: string
+          uploaded_by?: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          request_id?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_attachments_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      request_events: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_name: string
+          created_at: string
+          id: string
+          note: string
+          request_id: string
+          step: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_name?: string
+          created_at?: string
+          id?: string
+          note?: string
+          request_id: string
+          step?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_name?: string
+          created_at?: string
+          id?: string
+          note?: string
+          request_id?: string
+          step?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_events_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      request_routes: {
+        Row: {
+          active: boolean
+          audience: string
+          category: string
+          kind: string
+          label: string
+          sla_hours: number
+          sort_order: number
+          steps: string[]
+          steps_no_manager: string[]
+          type: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          active?: boolean
+          audience?: string
+          category?: string
+          kind?: string
+          label: string
+          sla_hours?: number
+          sort_order?: number
+          steps?: string[]
+          steps_no_manager?: string[]
+          type: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          active?: boolean
+          audience?: string
+          category?: string
+          kind?: string
+          label?: string
+          sla_hours?: number
+          sort_order?: number
+          steps?: string[]
+          steps_no_manager?: string[]
+          type?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      requests: {
+        Row: {
+          amount: number | null
+          applicant_id: string
+          applicant_name: string
+          applicant_role: string
+          code: string
+          created_at: string
+          current_step: string | null
+          days: number | null
+          description: string
+          details: Json
+          due_at: string | null
+          escalated_at: string | null
+          from_date: string | null
+          id: string
+          manager_id: string | null
+          priority: string
+          proof_path: string
+          resolution: string
+          status: string
+          step_index: number
+          steps: string[]
+          title: string
+          to_date: string | null
+          transaction_ref: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          applicant_id: string
+          applicant_name: string
+          applicant_role: string
+          code: string
+          created_at?: string
+          current_step?: string | null
+          days?: number | null
+          description?: string
+          details?: Json
+          due_at?: string | null
+          escalated_at?: string | null
+          from_date?: string | null
+          id?: string
+          manager_id?: string | null
+          priority?: string
+          proof_path?: string
+          resolution?: string
+          status?: string
+          step_index?: number
+          steps: string[]
+          title: string
+          to_date?: string | null
+          transaction_ref?: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          applicant_id?: string
+          applicant_name?: string
+          applicant_role?: string
+          code?: string
+          created_at?: string
+          current_step?: string | null
+          days?: number | null
+          description?: string
+          details?: Json
+          due_at?: string | null
+          escalated_at?: string | null
+          from_date?: string | null
+          id?: string
+          manager_id?: string | null
+          priority?: string
+          proof_path?: string
+          resolution?: string
+          status?: string
+          step_index?: number
+          steps?: string[]
+          title?: string
+          to_date?: string | null
+          transaction_ref?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requests_type_fkey"
+            columns: ["type"]
+            isOneToOne: false
+            referencedRelation: "request_routes"
+            referencedColumns: ["type"]
+          },
+        ]
+      }
       sheet_mirror_queue: {
         Row: {
           attempts: number
@@ -1393,6 +1850,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      volunteer_availability: {
+        Row: {
+          days: string[]
+          hours: string
+          note: string
+          status: string
+          updated_at: string
+          volunteer_id: string
+        }
+        Insert: {
+          days?: string[]
+          hours?: string
+          note?: string
+          status?: string
+          updated_at?: string
+          volunteer_id: string
+        }
+        Update: {
+          days?: string[]
+          hours?: string
+          note?: string
+          status?: string
+          updated_at?: string
+          volunteer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "volunteer_availability_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: true
+            referencedRelation: "volunteers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       volunteer_commissions: {
         Row: {
@@ -1902,7 +2394,29 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _meeting_visible: { Args: { _id: string }; Returns: boolean }
+      _request_dispatch: { Args: { _id: string }; Returns: undefined }
+      _request_event: {
+        Args: { _action: string; _id: string; _note: string; _step: string }
+        Returns: undefined
+      }
+      _request_visible: { Args: { _id: string }; Returns: boolean }
+      _work_department: { Args: { _dept: string }; Returns: boolean }
+      _work_manager: { Args: { _uid: string }; Returns: string }
+      _work_team: { Args: { _uid: string }; Returns: boolean }
       ack_state_code: { Args: { _state: string }; Returns: string }
+      admin_department_staff: {
+        Args: never
+        Returns: {
+          active: boolean
+          approval_limit: number
+          department: string
+          email: string
+          full_name: string
+          level: string
+          user_id: string
+        }[]
+      }
       admin_import_records: {
         Args: { _rows: Json; _table: string }
         Returns: Json
@@ -1920,7 +2434,38 @@ export type Database = {
         }
         Returns: undefined
       }
+      admin_set_department_staff: {
+        Args: {
+          _active: boolean
+          _department: string
+          _email: string
+          _level?: string
+          _limit?: number
+        }
+        Returns: undefined
+      }
       admin_setup_metadata: { Args: never; Returns: Json }
+      attendance_mark: {
+        Args: { _action: string }
+        Returns: {
+          check_in: string | null
+          check_out: string | null
+          created_at: string
+          day: string
+          id: string
+          note: string
+          request_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "attendance_records"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       can_view_people_profiles: { Args: never; Returns: boolean }
       claim_first_admin: { Args: never; Returns: boolean }
       consume_form_submission_limit: {
@@ -1974,6 +2519,44 @@ export type Database = {
         Args: { _kind: string; _owner?: string; r: Json }
         Returns: string
       }
+      department_requests: {
+        Args: { _dept: string; _status?: string }
+        Returns: {
+          amount: number | null
+          applicant_id: string
+          applicant_name: string
+          applicant_role: string
+          code: string
+          created_at: string
+          current_step: string | null
+          days: number | null
+          description: string
+          details: Json
+          due_at: string | null
+          escalated_at: string | null
+          from_date: string | null
+          id: string
+          manager_id: string | null
+          priority: string
+          proof_path: string
+          resolution: string
+          status: string
+          step_index: number
+          steps: string[]
+          title: string
+          to_date: string | null
+          transaction_ref: string
+          type: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "requests"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      escalation_enabled: { Args: never; Returns: boolean }
       first_admin_setup_status: { Args: never; Returns: string }
       has_role: {
         Args: {
@@ -1988,10 +2571,229 @@ export type Database = {
         Returns: string
       }
       json_text_list: { Args: { _value: Json }; Returns: string[] }
+      leave_summary: {
+        Args: never
+        Returns: {
+          allowed: number
+          available: number
+          label: string
+          leave_type: string
+          pending: number
+          used: number
+        }[]
+      }
+      meeting_create: {
+        Args: {
+          _agenda: string
+          _attendees: string[]
+          _duration: number
+          _location: string
+          _starts: string
+          _title: string
+        }
+        Returns: string
+      }
+      meeting_update: {
+        Args: {
+          _id: string
+          _minutes?: string
+          _response?: string
+          _status?: string
+        }
+        Returns: undefined
+      }
+      my_approval_queue: {
+        Args: never
+        Returns: {
+          amount: number | null
+          applicant_id: string
+          applicant_name: string
+          applicant_role: string
+          code: string
+          created_at: string
+          current_step: string | null
+          days: number | null
+          description: string
+          details: Json
+          due_at: string | null
+          escalated_at: string | null
+          from_date: string | null
+          id: string
+          manager_id: string | null
+          priority: string
+          proof_path: string
+          resolution: string
+          status: string
+          step_index: number
+          steps: string[]
+          title: string
+          to_date: string | null
+          transaction_ref: string
+          type: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "requests"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      my_dashboards: { Args: never; Returns: string[] }
+      notifications_mark_read: { Args: { _id?: string }; Returns: undefined }
       people_profile_safe_text: { Args: { _value: string }; Returns: string }
+      person_name: { Args: { _uid: string }; Returns: string }
+      request_act: {
+        Args: {
+          _account_id?: string
+          _action: string
+          _id: string
+          _note?: string
+          _proof_path?: string
+          _ref?: string
+        }
+        Returns: {
+          amount: number | null
+          applicant_id: string
+          applicant_name: string
+          applicant_role: string
+          code: string
+          created_at: string
+          current_step: string | null
+          days: number | null
+          description: string
+          details: Json
+          due_at: string | null
+          escalated_at: string | null
+          from_date: string | null
+          id: string
+          manager_id: string | null
+          priority: string
+          proof_path: string
+          resolution: string
+          status: string
+          step_index: number
+          steps: string[]
+          title: string
+          to_date: string | null
+          transaction_ref: string
+          type: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "requests"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      request_can_act: { Args: { _id: string }; Returns: boolean }
+      request_cancel: {
+        Args: { _id: string; _note?: string }
+        Returns: undefined
+      }
+      request_comment: {
+        Args: { _id: string; _note: string }
+        Returns: undefined
+      }
+      request_submit: {
+        Args: {
+          _amount?: number
+          _description?: string
+          _details?: Json
+          _from?: string
+          _priority?: string
+          _title: string
+          _to?: string
+          _type: string
+        }
+        Returns: {
+          amount: number | null
+          applicant_id: string
+          applicant_name: string
+          applicant_role: string
+          code: string
+          created_at: string
+          current_step: string | null
+          days: number | null
+          description: string
+          details: Json
+          due_at: string | null
+          escalated_at: string | null
+          from_date: string | null
+          id: string
+          manager_id: string | null
+          priority: string
+          proof_path: string
+          resolution: string
+          status: string
+          step_index: number
+          steps: string[]
+          title: string
+          to_date: string | null
+          transaction_ref: string
+          type: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "requests"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       requeue_all_google_copies: {
         Args: { _include_documents?: boolean }
         Returns: number
+      }
+      run_request_escalations: { Args: never; Returns: number }
+      team_attendance: {
+        Args: { _from: string; _to: string }
+        Returns: {
+          check_in: string
+          check_out: string
+          day: string
+          full_name: string
+          status: string
+          user_id: string
+        }[]
+      }
+      team_requests: {
+        Args: never
+        Returns: {
+          amount: number | null
+          applicant_id: string
+          applicant_name: string
+          applicant_role: string
+          code: string
+          created_at: string
+          current_step: string | null
+          days: number | null
+          description: string
+          details: Json
+          due_at: string | null
+          escalated_at: string | null
+          from_date: string | null
+          id: string
+          manager_id: string | null
+          priority: string
+          proof_path: string
+          resolution: string
+          status: string
+          step_index: number
+          steps: string[]
+          title: string
+          to_date: string | null
+          transaction_ref: string
+          type: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "requests"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
       verify_employee: {
         Args: { _code: string; _employee_id: string }
@@ -2075,6 +2877,15 @@ export type Database = {
         }
         Returns: number
       }
+      volunteer_set_availability: {
+        Args: {
+          _days: string[]
+          _hours: string
+          _note: string
+          _status: string
+        }
+        Returns: undefined
+      }
       volunteer_set_payout: {
         Args: {
           _account: string
@@ -2092,6 +2903,27 @@ export type Database = {
       }
       volunteer_submit_kyc: { Args: never; Returns: undefined }
       volunteer_touch_login: { Args: never; Returns: undefined }
+      work_contacts: {
+        Args: never
+        Returns: {
+          full_name: string
+          kind: string
+          user_id: string
+        }[]
+      }
+      work_people: {
+        Args: never
+        Returns: {
+          department: string
+          email: string
+          full_name: string
+          joining_date: string
+          manager_name: string
+          phone: string
+          role: string
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
