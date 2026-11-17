@@ -2185,6 +2185,80 @@ export type Database = {
         }
         Relationships: []
       }
+      hr_assessments: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          created_by: string | null
+          due_at: string | null
+          evaluator_notes: string
+          id: string
+          instructions: string
+          kind: string
+          link: string
+          marks: number | null
+          max_marks: number
+          result: string
+          share_score: boolean
+          status: string
+          submission_note: string
+          submission_path: string | null
+          submitted_at: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          created_by?: string | null
+          due_at?: string | null
+          evaluator_notes?: string
+          id?: string
+          instructions?: string
+          kind: string
+          link?: string
+          marks?: number | null
+          max_marks?: number
+          result?: string
+          share_score?: boolean
+          status?: string
+          submission_note?: string
+          submission_path?: string | null
+          submitted_at?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          created_by?: string | null
+          due_at?: string | null
+          evaluator_notes?: string
+          id?: string
+          instructions?: string
+          kind?: string
+          link?: string
+          marks?: number | null
+          max_marks?: number
+          result?: string
+          share_score?: boolean
+          status?: string
+          submission_note?: string
+          submission_path?: string | null
+          submitted_at?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_assessments_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "hr_candidates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hr_attendance_corrections: {
         Row: {
           check_in: string | null
@@ -2229,6 +2303,287 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      hr_candidate_events: {
+        Row: {
+          actor_id: string | null
+          actor_name: string
+          candidate_id: string
+          created_at: string
+          from_stage: string | null
+          id: string
+          to_stage: string
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_name?: string
+          candidate_id: string
+          created_at?: string
+          from_stage?: string | null
+          id?: string
+          to_stage: string
+        }
+        Update: {
+          actor_id?: string | null
+          actor_name?: string
+          candidate_id?: string
+          created_at?: string
+          from_stage?: string | null
+          id?: string
+          to_stage?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_candidate_events_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "hr_candidates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_candidate_messages: {
+        Row: {
+          body: string
+          candidate_id: string
+          created_at: string
+          file_path: string | null
+          id: string
+          kind: string
+          sender: string
+          sender_id: string | null
+        }
+        Insert: {
+          body: string
+          candidate_id: string
+          created_at?: string
+          file_path?: string | null
+          id?: string
+          kind?: string
+          sender: string
+          sender_id?: string | null
+        }
+        Update: {
+          body?: string
+          candidate_id?: string
+          created_at?: string
+          file_path?: string | null
+          id?: string
+          kind?: string
+          sender?: string
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_candidate_messages_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "hr_candidates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_candidates: {
+        Row: {
+          application_ref: string | null
+          assigned_recruiter: string | null
+          availability: string
+          candidate_user_id: string | null
+          city: string
+          course: string
+          created_at: string
+          created_by: string | null
+          current_address: string
+          current_ctc: number | null
+          current_designation: string
+          current_org: string
+          dob: string | null
+          email: string
+          employee_user_id: string | null
+          expected_ctc: number | null
+          experience_years: number | null
+          full_name: string
+          gender: string
+          id: string
+          institute_id: string | null
+          interview_at: string | null
+          interviewer: string
+          is_fresher: boolean
+          job_id: string | null
+          joining_date: string | null
+          languages: string
+          notes: string
+          notice_period: string
+          offer_note: string
+          offer_responded_at: string | null
+          offer_status: string
+          offered_ctc: number | null
+          passing_year: number | null
+          permanent_address: string
+          phone: string
+          pincode: string
+          priority: string
+          probation_months: number | null
+          qualification: string
+          rating: number | null
+          referral_code: string
+          referral_conflict: boolean
+          referral_link_id: string | null
+          referral_name: string
+          rejection_reason: string
+          resume_path: string | null
+          score: string
+          skills: string
+          source: string
+          source_detail: string
+          specialisation: string
+          stage: string
+          state: string
+          university: string
+          updated_at: string
+          why_join: string
+        }
+        Insert: {
+          application_ref?: string | null
+          assigned_recruiter?: string | null
+          availability?: string
+          candidate_user_id?: string | null
+          city?: string
+          course?: string
+          created_at?: string
+          created_by?: string | null
+          current_address?: string
+          current_ctc?: number | null
+          current_designation?: string
+          current_org?: string
+          dob?: string | null
+          email?: string
+          employee_user_id?: string | null
+          expected_ctc?: number | null
+          experience_years?: number | null
+          full_name: string
+          gender?: string
+          id?: string
+          institute_id?: string | null
+          interview_at?: string | null
+          interviewer?: string
+          is_fresher?: boolean
+          job_id?: string | null
+          joining_date?: string | null
+          languages?: string
+          notes?: string
+          notice_period?: string
+          offer_note?: string
+          offer_responded_at?: string | null
+          offer_status?: string
+          offered_ctc?: number | null
+          passing_year?: number | null
+          permanent_address?: string
+          phone?: string
+          pincode?: string
+          priority?: string
+          probation_months?: number | null
+          qualification?: string
+          rating?: number | null
+          referral_code?: string
+          referral_conflict?: boolean
+          referral_link_id?: string | null
+          referral_name?: string
+          rejection_reason?: string
+          resume_path?: string | null
+          score?: string
+          skills?: string
+          source?: string
+          source_detail?: string
+          specialisation?: string
+          stage?: string
+          state?: string
+          university?: string
+          updated_at?: string
+          why_join?: string
+        }
+        Update: {
+          application_ref?: string | null
+          assigned_recruiter?: string | null
+          availability?: string
+          candidate_user_id?: string | null
+          city?: string
+          course?: string
+          created_at?: string
+          created_by?: string | null
+          current_address?: string
+          current_ctc?: number | null
+          current_designation?: string
+          current_org?: string
+          dob?: string | null
+          email?: string
+          employee_user_id?: string | null
+          expected_ctc?: number | null
+          experience_years?: number | null
+          full_name?: string
+          gender?: string
+          id?: string
+          institute_id?: string | null
+          interview_at?: string | null
+          interviewer?: string
+          is_fresher?: boolean
+          job_id?: string | null
+          joining_date?: string | null
+          languages?: string
+          notes?: string
+          notice_period?: string
+          offer_note?: string
+          offer_responded_at?: string | null
+          offer_status?: string
+          offered_ctc?: number | null
+          passing_year?: number | null
+          permanent_address?: string
+          phone?: string
+          pincode?: string
+          priority?: string
+          probation_months?: number | null
+          qualification?: string
+          rating?: number | null
+          referral_code?: string
+          referral_conflict?: boolean
+          referral_link_id?: string | null
+          referral_name?: string
+          rejection_reason?: string
+          resume_path?: string | null
+          score?: string
+          skills?: string
+          source?: string
+          source_detail?: string
+          specialisation?: string
+          stage?: string
+          state?: string
+          university?: string
+          updated_at?: string
+          why_join?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_candidates_institute_id_fkey"
+            columns: ["institute_id"]
+            isOneToOne: false
+            referencedRelation: "hr_institutes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_candidates_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "hr_job_openings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_candidates_referral_link_id_fkey"
+            columns: ["referral_link_id"]
+            isOneToOne: false
+            referencedRelation: "hr_referral_links"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hr_employee_master: {
         Row: {
@@ -2406,6 +2761,337 @@ export type Database = {
         }
         Relationships: []
       }
+      hr_institute_members: {
+        Row: {
+          active: boolean
+          added_by: string | null
+          created_at: string
+          institute_id: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          added_by?: string | null
+          created_at?: string
+          institute_id: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          added_by?: string | null
+          created_at?: string
+          institute_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_institute_members_institute_id_fkey"
+            columns: ["institute_id"]
+            isOneToOne: false
+            referencedRelation: "hr_institutes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_institutes: {
+        Row: {
+          active: boolean
+          city: string
+          contact_name: string
+          created_at: string
+          created_by: string | null
+          email: string
+          id: string
+          kind: string
+          name: string
+          phone: string
+        }
+        Insert: {
+          active?: boolean
+          city?: string
+          contact_name?: string
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          id?: string
+          kind?: string
+          name: string
+          phone?: string
+        }
+        Update: {
+          active?: boolean
+          city?: string
+          contact_name?: string
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          id?: string
+          kind?: string
+          name?: string
+          phone?: string
+        }
+        Relationships: []
+      }
+      hr_interview_rounds: {
+        Row: {
+          candidate_feedback: string
+          candidate_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          internal_feedback: string
+          interviewer_name: string
+          interviewer_user_id: string | null
+          location_or_link: string
+          mode: string
+          recommendation: string
+          round_type: string
+          scheduled_at: string
+          score: number | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          candidate_feedback?: string
+          candidate_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          internal_feedback?: string
+          interviewer_name?: string
+          interviewer_user_id?: string | null
+          location_or_link?: string
+          mode?: string
+          recommendation?: string
+          round_type: string
+          scheduled_at: string
+          score?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          candidate_feedback?: string
+          candidate_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          internal_feedback?: string
+          interviewer_name?: string
+          interviewer_user_id?: string | null
+          location_or_link?: string
+          mode?: string
+          recommendation?: string
+          round_type?: string
+          scheduled_at?: string
+          score?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_interview_rounds_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "hr_candidates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_job_openings: {
+        Row: {
+          apply_end: string | null
+          apply_start: string | null
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          department: string
+          description: string
+          designation: string
+          employment_type: string
+          experience_required: string
+          id: string
+          job_code: string
+          location: string
+          openings: number
+          qualification: string
+          recruiter_id: string | null
+          reporting_manager: string
+          required_docs: string
+          responsibilities: string
+          salary_range: string
+          selection_process: string
+          show_salary: boolean
+          skills: string
+          status: string
+          title: string
+          updated_at: string
+          visibility: string
+          work_mode: string
+          working_days: string
+          working_hours: string
+        }
+        Insert: {
+          apply_end?: string | null
+          apply_start?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          department?: string
+          description?: string
+          designation?: string
+          employment_type?: string
+          experience_required?: string
+          id?: string
+          job_code?: string
+          location?: string
+          openings?: number
+          qualification?: string
+          recruiter_id?: string | null
+          reporting_manager?: string
+          required_docs?: string
+          responsibilities?: string
+          salary_range?: string
+          selection_process?: string
+          show_salary?: boolean
+          skills?: string
+          status?: string
+          title: string
+          updated_at?: string
+          visibility?: string
+          work_mode?: string
+          working_days?: string
+          working_hours?: string
+        }
+        Update: {
+          apply_end?: string | null
+          apply_start?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          department?: string
+          description?: string
+          designation?: string
+          employment_type?: string
+          experience_required?: string
+          id?: string
+          job_code?: string
+          location?: string
+          openings?: number
+          qualification?: string
+          recruiter_id?: string | null
+          reporting_manager?: string
+          required_docs?: string
+          responsibilities?: string
+          salary_range?: string
+          selection_process?: string
+          show_salary?: boolean
+          skills?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          visibility?: string
+          work_mode?: string
+          working_days?: string
+          working_hours?: string
+        }
+        Relationships: []
+      }
+      hr_letter_templates: {
+        Row: {
+          active: boolean
+          body: string
+          id: string
+          kind: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          body: string
+          id?: string
+          kind?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          body?: string
+          id?: string
+          kind?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      hr_letters: {
+        Row: {
+          body: string
+          id: string
+          issued_at: string
+          issued_by: string | null
+          kind: string
+          ref_no: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          id?: string
+          issued_at?: string
+          issued_by?: string | null
+          kind: string
+          ref_no?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          id?: string
+          issued_at?: string
+          issued_by?: string | null
+          kind?: string
+          ref_no?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      hr_onboarding_tasks: {
+        Row: {
+          created_at: string
+          done: boolean
+          done_at: string | null
+          done_by: string | null
+          employee_id: string
+          id: string
+          sort: number
+          task: string
+        }
+        Insert: {
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          done_by?: string | null
+          employee_id: string
+          id?: string
+          sort?: number
+          task: string
+        }
+        Update: {
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          done_by?: string | null
+          employee_id?: string
+          id?: string
+          sort?: number
+          task?: string
+        }
+        Relationships: []
+      }
       hr_payslip_items: {
         Row: {
           advance_id: string | null
@@ -2526,6 +3212,136 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      hr_referral_links: {
+        Row: {
+          active: boolean
+          clicks: number
+          code: string
+          commission_amount: number
+          coordinator_id: string | null
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          institute_id: string | null
+          job_id: string | null
+          kind: string
+          owner_contact: string
+          owner_name: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          clicks?: number
+          code: string
+          commission_amount?: number
+          coordinator_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          institute_id?: string | null
+          job_id?: string | null
+          kind: string
+          owner_contact?: string
+          owner_name: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          clicks?: number
+          code?: string
+          commission_amount?: number
+          coordinator_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          institute_id?: string | null
+          job_id?: string | null
+          kind?: string
+          owner_contact?: string
+          owner_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_referral_links_coordinator_id_fkey"
+            columns: ["coordinator_id"]
+            isOneToOne: false
+            referencedRelation: "coordinators"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_referral_links_institute_id_fkey"
+            columns: ["institute_id"]
+            isOneToOne: false
+            referencedRelation: "hr_institutes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_referral_links_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "hr_job_openings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_referral_payouts: {
+        Row: {
+          amount: number
+          candidate_id: string
+          created_at: string
+          id: string
+          link_id: string | null
+          note: string
+          paid_reference: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          amount: number
+          candidate_id: string
+          created_at?: string
+          id?: string
+          link_id?: string | null
+          note?: string
+          paid_reference?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          amount?: number
+          candidate_id?: string
+          created_at?: string
+          id?: string
+          link_id?: string | null
+          note?: string
+          paid_reference?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_referral_payouts_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "hr_candidates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_referral_payouts_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "hr_referral_links"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hr_roster: {
         Row: {
@@ -4628,6 +5444,71 @@ export type Database = {
       c_department_access: { Args: { _department: string }; Returns: boolean }
       c_staff_name: { Args: { _uid: string }; Returns: string }
       can_view_people_profiles: { Args: never; Returns: boolean }
+      candidate_email: { Args: never; Returns: string }
+      candidate_my_applications: { Args: never; Returns: Json }
+      candidate_owns: { Args: { _candidate: string }; Returns: boolean }
+      candidate_respond_offer: {
+        Args: { _accept: boolean; _candidate: string; _note?: string }
+        Returns: undefined
+      }
+      candidate_send_message: {
+        Args: { _body: string; _candidate: string; _file_path?: string }
+        Returns: undefined
+      }
+      candidate_set_resume: {
+        Args: { _candidate: string; _path: string }
+        Returns: undefined
+      }
+      candidate_submit_assessment: {
+        Args: { _assessment: string; _file_path?: string; _note: string }
+        Returns: undefined
+      }
+      candidate_withdraw: { Args: { _candidate: string }; Returns: undefined }
+      careers_apply: {
+        Args: { _d: Json; _job: string; _ref?: string }
+        Returns: Json
+      }
+      careers_open_jobs: {
+        Args: never
+        Returns: {
+          apply_end: string
+          created_at: string
+          department: string
+          description: string
+          designation: string
+          employment_type: string
+          experience_required: string
+          id: string
+          job_code: string
+          location: string
+          openings: number
+          qualification: string
+          required_docs: string
+          responsibilities: string
+          salary_range: string
+          selection_process: string
+          skills: string
+          title: string
+          work_mode: string
+          working_days: string
+          working_hours: string
+        }[]
+      }
+      careers_referral_click: { Args: { _code: string }; Returns: undefined }
+      careers_referral_lookup: {
+        Args: { _code: string; _job?: string }
+        Returns: Json
+      }
+      careers_status: {
+        Args: { _phone: string; _ref: string }
+        Returns: {
+          applied_at: string
+          interview_at: string
+          job_title: string
+          stage: string
+          stage_label: string
+        }[]
+      }
       claim_first_admin: { Args: never; Returns: boolean }
       consume_form_submission_limit: {
         Args: { _key_hash: string }
@@ -4884,6 +5765,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      hr_add_institute_member: {
+        Args: { _email: string; _institute: string }
+        Returns: string
+      }
       hr_advance_balances: {
         Args: never
         Returns: {
@@ -4932,12 +5817,21 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      hr_bulk_candidates: {
+        Args: { _institute: string; _job: string; _rows: Json }
+        Returns: Json
+      }
       hr_correction_review: {
         Args: { _approve: boolean; _id: string; _note?: string }
         Returns: undefined
       }
       hr_generate_payroll: { Args: { _month: string }; Returns: number }
       hr_is_manager: { Args: never; Returns: boolean }
+      hr_notify_staff: {
+        Args: { _body: string; _link?: string; _title: string }
+        Returns: undefined
+      }
+      hr_onboarding_start: { Args: { _employee_id: string }; Returns: number }
       hr_or_finance: { Args: never; Returns: boolean }
       hr_people_overview: {
         Args: { _month?: string }
@@ -4966,6 +5860,27 @@ export type Database = {
         }[]
       }
       hr_staff: { Args: never; Returns: boolean }
+      hr_stage_text: { Args: { _s: string }; Returns: string }
+      institute_candidates: {
+        Args: { _institute?: string }
+        Returns: {
+          absent_days: number
+          applied_on: string
+          days_tracked: number
+          employment_status: string
+          full_name: string
+          id: string
+          institute_id: string
+          institute_name: string
+          job_title: string
+          joining_date: string
+          leave_days: number
+          present_days: number
+          stage: string
+          tracking_until: string
+        }[]
+      }
+      institute_of_caller: { Args: never; Returns: string }
       integration_report: {
         Args: {
           _items?: number
@@ -4974,6 +5889,26 @@ export type Database = {
           _provider: string
         }
         Returns: undefined
+      }
+      interviewer_my_rounds: {
+        Args: never
+        Returns: {
+          candidate_id: string
+          candidate_name: string
+          experience_years: number
+          id: string
+          internal_feedback: string
+          job_title: string
+          location_or_link: string
+          mode: string
+          qualification: string
+          recommendation: string
+          round_type: string
+          scheduled_at: string
+          score: number
+          skills: string
+          status: string
+        }[]
       }
       is_active_employee: { Args: { _uid: string }; Returns: boolean }
       is_linked_volunteer: {

@@ -71,6 +71,13 @@
       "when": 1794906619295,
       "tag": "0009_crm_support_admin",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794906782329,
+      "tag": "0010_careers_recruitment",
+      "breakpoints": true
     }
   ]
 }
