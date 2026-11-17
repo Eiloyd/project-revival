@@ -30,3 +30,6 @@ use the editor.
 <!-- LOVABLE:END -->
 
 - WhatsApp share links and CSV export text come from `src/lib/share/whatsapp.ts` (tested), so every screen escapes messages and spreadsheet formulas the same way.
+
+- Database changes go through the Lovable migration tool (recorded in `drizzle/migrations/`); storage buckets are created with the storage tool, never SQL. All buckets stay private and files are served by signed URLs, because the workspace blocks public buckets.
+- In PL/pgSQL triggers shared across tables, read table-specific `NEW.<column>` only inside an `IF TG_TABLE_NAME = ...` branch: conditions are not short-circuited, so a combined `AND` crashes on other tables.

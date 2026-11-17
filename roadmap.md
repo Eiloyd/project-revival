@@ -1,3 +1,13 @@
+## Move to new Lovable Cloud (17 Nov 2026)
+- [x] Website, admin and all department screens copied; all database tables, rules and file folders rebuilt; starter settings loaded
+- [x] Fixed: approved fee / payout / commission changes were crashing
+- [x] Hourly overdue-request check scheduled
+- [ ] Existing records and user list from the old backend — waiting on the owner's export
+- [ ] Old uploaded files — waiting on an export
+- [ ] Connect Google Sheets + Google Drive, then schedule the Google copy and scholarship sync — waiting on the owner
+- [ ] Meta Lead Ads / Zoho / Razorpay keys — waiting on the owner
+- [ ] Publish, reconnect riloyd.in, update the Meta webhook address — waiting on the owner
+
 ## Security + speed + go-live data (17 Nov 2026)
 - [x] Secure whole project: open read rules tightened, unsafe packages updated (0 known issues), CSV formula safety everywhere, wrong-detail guess limit on scholarship reopen, visitor limit on service advisor, unused AI checklist removed
 - [x] Faster, smoother page loading (30s data cache, preload on hover, lazy photos); home ~0.6s, login ~0.2s in test browser
