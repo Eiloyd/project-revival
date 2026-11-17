@@ -1,11 +1,20 @@
-// Server-only: integration credentials are AES-GCM encrypted with INTEGRATIONS_ENCRYPTION_KEY and never sent to a browser.
+// Server-only: integration credentials are AES-GCM encrypted and never sent to a browser.
+// INTEGRATIONS_ENCRYPTION_KEY wins; otherwise a key derived from the server-only database secret is used,
+// so a host that never sets the dedicated key (e.g. Vercel) still works and still stores keys encrypted.
 const enc = new TextEncoder(); const dec = new TextDecoder();
 const b64 = (b: ArrayBuffer | Uint8Array) => btoa(String.fromCharCode(...new Uint8Array(b)));
 const unb64 = (s: string) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 
+export function integrationsKeySource(env: Record<string, string | undefined> = process.env): string | null {
+  const own = env['INTEGRATIONS_ENCRYPTION_KEY'];
+  if (own) return own;
+  const db = env['SUPABASE_SERVICE_ROLE_KEY'] || env['SUPABASE_SECRET_KEY'];
+  return db ? `derived:${db}` : null;
+}
+
 async function key() {
-  const raw = process.env['INTEGRATIONS_ENCRYPTION_KEY'];
-  if (!raw) throw new Error('INTEGRATIONS_ENCRYPTION_KEY is not set on the server.');
+  const raw = integrationsKeySource();
+  if (!raw) throw new Error('No encryption key on the server: set SUPABASE_SERVICE_ROLE_KEY (or INTEGRATIONS_ENCRYPTION_KEY).');
   const digest = await crypto.subtle.digest('SHA-256', enc.encode(`riloyd-integrations-v1:${raw}`));
   return crypto.subtle.importKey('raw', digest, 'AES-GCM', false, ['encrypt', 'decrypt']);
 }

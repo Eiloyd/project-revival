@@ -98,8 +98,8 @@ Never commit secret values. Browser-safe values start with `VITE_`; everything e
 | `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_PROJECT_ID` | Browser + server | Connect the app to your Supabase project (publishable key is safe to expose) |
 | `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | Server | Same project, for server functions |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server only | Privileged server work (form saves, scheduled jobs). Never expose |
-| `INTEGRATIONS_ENCRYPTION_KEY` | Server only | Encrypts integration keys saved from Admin → Integrations. Long random value; do not change once keys are saved |
-| `EDUCATION_KYC_ENCRYPTION_KEY` | Server only | Encrypts student bank/Aadhaar details (AES-GCM). Long random value; **never change once data exists** |
+| `INTEGRATIONS_ENCRYPTION_KEY` | Server only | **Optional.** Encrypts integration keys saved from Admin → Integrations. When unset, a key derived from `SUPABASE_SERVICE_ROLE_KEY` is used. Do not change (or rotate the service role key) once keys are saved, or re-enter them |
+| `EDUCATION_KYC_ENCRYPTION_KEY` | Server only | **Optional.** Encrypts student bank/Aadhaar details (AES-GCM). When unset, a key derived from `SUPABASE_SERVICE_ROLE_KEY` is used. **Never change either once data exists** |
 | `LOVABLE_CRON_SECRET` (or `CRON_SECRET`) | Server only | Bearer secret that scheduled job addresses check |
 | `LOVABLE_API_KEY` | Server only | AI features through the Lovable AI Gateway |
 | `GOOGLE_SHEETS_API_KEY`, `GOOGLE_DRIVE_API_KEY`, `EDUCATION_SHEET_ID`, `RILOYD_DRIVE_FOLDER_ID` | Server only | Optional Google Sheet / Drive copies (can also be set from Admin → Google Sheet & Drive) |

@@ -1,4 +1,10 @@
 ## Help centre, first-login guide, README, smoothness (17 Nov 2026)
+
+## Clean-up for own hosting (17 Nov)
+- [x] Test/demo login file with shared password removed (database/restore-demo-accounts.sql); no test logins exist in the Lovable Cloud database
+- [x] Encryption kept for bank/Aadhaar and integration keys (removing it would store them as plain text); both extra keys are now optional and fall back to the server database secret
+- [ ] Remove Lovable Cloud — blocked: owner action in More → Database → Manage → Settings → Remove (permanent; export data first)
+
 - [x] Help centre at /help: search, topics for every dashboard, step-by-step answers, how to raise a request or ticket
 - [x] First-login guided tour on every dashboard (shown once per person, can be replayed from the Help button)
 - [x] Help button in every dashboard top bar; Help links on public site and sign-in page
