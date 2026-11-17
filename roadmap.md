@@ -1,9 +1,9 @@
 ## Help centre, first-login guide, README, smoothness (17 Nov 2026)
-- [ ] Help centre at /help: search, topics for every dashboard, step-by-step answers, how to raise a request or ticket
-- [ ] First-login guided tour on every dashboard (shown once per person, can be replayed from the Help button)
-- [ ] Help button in every dashboard top bar; Help links on public site and sign-in page
-- [ ] Smoother feel: page-change progress bar, soft fade between sections and pages
-- [ ] Full README for the repository
+- [x] Help centre at /help: search, topics for every dashboard, step-by-step answers, how to raise a request or ticket
+- [x] First-login guided tour on every dashboard (shown once per person, can be replayed from the Help button)
+- [x] Help button in every dashboard top bar; Help links on public site and sign-in page
+- [x] Smoother feel: page-change progress bar, soft fade between sections and pages
+- [x] Full README for the repository
 - [x] INTEGRATIONS_ENCRYPTION_KEY and EDUCATION_KYC_ENCRYPTION_KEY already hold fresh random values (set earlier in this project); form closed by owner
 
 ## Collection-linked BDE/BDM pay + volunteer rewards (17 Nov 2026)
