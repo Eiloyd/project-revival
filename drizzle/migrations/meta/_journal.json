@@ -78,6 +78,13 @@
       "when": 1794906782329,
       "tag": "0010_careers_recruitment",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794906968560,
+      "tag": "0011_ventures_funding_manpower",
+      "breakpoints": true
     }
   ]
 }

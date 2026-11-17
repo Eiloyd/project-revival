@@ -2006,6 +2006,143 @@ export type Database = {
           },
         ]
       }
+      funding_applications: {
+        Row: {
+          category: string
+          client_id: string
+          created_at: string
+          created_by: string | null
+          funding_ask: number | null
+          funding_type: string
+          id: string
+          internal_notes: string
+          next_action: string
+          stage_id: string | null
+          status: string
+          updated_at: string
+          use_of_funds: string
+        }
+        Insert: {
+          category?: string
+          client_id: string
+          created_at?: string
+          created_by?: string | null
+          funding_ask?: number | null
+          funding_type?: string
+          id?: string
+          internal_notes?: string
+          next_action?: string
+          stage_id?: string | null
+          status?: string
+          updated_at?: string
+          use_of_funds?: string
+        }
+        Update: {
+          category?: string
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          funding_ask?: number | null
+          funding_type?: string
+          id?: string
+          internal_notes?: string
+          next_action?: string
+          stage_id?: string | null
+          status?: string
+          updated_at?: string
+          use_of_funds?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funding_applications_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "venture_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "funding_applications_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "funding_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      funding_stage_history: {
+        Row: {
+          application_id: string
+          changed_by: string | null
+          created_at: string
+          from_stage: string | null
+          id: string
+          note: string
+          status: string | null
+          to_stage: string | null
+        }
+        Insert: {
+          application_id: string
+          changed_by?: string | null
+          created_at?: string
+          from_stage?: string | null
+          id?: string
+          note?: string
+          status?: string | null
+          to_stage?: string | null
+        }
+        Update: {
+          application_id?: string
+          changed_by?: string | null
+          created_at?: string
+          from_stage?: string | null
+          id?: string
+          note?: string
+          status?: string | null
+          to_stage?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funding_stage_history_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "funding_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      funding_stages: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          id: string
+          jury_round: number | null
+          name: string
+          position: number
+          required_docs: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          jury_round?: number | null
+          name: string
+          position: number
+          required_docs?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          jury_round?: number | null
+          name?: string
+          position?: number
+          required_docs?: string
+        }
+        Relationships: []
+      }
       global_settings: {
         Row: {
           category: string
@@ -3549,6 +3686,59 @@ export type Database = {
         }
         Relationships: []
       }
+      jury_evaluations: {
+        Row: {
+          application_id: string
+          created_at: string
+          decision: string
+          feasibility: number
+          id: string
+          innovation: number
+          juror_id: string
+          market: number
+          public_remarks: string
+          remarks: string
+          round: number
+          team: number
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          decision: string
+          feasibility: number
+          id?: string
+          innovation: number
+          juror_id?: string
+          market: number
+          public_remarks?: string
+          remarks?: string
+          round: number
+          team: number
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          decision?: string
+          feasibility?: number
+          id?: string
+          innovation?: number
+          juror_id?: string
+          market?: number
+          public_remarks?: string
+          remarks?: string
+          round?: number
+          team?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jury_evaluations_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "funding_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leave_policies: {
         Row: {
           days_per_year: number
@@ -3572,6 +3762,429 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      manpower_candidates: {
+        Row: {
+          client_feedback: string
+          client_id: string
+          created_at: string
+          created_by: string | null
+          email: string
+          expected_salary: number | null
+          experience_years: number | null
+          full_name: string
+          id: string
+          internal_note: string
+          interview_at: string | null
+          location: string
+          phone: string
+          requirement_id: string
+          resume_path: string | null
+          skills: string
+          stage: string
+          updated_at: string
+        }
+        Insert: {
+          client_feedback?: string
+          client_id: string
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          expected_salary?: number | null
+          experience_years?: number | null
+          full_name: string
+          id?: string
+          internal_note?: string
+          interview_at?: string | null
+          location?: string
+          phone?: string
+          requirement_id: string
+          resume_path?: string | null
+          skills?: string
+          stage?: string
+          updated_at?: string
+        }
+        Update: {
+          client_feedback?: string
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          expected_salary?: number | null
+          experience_years?: number | null
+          full_name?: string
+          id?: string
+          internal_note?: string
+          interview_at?: string | null
+          location?: string
+          phone?: string
+          requirement_id?: string
+          resume_path?: string | null
+          skills?: string
+          stage?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manpower_candidates_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "venture_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manpower_candidates_requirement_id_fkey"
+            columns: ["requirement_id"]
+            isOneToOne: false
+            referencedRelation: "manpower_requirements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      manpower_deployments: {
+        Row: {
+          billing_rate: number
+          candidate_id: string | null
+          client_id: string
+          created_at: string
+          created_by: string | null
+          designation: string
+          end_date: string | null
+          esic_applicable: boolean
+          exit_reason: string
+          id: string
+          monthly_salary: number
+          ot_rate: number
+          pf_applicable: boolean
+          replaced_by: string | null
+          replacement_reason: string
+          requirement_id: string | null
+          start_date: string
+          status: string
+          updated_at: string
+          worker_code: string
+          worker_name: string
+          worker_phone: string
+        }
+        Insert: {
+          billing_rate?: number
+          candidate_id?: string | null
+          client_id: string
+          created_at?: string
+          created_by?: string | null
+          designation?: string
+          end_date?: string | null
+          esic_applicable?: boolean
+          exit_reason?: string
+          id?: string
+          monthly_salary?: number
+          ot_rate?: number
+          pf_applicable?: boolean
+          replaced_by?: string | null
+          replacement_reason?: string
+          requirement_id?: string | null
+          start_date: string
+          status?: string
+          updated_at?: string
+          worker_code?: string
+          worker_name: string
+          worker_phone?: string
+        }
+        Update: {
+          billing_rate?: number
+          candidate_id?: string | null
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          designation?: string
+          end_date?: string | null
+          esic_applicable?: boolean
+          exit_reason?: string
+          id?: string
+          monthly_salary?: number
+          ot_rate?: number
+          pf_applicable?: boolean
+          replaced_by?: string | null
+          replacement_reason?: string
+          requirement_id?: string | null
+          start_date?: string
+          status?: string
+          updated_at?: string
+          worker_code?: string
+          worker_name?: string
+          worker_phone?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manpower_deployments_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "manpower_candidates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manpower_deployments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "venture_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manpower_deployments_replaced_by_fkey"
+            columns: ["replaced_by"]
+            isOneToOne: false
+            referencedRelation: "manpower_deployments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manpower_deployments_requirement_id_fkey"
+            columns: ["requirement_id"]
+            isOneToOne: false
+            referencedRelation: "manpower_requirements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      manpower_events: {
+        Row: {
+          actor_id: string | null
+          client_id: string
+          estimated: boolean
+          event: string
+          happened_at: string
+          id: string
+          item_id: string
+          item_table: string
+          requirement_id: string | null
+        }
+        Insert: {
+          actor_id?: string | null
+          client_id: string
+          estimated?: boolean
+          event: string
+          happened_at?: string
+          id?: string
+          item_id: string
+          item_table: string
+          requirement_id?: string | null
+        }
+        Update: {
+          actor_id?: string | null
+          client_id?: string
+          estimated?: boolean
+          event?: string
+          happened_at?: string
+          id?: string
+          item_id?: string
+          item_table?: string
+          requirement_id?: string | null
+        }
+        Relationships: []
+      }
+      manpower_invoices: {
+        Row: {
+          cancel_reason: string
+          client_id: string
+          client_name: string
+          created_at: string
+          created_by: string | null
+          gst: number
+          gst_percent: number
+          id: string
+          invoice_no: string
+          lines: Json
+          month: string
+          paid_at: string | null
+          paid_by: string | null
+          paid_reference: string
+          service_fee: number
+          service_fee_percent: number
+          status: string
+          subtotal: number
+          total: number
+        }
+        Insert: {
+          cancel_reason?: string
+          client_id: string
+          client_name?: string
+          created_at?: string
+          created_by?: string | null
+          gst: number
+          gst_percent?: number
+          id?: string
+          invoice_no: string
+          lines?: Json
+          month: string
+          paid_at?: string | null
+          paid_by?: string | null
+          paid_reference?: string
+          service_fee: number
+          service_fee_percent: number
+          status?: string
+          subtotal: number
+          total: number
+        }
+        Update: {
+          cancel_reason?: string
+          client_id?: string
+          client_name?: string
+          created_at?: string
+          created_by?: string | null
+          gst?: number
+          gst_percent?: number
+          id?: string
+          invoice_no?: string
+          lines?: Json
+          month?: string
+          paid_at?: string | null
+          paid_by?: string | null
+          paid_reference?: string
+          service_fee?: number
+          service_fee_percent?: number
+          status?: string
+          subtotal?: number
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manpower_invoices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "venture_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      manpower_requirements: {
+        Row: {
+          budget: string
+          client_id: string
+          contract_type: string
+          created_at: string
+          description: string
+          experience: string
+          filled: number
+          headcount: number
+          id: string
+          location: string
+          needed_by: string | null
+          priority: string
+          role_title: string
+          shift: string
+          status: string
+          update_note: string
+          updated_at: string
+        }
+        Insert: {
+          budget?: string
+          client_id: string
+          contract_type?: string
+          created_at?: string
+          description?: string
+          experience?: string
+          filled?: number
+          headcount?: number
+          id?: string
+          location?: string
+          needed_by?: string | null
+          priority?: string
+          role_title: string
+          shift?: string
+          status?: string
+          update_note?: string
+          updated_at?: string
+        }
+        Update: {
+          budget?: string
+          client_id?: string
+          contract_type?: string
+          created_at?: string
+          description?: string
+          experience?: string
+          filled?: number
+          headcount?: number
+          id?: string
+          location?: string
+          needed_by?: string | null
+          priority?: string
+          role_title?: string
+          shift?: string
+          status?: string
+          update_note?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manpower_requirements_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "venture_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      manpower_timesheets: {
+        Row: {
+          approved_at: string | null
+          client_id: string
+          client_note: string
+          created_at: string
+          created_by: string | null
+          deployment_id: string
+          id: string
+          month: string
+          ot_hours: number
+          present_days: number
+          status: string
+          updated_at: string
+          working_days: number
+        }
+        Insert: {
+          approved_at?: string | null
+          client_id: string
+          client_note?: string
+          created_at?: string
+          created_by?: string | null
+          deployment_id: string
+          id?: string
+          month: string
+          ot_hours?: number
+          present_days: number
+          status?: string
+          updated_at?: string
+          working_days: number
+        }
+        Update: {
+          approved_at?: string | null
+          client_id?: string
+          client_note?: string
+          created_at?: string
+          created_by?: string | null
+          deployment_id?: string
+          id?: string
+          month?: string
+          ot_hours?: number
+          present_days?: number
+          status?: string
+          updated_at?: string
+          working_days?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manpower_timesheets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "venture_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manpower_timesheets_deployment_id_fkey"
+            columns: ["deployment_id"]
+            isOneToOne: false
+            referencedRelation: "manpower_deployments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       meeting_attendees: {
         Row: {
@@ -4386,6 +4999,50 @@ export type Database = {
         }
         Relationships: []
       }
+      research_milestones: {
+        Row: {
+          created_at: string
+          done_at: string | null
+          due_date: string | null
+          id: string
+          note: string
+          position: number
+          request_id: string
+          step: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          done_at?: string | null
+          due_date?: string | null
+          id?: string
+          note?: string
+          position?: number
+          request_id: string
+          step: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          done_at?: string | null
+          due_date?: string | null
+          id?: string
+          note?: string
+          position?: number
+          request_id?: string
+          step?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "research_milestones_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "research_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       research_request_leads: {
         Row: {
           created_at: string
@@ -4691,6 +5348,287 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      venture_clients: {
+        Row: {
+          assigned_bde: string | null
+          category: string
+          cin: string
+          city: string
+          created_at: string
+          email: string
+          founder_name: string
+          gst: string
+          id: string
+          internal_notes: string
+          kind: string
+          monthly_revenue: number | null
+          name: string
+          owner_user_id: string | null
+          phone: string
+          pitch: string
+          sector: string
+          status: string
+          team_size: number | null
+          updated_at: string
+          website: string
+        }
+        Insert: {
+          assigned_bde?: string | null
+          category?: string
+          cin?: string
+          city?: string
+          created_at?: string
+          email?: string
+          founder_name?: string
+          gst?: string
+          id?: string
+          internal_notes?: string
+          kind?: string
+          monthly_revenue?: number | null
+          name: string
+          owner_user_id?: string | null
+          phone?: string
+          pitch?: string
+          sector?: string
+          status?: string
+          team_size?: number | null
+          updated_at?: string
+          website?: string
+        }
+        Update: {
+          assigned_bde?: string | null
+          category?: string
+          cin?: string
+          city?: string
+          created_at?: string
+          email?: string
+          founder_name?: string
+          gst?: string
+          id?: string
+          internal_notes?: string
+          kind?: string
+          monthly_revenue?: number | null
+          name?: string
+          owner_user_id?: string | null
+          phone?: string
+          pitch?: string
+          sector?: string
+          status?: string
+          team_size?: number | null
+          updated_at?: string
+          website?: string
+        }
+        Relationships: []
+      }
+      venture_documents: {
+        Row: {
+          application_id: string | null
+          client_id: string
+          created_at: string
+          doc_type: string
+          file_name: string
+          file_path: string | null
+          id: string
+          requested_by: string | null
+          review_note: string
+          status: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          client_id: string
+          created_at?: string
+          doc_type: string
+          file_name?: string
+          file_path?: string | null
+          id?: string
+          requested_by?: string | null
+          review_note?: string
+          status?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          client_id?: string
+          created_at?: string
+          doc_type?: string
+          file_name?: string
+          file_path?: string | null
+          id?: string
+          requested_by?: string | null
+          review_note?: string
+          status?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venture_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "funding_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "venture_documents_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "venture_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      venture_jurors: {
+        Row: {
+          active: boolean
+          created_at: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          name?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      venture_orders: {
+        Row: {
+          amount: number | null
+          assigned_to: string | null
+          client_id: string
+          client_note: string
+          created_at: string
+          id: string
+          progress_note: string
+          service_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          assigned_to?: string | null
+          client_id: string
+          client_note?: string
+          created_at?: string
+          id?: string
+          progress_note?: string
+          service_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          assigned_to?: string | null
+          client_id?: string
+          client_note?: string
+          created_at?: string
+          id?: string
+          progress_note?: string
+          service_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venture_orders_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "venture_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "venture_orders_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "venture_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      venture_services: {
+        Row: {
+          active: boolean
+          description: string
+          id: string
+          name: string
+          pillar: string
+          position: number
+          price_note: string
+        }
+        Insert: {
+          active?: boolean
+          description?: string
+          id?: string
+          name: string
+          pillar?: string
+          position?: number
+          price_note?: string
+        }
+        Update: {
+          active?: boolean
+          description?: string
+          id?: string
+          name?: string
+          pillar?: string
+          position?: number
+          price_note?: string
+        }
+        Relationships: []
+      }
+      venture_tickets: {
+        Row: {
+          body: string
+          client_id: string
+          created_at: string
+          id: string
+          reply: string
+          status: string
+          subject: string
+          topic: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          client_id: string
+          created_at?: string
+          id?: string
+          reply?: string
+          status?: string
+          subject: string
+          topic?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          client_id?: string
+          created_at?: string
+          id?: string
+          reply?: string
+          status?: string
+          subject?: string
+          topic?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venture_tickets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "venture_clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       volunteer_availability: {
         Row: {
@@ -5745,6 +6683,19 @@ export type Database = {
         }[]
       }
       first_admin_setup_status: { Args: never; Returns: string }
+      funding_move: {
+        Args: { _app: string; _note?: string; _stage: string; _status: string }
+        Returns: undefined
+      }
+      funding_public_feedback: {
+        Args: { _app: string }
+        Returns: {
+          created_at: string
+          decision: string
+          public_remarks: string
+          round: number
+        }[]
+      }
       g4_report_rows: { Args: { _table: string }; Returns: Json[] }
       grievance_status: {
         Args: { _code: string }
@@ -5931,6 +6882,62 @@ export type Database = {
           pending: number
           used: number
         }[]
+      }
+      manpower_client_candidates: {
+        Args: never
+        Returns: {
+          client_feedback: string
+          experience_years: number
+          full_name: string
+          id: string
+          interview_at: string
+          location: string
+          requirement_id: string
+          role_title: string
+          skills: string
+          stage: string
+        }[]
+      }
+      manpower_client_decide: {
+        Args: {
+          _decision: string
+          _feedback?: string
+          _id: string
+          _interview_at?: string
+        }
+        Returns: undefined
+      }
+      manpower_client_deployments: {
+        Args: never
+        Returns: {
+          billing_rate: number
+          designation: string
+          end_date: string
+          id: string
+          replacement_reason: string
+          role_title: string
+          start_date: string
+          status: string
+          worker_code: string
+          worker_name: string
+        }[]
+      }
+      manpower_client_timesheet: {
+        Args: { _approve: boolean; _id: string; _note?: string }
+        Returns: undefined
+      }
+      manpower_generate_invoice: {
+        Args: { _client: string; _fee_percent: number; _month: string }
+        Returns: string
+      }
+      manpower_in_rpc: { Args: never; Returns: boolean }
+      manpower_invoice_action: {
+        Args: { _action: string; _id: string; _note?: string }
+        Returns: undefined
+      }
+      manpower_request_replacement: {
+        Args: { _id: string; _reason: string }
+        Returns: undefined
       }
       meeting_create: {
         Args: {
@@ -6342,6 +7349,14 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      venture_can_see: { Args: { _client: string }; Returns: boolean }
+      venture_can_see_ops: { Args: { _client: string }; Returns: boolean }
+      venture_can_work: { Args: { _client: string }; Returns: boolean }
+      venture_folder_client: { Args: { _name: string }; Returns: string }
+      venture_is_admin: { Args: never; Returns: boolean }
+      venture_is_desk: { Args: never; Returns: boolean }
+      venture_is_juror: { Args: never; Returns: boolean }
+      venture_is_owner: { Args: { _client: string }; Returns: boolean }
       verify_employee: {
         Args: { _code: string; _employee_id: string }
         Returns: {
