@@ -22,6 +22,17 @@ async function handle({ request }: { request: Request }) {
   const ua = parseAgent(request.headers.get("user-agent") ?? "");
   if (/bot|crawl|spider|headless/i.test(request.headers.get("user-agent") ?? "")) return new Response(null, { status: 204 });
   const path = d.path.split("?")[0]!.split("#")[0]!;
+  // Analytics is best-effort: with no database configured (e.g. preview after disconnecting), skip silently.
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return new Response(null, { status: 204 });
+  try {
+    await record(d, path, request, url, ua);
+  } catch (e) {
+    console.error("[track] failed to record", e instanceof Error ? e.message : e);
+  }
+  return new Response(null, { status: 204 });
+}
+
+async function record(d: z.infer<typeof body>, path: string, request: Request, url: URL, ua: ReturnType<typeof parseAgent>) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   if (d.type === "view") {
     let refHost: string | null = null;
@@ -32,7 +43,6 @@ async function handle({ request }: { request: Request }) {
   } else {
     await supabaseAdmin.from("site_errors").insert({ session_id: d.sid ?? null, path, kind: d.kind, name: d.name ?? null, message: d.message, source: d.source?.split("?")[0] ?? null, browser: ua.browser, device: ua.device });
   }
-  return new Response(null, { status: 204 });
 }
 
 export const Route = createFileRoute("/api/public/track")({ staticData: { sitemap: false }, server: { handlers: { POST: handle } } });
