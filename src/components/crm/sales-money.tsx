@@ -1,12 +1,12 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
-import { BadgeCheck, CalendarClock, Clock3, IndianRupee, Phone, Plus, Trophy, UserRound, XCircle } from 'lucide-react';
+import { BadgeCheck, CalendarClock, Clock3, HeartHandshake, IndianRupee, Phone, Plus, Trophy, UserRound, XCircle } from 'lucide-react';
 import { Button } from '../ui/button';
 import { KpiCard } from '../dashboard/shell';
 import { TargetGauge } from '../dashboard/target-gauge';
 import { getCrm, recordCrmCollection, verifyCrmCollection } from '@/lib/crm.functions';
-import { calculateIncentive, collectionTotals, readSlabs, type IncentiveResult } from '@/lib/crm/incentives';
+import { calculateIncentive, collectionTotals, readSlabs, volunteerTotals, type IncentiveResult } from '@/lib/crm/incentives';
 
 type Data = Awaited<ReturnType<typeof getCrm>>;
 export const money = (n: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n);
@@ -20,6 +20,13 @@ export function teamOf(d: Data, managerId: string) {
 }
 const revenueTarget = (d: Data, ids: string[], month: string) => d.targets.filter(t => ids.includes(t.owner_id) && t.month.startsWith(month)).reduce((n, t) => n + Number(t.revenue_target), 0);
 const planFor = (d: Data, role: 'BDE' | 'BDM') => { const p = d.plans.find(p => p.role === role); return p ? { active: p.active, slabs: readSlabs(p.slabs) } : null; };
+/**
+ * Volunteer-sourced revenue for these people: the fee of every credited referral by a volunteer belonging
+ * to the team. Counts toward the monthly target, pays 0% incentive. Zero until
+ * database/update-2026-11-17-sales-pay-volunteer-rewards.sql has been run (the function then does not exist).
+ */
+export const volRevenue = (d: Data, ids: string[] | null, month?: string, day?: string) =>
+  d.volunteerRevenue ? volunteerTotals(d.volunteerRevenue, ids, day, month) : { revenue: 0, forms: 0 };
 
 /** BDE: own verified collection vs own target. BDM: team verified collection vs team target. */
 export function incentiveFor(d: Data, userId: string, month: string): { role: 'BDE' | 'BDM' | null; result: IncentiveResult | null } {
@@ -27,18 +34,21 @@ export function incentiveFor(d: Data, userId: string, month: string): { role: 'B
   if (role !== 'BDE' && role !== 'BDM') return { role: null, result: null };
   const ids = role === 'BDM' ? teamOf(d, userId) : [userId];
   const verified = collectionTotals(d.collections, ids, undefined, month).verified;
-  return { role, result: calculateIncentive(planFor(d, role), verified, revenueTarget(d, ids, month)) };
+  return { role, result: calculateIncentive(planFor(d, role), verified, revenueTarget(d, ids, month), volRevenue(d, ids, month).revenue) };
 }
 
 export function CollectionKpis({ d, ids }: { d: Data; ids: string[] | null }) {
   const today = istToday();
   const t = collectionTotals(d.collections, ids, today);
   const m = collectionTotals(d.collections, ids, undefined, today.slice(0, 7));
-  return <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+  const v = volRevenue(d, ids, today.slice(0, 7));
+  return <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
     <KpiCard label="Today's verified collection" value={money(t.verified)} note="Counted as collected" icon={BadgeCheck} tone="success" />
     <KpiCard label="Today's unverified collection" value={money(t.unverified)} note="Waiting for Accounts check — not counted yet" icon={Clock3} tone="warning" />
     <KpiCard label="Collected this month" value={money(m.verified)} note="Verified only" icon={IndianRupee} />
     <KpiCard label="Unverified this month" value={money(m.unverified)} note={m.rejected ? `${money(m.rejected)} rejected` : 'Pending verification'} icon={CalendarClock} />
+    <KpiCard label="Direct BDE collection" value={money(m.verified)} note="Your own recorded money — incentive is paid on this" icon={UserRound} />
+    <KpiCard label="Volunteer-sourced collection" value={money(v.revenue)} note={`${v.forms} credited form(s) · counts toward target, 0% incentive`} icon={HeartHandshake} />
   </div>;
 }
 
@@ -99,7 +109,7 @@ function IncentiveCard({ title, r, sub }: { title: string; r: IncentiveResult; s
     <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"><Trophy className="size-4 text-primary" />{title}</p>
     <p className="mt-2 text-3xl font-bold tabular-nums">{money(r.incentive)}</p>
     <p className="mt-1 text-sm text-muted-foreground">{msg}</p>
-    <dl className="mt-4 grid grid-cols-3 gap-2 text-sm"><div><dt className="text-[11px] text-muted-foreground">Verified revenue</dt><dd className="font-semibold tabular-nums">{money(r.revenue)}</dd></div><div><dt className="text-[11px] text-muted-foreground">Target</dt><dd className="font-semibold tabular-nums">{r.target ? money(r.target) : 'Not set'}</dd></div><div><dt className="text-[11px] text-muted-foreground">Achieved</dt><dd className="font-semibold tabular-nums">{r.target ? `${r.achievement}%` : '—'}</dd></div></dl>
+    <dl className="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4"><div><dt className="text-[11px] text-muted-foreground">Verified revenue</dt><dd className="font-semibold tabular-nums">{money(r.revenue)}</dd></div><div><dt className="text-[11px] text-muted-foreground">Volunteer-sourced</dt><dd className="font-semibold tabular-nums">{money(r.volunteerRevenue)}</dd></div><div><dt className="text-[11px] text-muted-foreground">Target</dt><dd className="font-semibold tabular-nums">{r.target ? money(r.target) : 'Not set'}</dd></div><div><dt className="text-[11px] text-muted-foreground">Achieved</dt><dd className="font-semibold tabular-nums">{r.target ? `${r.achievement}%` : '—'}</dd></div></dl>
     {sub}
   </article>;
 }
@@ -115,7 +125,7 @@ export function IncentivePanel({ d, name }: { d: Data; name: (id: string | null)
     {people.length > 0 && <section><h3 className="mb-3 text-base font-semibold">{d.role === 'admin' ? 'BDE & BDM incentives' : 'My BDE incentives'}</h3>
       <div className="dash-card overflow-x-auto"><table className="w-full min-w-[640px] text-left text-sm"><thead className="border-b border-border bg-surface"><tr>{['Employee', 'Role', 'Verified revenue', 'Target', 'Achieved', 'Incentive'].map(h => <th key={h} className="px-3 py-3 text-[10px] font-bold uppercase text-muted-foreground">{h}</th>)}</tr></thead>
         <tbody>{people.map(p => { const r = incentiveFor(d, p.user_id, month).result!; return <tr key={p.user_id} className="border-b border-border"><td className="px-3 py-3 font-semibold">{name(p.user_id)}</td><td className="px-3 py-3">{p.role}{p.role === 'BDM' ? <span className="block text-xs text-muted-foreground">team basis</span> : null}</td><td className="px-3 py-3 tabular-nums">{money(r.revenue)}</td><td className="px-3 py-3 tabular-nums">{r.target ? money(r.target) : 'Not set'}</td><td className="px-3 py-3 tabular-nums">{r.target ? `${r.achievement}%` : '—'}</td><td className="px-3 py-3 font-semibold tabular-nums">{money(r.incentive)}</td></tr>; })}</tbody></table></div></section>}
-    <section><h3 className="mb-3 text-base font-semibold">How incentive is calculated</h3><p className="mb-3 text-sm text-muted-foreground">Automatically from <b className="text-foreground">verified collections</b> against the monthly revenue target, using the plan set by the admin. BDE: own collections and target. BDM: whole team (BDM + their BDEs). Unverified or rejected collections are not counted.</p><div className="grid gap-4 md:grid-cols-2">{slabTable('BDE')}{slabTable('BDM')}</div></section>
+    <section><h3 className="mb-3 text-base font-semibold">How incentive is calculated</h3><p className="mb-3 text-sm text-muted-foreground">Automatically from <b className="text-foreground">verified collections</b> against the monthly revenue target, using the plan set by the admin. BDE: own collections and target. BDM: whole team (BDM + their BDEs). Unverified or rejected collections are not counted. <b className="text-foreground">Volunteer-sourced revenue</b> counts toward reaching the target (the slab you land in) but pays <b className="text-foreground">0% incentive</b> — the incentive amount is always computed on direct verified collection only.</p><div className="grid gap-4 md:grid-cols-2">{slabTable('BDE')}{slabTable('BDM')}</div></section>
   </div>;
 }
 
@@ -126,17 +136,20 @@ export function MyBdePanel({ d, name, onOpen }: { d: Data; name: (id: string | n
   if (!bdes.length) return <p className="dash-card p-6 text-sm text-muted-foreground">No BDE reports to you yet. The admin assigns BDEs to a BDM from Employees.</p>;
   const team = bdes.map(b => b.user_id);
   const teamMoney = collectionTotals(d.collections, team, undefined, month);
+  const teamVol = volRevenue(d, team, month);
   return <div className="space-y-6">
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
       <KpiCard label="My BDEs" value={bdes.filter(b => b.active).length} note={`${bdes.filter(b => !b.active).length} inactive`} icon={UserRound} />
       <KpiCard label="BDE verified collection" value={money(teamMoney.verified)} note="This month" icon={BadgeCheck} tone="success" />
       <KpiCard label="BDE unverified" value={money(teamMoney.unverified)} note="Waiting for Accounts" icon={Clock3} tone="warning" />
+      <KpiCard label="Volunteer-sourced" value={money(teamVol.revenue)} note={`${teamVol.forms} credited form(s) · target pace only, 0% incentive`} icon={HeartHandshake} />
       <KpiCard label="BDE won deals" value={d.leads.filter(l => team.includes(l.owner_id ?? '') && l.stage === 'won' && l.updated_at.startsWith(month)).length} note="This month" icon={Trophy} />
     </div>
     <div className="grid gap-4 lg:grid-cols-2">{bdes.map(b => {
       const p = d.profiles.find(x => x.user_id === b.user_id);
       const leads = d.leads.filter(l => l.owner_id === b.user_id);
       const c = collectionTotals(d.collections, [b.user_id], undefined, month);
+      const vr = volRevenue(d, [b.user_id], month);
       const todayC = collectionTotals(d.collections, [b.user_id], today);
       const target = revenueTarget(d, [b.user_id], month);
       const inc = incentiveFor(d, b.user_id, month).result!;
@@ -147,12 +160,13 @@ export function MyBdePanel({ d, name, onOpen }: { d: Data; name: (id: string | n
           <div className="min-w-0 flex-1"><p className="truncate text-base font-semibold">{name(b.user_id)}</p><p className="text-xs text-muted-foreground">{p?.employee_code ?? '—'} · {p?.designation ?? 'BDE'} · joined {p?.joining_date ?? '—'}</p>{p?.phone && <a href={`tel:${p.phone}`} className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-primary"><Phone className="size-3" />{p.phone}</a>}</div>
           <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${b.active ? 'bg-accent text-accent-foreground' : 'bg-muted text-muted-foreground'}`}>{b.active ? 'Active' : 'Inactive'}</span></div>
         <div className="mt-4 grid gap-4 sm:grid-cols-[150px_1fr]">
-          <TargetGauge compact title="Target" achieved={c.verified} target={target} format={money} />
+          <TargetGauge compact title="Target (incl. volunteer)" achieved={c.verified + vr.revenue} target={target} format={money} />
           <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
             <div><dt className="text-[11px] text-muted-foreground">Open leads</dt><dd className="font-semibold">{leads.filter(l => !['won', 'lost'].includes(l.stage)).length}</dd></div>
             <div><dt className="text-[11px] text-muted-foreground">Won this month</dt><dd className="font-semibold">{leads.filter(l => l.stage === 'won' && l.updated_at.startsWith(month)).length}</dd></div>
             <div><dt className="text-[11px] text-muted-foreground">Today verified / unverified</dt><dd className="font-semibold tabular-nums">{money(todayC.verified)} / {money(todayC.unverified)}</dd></div>
             <div><dt className="text-[11px] text-muted-foreground">Month collected</dt><dd className="font-semibold tabular-nums">{money(c.verified)}</dd></div>
+            <div><dt className="text-[11px] text-muted-foreground">Volunteer-sourced</dt><dd className="font-semibold tabular-nums">{money(vr.revenue)} · {vr.forms} form(s)</dd></div>
             <div><dt className="text-[11px] text-muted-foreground">Calls this month</dt><dd className="font-semibold">{calls}</dd></div>
             <div><dt className="text-[11px] text-muted-foreground">Open / overdue tasks</dt><dd className="font-semibold">{tasks.length} / {tasks.filter(t => t.due_date < today).length}</dd></div>
             <div className="col-span-2"><dt className="text-[11px] text-muted-foreground">Incentive this month</dt><dd className="font-semibold tabular-nums">{money(inc.incentive)}{inc.target ? ` · ${inc.achievement}% of target` : ' · target not set'}</dd></div>

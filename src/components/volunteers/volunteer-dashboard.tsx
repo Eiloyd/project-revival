@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import { VolunteerRewards } from "./rewards";
 import { CalendarCheck, CalendarDays, ClipboardList } from 'lucide-react';
 import { MyRequests } from '@/components/work/requests';
 import { MeetingsPanel } from '@/components/work/meetings';
 import { VolunteerAvailability } from '@/components/work/volunteer-work';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bell, FileText, HelpCircle, LayoutDashboard, LogOut, Settings, Trophy, Users, Wallet } from "lucide-react";
+import { Award, Bell, FileText, HelpCircle, LayoutDashboard, LogOut, Settings, Trophy, Users, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -72,6 +73,7 @@ function Dashboard({ data, me, demo, onSignOut, tab, onTab }: { data: VolunteerB
         <TabsTrigger value="students"><Users size={14} className="mr-1" />My students</TabsTrigger>
         <TabsTrigger value="wallet"><Wallet size={14} className="mr-1" />Earnings & wallet</TabsTrigger>
         <TabsTrigger value="performance"><Trophy size={14} className="mr-1" />Performance</TabsTrigger>
+        <TabsTrigger value="rewards"><Award size={14} className="mr-1" />Rewards</TabsTrigger>
         <TabsTrigger value="notices"><Bell size={14} className="mr-1" />Notifications{unread ? ` (${unread})` : ""}</TabsTrigger>
         <TabsTrigger value="help"><HelpCircle size={14} className="mr-1" />Help</TabsTrigger>
         <TabsTrigger value="documents"><FileText size={14} className="mr-1" />Documents</TabsTrigger>
@@ -91,6 +93,7 @@ function Dashboard({ data, me, demo, onSignOut, tab, onTab }: { data: VolunteerB
           <Stat label="Total amount withdrawn" value={rupees(wallet.withdrawn)} />
           <Stat label="This month" value={monthly.at(-1)?.count ?? 0} note="students referred" />
         </div>
+        <VolunteerRewards data={data} me={me} compact />
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
           <Panel title="Share your referral link"><ReferralTools code={me.referral_code} /></Panel>
           <Panel title="Monthly performance"><Bars data={monthly} /></Panel>
@@ -120,7 +123,7 @@ function Dashboard({ data, me, demo, onSignOut, tab, onTab }: { data: VolunteerB
             <tbody>{withdrawals.map(w => <tr key={w.id} className="border-t border-border align-top"><td className="py-2 font-mono text-xs">{w.request_number}</td><td>{fmtDate(w.requested_at)}</td><td className="tabular-nums">{rupees(w.amount)}</td><td className="text-xs">{w.payout_masked}</td><td><StatusPill tone={withdrawalTone(w.status)}>{w.status}</StatusPill></td>
               <td className="text-xs">{w.status === "paid" ? <Button size="sm" variant="outline" onClick={() => void downloadReceipt(me, w)}>Receipt</Button> : w.status === "rejected" ? `Reason: ${w.rejection_reason}` : "Waiting for finance team"}</td></tr>)}</tbody></table></div>}
         </Panel>
-        <Panel title="Commission history" action={<Button size="sm" variant="outline" onClick={() => void downloadStatement(me, commissions.map(c => ({ date: fmtDate(c.credited_at ?? c.created_at), text: `${c.application_code || "Form"} · ${c.form_key === "education" ? "Scholarship" : "Young Innovators"}`, amount: rupees(c.amount), status: c.status })))}>Download statement</Button>}>
+        <Panel title="Commission history" action={<Button size="sm" variant="outline" onClick={() => void downloadStatement(me, commissions.map(c => ({ date: fmtDate(c.credited_at ?? c.created_at), text: `${c.application_code || "Form"} · ${c.form_key === "fixed_incentive" ? "Fixed incentive" : c.form_key === "education" ? "Scholarship" : "Young Innovators"}`, amount: rupees(c.amount), status: c.status })))}>Download statement</Button>}>
           {commissions.length === 0 ? <p className="text-sm text-muted-foreground">No commission yet. It appears when a referred student submits a form.</p> : <ul className="divide-y divide-border text-sm">{commissions.slice(0, 50).map(c => <li key={c.id} className="flex flex-wrap items-center justify-between gap-2 py-2"><span><span className="font-mono text-xs">{c.application_code || "—"}</span> <span className="text-muted-foreground">· {fmtDate(c.created_at)} · {c.percent}% of {rupees(c.fee_amount)}{c.flat_amount ? ` + ${rupees(c.flat_amount)}` : ""}</span></span><span className="flex items-center gap-2"><span className="tabular-nums font-semibold">{rupees(c.amount)}</span><StatusPill tone={c.status === "credited" ? "good" : c.status === "reversed" ? "bad" : "warn"}>{c.status}</StatusPill></span></li>)}</ul>}
         </Panel>
       </TabsContent>
@@ -135,6 +138,8 @@ function Dashboard({ data, me, demo, onSignOut, tab, onTab }: { data: VolunteerB
           {data.notices.length === 0 ? <p className="text-sm text-muted-foreground">No notifications yet.</p> : <ul className="space-y-2">{data.notices.map(n => <li key={n.id} className={`rounded-lg border p-3 text-sm ${n.read_at ? "border-border" : "border-primary/50 bg-accent/40"}`}><p className="font-semibold text-foreground">{n.title}</p>{n.body && <p className="mt-0.5 text-muted-foreground">{n.body}</p>}<p className="mt-1 text-[11px] text-muted-foreground">{n.kind} · {fmtDate(n.created_at)}</p></li>)}</ul>}
         </Panel>
       </TabsContent>
+
+      <TabsContent value="rewards" className="mt-4 space-y-5"><VolunteerRewards data={data} me={me} /></TabsContent>
 
       <TabsContent value="help" className="mt-4 space-y-5"><HelpTab data={data} demo={demo} onOpen={(c, s, b) => guard(() => rpc("volunteer_open_ticket", { _category: c, _subject: s, _body: b }), "Ticket raised. We will reply here.")} /></TabsContent>
 

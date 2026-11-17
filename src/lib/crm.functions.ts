@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import { setResponseHeader } from '@tanstack/react-start/server';
 import { z } from 'zod';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { leadSchema,memberSchema,taskSchema,ticketSchema,targetSchema,stages } from './crm/rules';
 import { incentivePlanSchema } from './crm/incentives';
@@ -31,8 +32,18 @@ export const getCrm = createServerFn({method:'POST'}).middleware([requireSupabas
     context.supabase.from('attendance_records').select('user_id,day,status,check_in,check_out').gte('day',ist.slice(0,8)+'01').limit(3000),
     context.supabase.from('requests').select('id,code,title,status,amount,details,created_at,applicant_id,resolution').eq('type','customer_refund').order('created_at',{ascending:false}).limit(300),
   ]);
+  // Pay rules from database/update-2026-11-17-sales-pay-volunteer-rewards.sql. That file is applied by the
+  // owner to their own database, so these may not exist yet: an untyped client is used (the generated types
+  // do not know them) and any failure is reported as "not set up" (null) instead of breaking the workspace.
+  const db = context.supabase as unknown as SupabaseClient;
+  const [payRow, volRev, wage] = await Promise.all([
+    db.from('crm_pay_settings').select('collection_attendance,min_daily_collection,work_start,zero_cutoff,nudge_every_minutes').eq('id', true).maybeSingle(),
+    db.rpc('crm_volunteer_revenue', { _since: since }),
+    db.rpc('crm_my_daily_wage'),
+  ]);
   return {role,userId:context.userId,today:ist,members:members?.data??[],profiles:profiles?.data??[],customers:customers?.data??[],leads:leads?.data??[],tasks:tasks?.data??[],tickets:tickets?.data??[],activities:activities.data??[],targets:targets.data??[],collections:collections.data??[],plans:plans.data??[],
-    reports:reports.data??[],coaching:coaching.data??[],assignments:assignments.data??[],documents:documents.data??[],attendance:attendance.data??[],refunds:refunds.data??[]};
+    reports:reports.data??[],coaching:coaching.data??[],assignments:assignments.data??[],documents:documents.data??[],attendance:attendance.data??[],refunds:refunds.data??[],
+    paySettings:payRow.error?null:(payRow.data??null),volunteerRevenue:volRev.error?null:(volRev.data??[]),dailyWage:wage.error?null:(wage.data??null)};
 });
 export const createCrmLead=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>leadSchema.parse(v)).handler(async({context,data})=>{
   const {data:role}=await context.supabase.rpc('crm_role'); if(!role||role==='support') throw new Error('Sales access required.');
@@ -93,6 +104,16 @@ export const crmAcknowledgement=createServerFn({method:'POST'}).middleware([requ
  const r=row as unknown as import('./education-support/acknowledgement').AckSourceRow;
  if(!/^\d{15}$/.test(r.ack_number))throw new Error('Acknowledgement number is issued after the payment ID.');
  return ackDataFromRow(r);
+});
+
+const paySettingsSchema=z.object({collection_attendance:z.boolean(),min_daily_collection:z.number().int().min(1).max(1000000),work_start:z.string().regex(/^\d{2}:\d{2}$/),zero_cutoff:z.string().regex(/^\d{2}:\d{2}$/),nudge_every_minutes:z.number().int().min(5).max(120)});
+/** Admin-only pay rules (collection-linked attendance, daily-wage cut-off times). The database re-checks the caller. */
+export const savePaySettings=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>paySettingsSchema.parse(v)).handler(async({context,data})=>{
+ const {data:admin}=await context.supabase.rpc('has_role',{_user_id:context.userId,_role:'admin'}); if(!admin) throw new Error('Admin access required.');
+ const db=context.supabase as unknown as SupabaseClient;
+ const {error}=await db.from('crm_pay_settings').update(data).eq('id',true);
+ if(error) throw new Error(/does not exist|Could not find the table/i.test(error.message)?'Pay settings are not set up in the database yet. Run database/update-2026-11-17-sales-pay-volunteer-rewards.sql once.':'Pay settings could not be saved.');
+ return {ok:true};
 });
 
 const collectionSchema=z.object({leadId:z.string().uuid().nullable(),ownerId:z.string().uuid().nullable(),amount:z.number().positive().max(1e8),date:z.string().regex(/^\d{4}-\d{2}-\d{2}$/),mode:z.enum(['upi','bank_transfer','cash','cheque','card','gateway','other']),reference:z.string().trim().max(80),payer:z.string().trim().max(120),note:z.string().trim().max(500)});

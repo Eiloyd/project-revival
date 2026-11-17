@@ -6,7 +6,7 @@ import { AuthForm } from '../auth-form';
 import { useMutation,useQuery,useQueryClient } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
 import { Link,useNavigate } from '@tanstack/react-router';
-import { LayoutDashboard,Columns3,Users,CheckSquare,Headphones,Target,UserPlus,Inbox,Sparkles,Plus,Search,RefreshCw,LogOut,Phone,Download,Check,ShieldCheck,HeartHandshake,Link2,Wallet,TrendingUp,Trophy,CalendarClock,AlertTriangle,UserRoundPlus,ArrowRight,FileText,PieChart,Undo2,BarChart3,Shuffle,GraduationCap,Lightbulb,Factory } from 'lucide-react';
+import { LayoutDashboard,Columns3,Users,CheckSquare,Headphones,Target,UserPlus,Inbox,Sparkles,Plus,Search,RefreshCw,LogOut,Phone,Download,Check,ShieldCheck,HeartHandshake,Link2,Wallet,TrendingUp,Trophy,CalendarClock,AlertTriangle,UserRoundPlus,ArrowRight,FileText,PieChart,Undo2,BarChart3,Shuffle,GraduationCap,Lightbulb,Factory,Coins } from 'lucide-react';
 import { DashboardGate,DashboardShell,KpiCard,type ShellGroup } from '../dashboard/shell';
 import { TargetGauge } from '../dashboard/target-gauge';
 import { gaugeReading } from '@/lib/target-gauge';
@@ -19,15 +19,16 @@ import { CrmClock } from './clock';
 import { ManufacturersPanel } from './manufacturers';
 import { CrmPipeline } from './pipeline';
 import { CrmEnquiryAssistant } from './enquiry-assistant';
-import { CollectionKpis, CollectionsPanel, IncentivePanel, MyBdePanel } from './sales-money';
+import { CollectionKpis, CollectionsPanel, IncentivePanel, MyBdePanel, teamOf } from './sales-money';
 import { collectionTotals } from '@/lib/crm/incentives';
 import { SalesLeaderboard } from './leaderboard';
 import { CallCoachPanel } from './call-coach';
 import { CoachingPanel, Customer360, DailyReportPanel, IncentiveCalculator, LeadSourcesPanel, MyDayPanel, RefundPanel, TeamComparePanel, WorkloadPanel } from './sales-extra';
+import { DailyWagePanel, ZeroNudge } from './sales-pay-panel';
 
 type Data=Awaited<ReturnType<typeof getCrm>>;
-type View='overview'|'my-day'|'call-coach'|'dsr'|'sources'|'refunds'|'team-compare'|'workload'|'coaching'|'pipeline'|'contacts'|'tasks'|'support'|'targets'|'collections'|'incentives'|'my-bde'|'team'|'inbox'|'ai'|'manufacturers'|`w-${string}`;
-const nav=[{key:'overview',label:'Overview',icon:LayoutDashboard},{key:'my-day',label:'My day planner',icon:CalendarClock},{key:'call-coach',label:'Call notes → AI next step',icon:Lightbulb},{key:'dsr',label:'Daily sales report',icon:FileText},{key:'sources',label:'Lead sources',icon:PieChart},{key:'refunds',label:'Cancellations & refunds',icon:Undo2},{key:'team-compare',label:'Team performance',icon:BarChart3},{key:'workload',label:'Workload & reassign',icon:Shuffle},{key:'coaching',label:'Coaching & training',icon:GraduationCap},{key:'pipeline',label:'Sales pipeline',icon:Columns3},{key:'contacts',label:'Customers',icon:Users},{key:'tasks',label:'Tasks & follow-ups',icon:CheckSquare},{key:'support',label:'Support desk',icon:Headphones},{key:'targets',label:'Targets & reports',icon:Target},{key:'collections',label:'Collections',icon:Wallet},{key:'incentives',label:'Incentives',icon:Trophy},{key:'my-bde',label:'My BDE',icon:Users},{key:'team',label:'Employees',icon:UserPlus},{key:'inbox',label:'Website leads',icon:Inbox},{key:'ai',label:'AI enquiry helper',icon:Sparkles},{key:'manufacturers',label:'Manufacturer onboarding',icon:Factory}] as const;
+type View='overview'|'my-day'|'call-coach'|'dsr'|'sources'|'refunds'|'team-compare'|'workload'|'coaching'|'pipeline'|'contacts'|'tasks'|'support'|'targets'|'collections'|'incentives'|'pay'|'my-bde'|'team'|'inbox'|'ai'|'manufacturers'|`w-${string}`;
+const nav=[{key:'overview',label:'Overview',icon:LayoutDashboard},{key:'my-day',label:'My day planner',icon:CalendarClock},{key:'call-coach',label:'Call notes → AI next step',icon:Lightbulb},{key:'dsr',label:'Daily sales report',icon:FileText},{key:'sources',label:'Lead sources',icon:PieChart},{key:'refunds',label:'Cancellations & refunds',icon:Undo2},{key:'team-compare',label:'Team performance',icon:BarChart3},{key:'workload',label:'Workload & reassign',icon:Shuffle},{key:'coaching',label:'Coaching & training',icon:GraduationCap},{key:'pipeline',label:'Sales pipeline',icon:Columns3},{key:'contacts',label:'Customers',icon:Users},{key:'tasks',label:'Tasks & follow-ups',icon:CheckSquare},{key:'support',label:'Support desk',icon:Headphones},{key:'targets',label:'Targets & reports',icon:Target},{key:'collections',label:'Collections',icon:Wallet},{key:'incentives',label:'Incentives',icon:Trophy},{key:'pay',label:'Daily wage & attendance',icon:Coins},{key:'my-bde',label:'My BDE',icon:Users},{key:'team',label:'Employees',icon:UserPlus},{key:'inbox',label:'Website leads',icon:Inbox},{key:'ai',label:'AI enquiry helper',icon:Sparkles},{key:'manufacturers',label:'Manufacturer onboarding',icon:Factory}] as const;
 const money=(n:number)=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(n);
 const input='mt-1 h-10 w-full rounded-md border border-border bg-background px-3 text-sm';
 
@@ -57,7 +58,9 @@ export function CrmWorkspace(){
  const customer=lead?cust(lead.customer_id):null;
  const chosenMonth=month||new Date().toISOString().slice(0,7);
  const monthly=d.leads.filter(l=>l.updated_at.startsWith(chosenMonth));
- const allowedNav=nav.filter(n=>!(d.role==='support'&&['pipeline','inbox','collections','incentives'].includes(n.key))&&!(n.key==='ai'&&d.role!=='admin')&&!(n.key==='my-bde'&&d.role!=='BDM')&&!(n.key==='incentives'&&!['admin','BDM','BDE'].includes(d.role))&&!(['my-day','manufacturers','call-coach','dsr','refunds','sources'].includes(n.key)&&d.role==='support')&&!(['team-compare','workload'].includes(n.key)&&!['admin','BDM'].includes(d.role))&&!(n.key==='coaching'&&d.role==='support'));
+ // Whose collection counts for attendance and daily wage: BDE = own, BDM = the team (BDM + their BDEs).
+ const payIds=d.role==='BDM'?teamOf(d,d.userId):[d.userId];
+ const allowedNav=nav.filter(n=>!(d.role==='support'&&['pipeline','inbox','collections','incentives'].includes(n.key))&&!(n.key==='ai'&&d.role!=='admin')&&!(n.key==='my-bde'&&d.role!=='BDM')&&!(['incentives','pay'].includes(n.key)&&!['admin','BDM','BDE'].includes(d.role))&&!(['my-day','manufacturers','call-coach','dsr','refunds','sources'].includes(n.key)&&d.role==='support')&&!(['team-compare','workload'].includes(n.key)&&!['admin','BDM'].includes(d.role))&&!(n.key==='coaching'&&d.role==='support'));
  const canAssign=d.role==='admin'||d.role==='BDM';
  const websiteLeads=visibleLeads.filter(l=>l.source!=='manual');
  const unassigned=d.leads.filter(l=>l.owner_id===null).length;
@@ -130,13 +133,15 @@ export function CrmWorkspace(){
   <DashboardShell workspace="Employee CRM" groups={groups} active={view} onSelect={k=>{setView(k as View);setSearch('');setCoachLead(null);}} user={{name:name(d.userId),detail:roleLabel}} onSignOut={()=>void logout()}
    actions={<><span className="hidden md:block"><CrmClock/></span><Button variant="outline" size="icon" aria-label="Refresh CRM" onClick={()=>void query.refetch()}><RefreshCw className={`size-4 ${query.isFetching?'animate-spin':''}`}/></Button>{d.role!=='support'&&<Button size="sm" onClick={()=>setModal('lead')} className="hidden sm:inline-flex"><Plus className="size-4"/>Add lead</Button>}</>}>
     {error&&<p role="alert" className="mb-4 rounded-md border border-destructive bg-destructive/10 p-3 text-sm">{error}</p>}
+    {['BDE','BDM'].includes(d.role)&&<ZeroNudge d={d} ids={payIds} onGo={v=>setView(v)}/>}
     {isWorkKey(view)&&<WorkView k={view} uid={d.userId}/>}
-    {!['overview','manufacturers','ai','incentives','my-bde','my-day','call-coach','dsr','sources','refunds','team-compare','workload','coaching'].includes(view)&&!isWorkKey(view)&&<div className="mb-6 flex flex-wrap items-center justify-between gap-3"><div className="flex min-w-0 flex-1 flex-wrap gap-2"><label className="relative min-w-48 max-w-sm flex-1"><Search className="absolute top-3 left-3 size-4 text-muted-foreground"/><input aria-label="Search CRM" value={search} onChange={e=>setSearch(e.target.value)} className={`${input} mt-0 pl-9`} placeholder="Search records…"/></label>{(d.role==='admin'||d.role==='BDM')&&<select aria-label="Employee filter" className={`${input} mt-0 w-auto`} value={owner} onChange={e=>setOwner(e.target.value)}><option value="">All accessible employees</option>{d.role==='admin'&&<option value="__none">Unassigned</option>}{owners.map(id=><option key={id} value={id}>{name(id)}</option>)}</select>}</div>
+    {!['overview','manufacturers','ai','incentives','pay','my-bde','my-day','call-coach','dsr','sources','refunds','team-compare','workload','coaching'].includes(view)&&!isWorkKey(view)&&<div className="mb-6 flex flex-wrap items-center justify-between gap-3"><div className="flex min-w-0 flex-1 flex-wrap gap-2"><label className="relative min-w-48 max-w-sm flex-1"><Search className="absolute top-3 left-3 size-4 text-muted-foreground"/><input aria-label="Search CRM" value={search} onChange={e=>setSearch(e.target.value)} className={`${input} mt-0 pl-9`} placeholder="Search records…"/></label>{(d.role==='admin'||d.role==='BDM')&&<select aria-label="Employee filter" className={`${input} mt-0 w-auto`} value={owner} onChange={e=>setOwner(e.target.value)}><option value="">All accessible employees</option>{d.role==='admin'&&<option value="__none">Unassigned</option>}{owners.map(id=><option key={id} value={id}>{name(id)}</option>)}</select>}</div>
       {view==='pipeline'&&<Button onClick={()=>setModal('lead')}><Plus className="size-4"/>New lead</Button>}{view==='tasks'&&<Button onClick={()=>setModal('task')}><Plus className="size-4"/>New task</Button>}{view==='support'&&d.role!=='sales'&&d.role!=='BDE'&&<Button onClick={()=>setModal('ticket')}><Plus className="size-4"/>New ticket</Button>}{view==='team'&&d.role==='admin'&&<Button onClick={()=>setModal('member')}><UserPlus className="size-4"/>Onboard employee</Button>}{view==='targets'&&d.role==='admin'&&<Button onClick={()=>setModal('target')}><Plus className="size-4"/>Set target</Button>}
     </div>}
     {view==='overview'&&overview}
     {view==='collections'&&<CollectionsPanel d={d} name={name} owners={owners} ownerFilter={owner==='__none'?'':owner}/>}
     {view==='incentives'&&<div className="space-y-6"><IncentivePanel d={d} name={name}/>{['BDE','BDM'].includes(d.role)&&<IncentiveCalculator d={d}/>}</div>}
+    {view==='pay'&&<DailyWagePanel d={d} name={name} ids={payIds}/>}
     {view==='my-day'&&<MyDayPanel d={d} name={name} onOpenLead={setSelected} onGo={v=>setView(v as View)}/>}
     {view==='manufacturers'&&<ManufacturersPanel/>}
     {view==='call-coach'&&<CallCoachPanel key={coachLead??''} d={d} initialLeadId={coachLead}/>}

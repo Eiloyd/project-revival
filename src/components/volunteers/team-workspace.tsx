@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, Calculator, Share2, FileSpreadsheet, LayoutDashboard, MessageSquare, Settings2, UserPlus, Users, Wallet } from "lucide-react";
+import { AlertTriangle, Award, Calculator, Share2, FileSpreadsheet, LayoutDashboard, MessageSquare, Settings2, UserPlus, Users, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { listVolunteerFiles, loadVolunteerBundle, openVolunteerFile, rpc, uploadVolunteerFile, vdb, type Volunteer, type VolunteerBundle } from "@/lib/volunteers/data";
 import { demoVolunteerBundle } from "@/lib/volunteers/demo";
-import { applicationStage, commissionFor, countSince, MAX_COMMISSION_PERCENT, monthlyCounts, referralStats, stageLabels, targetPercent, walletSummary } from "@/lib/volunteers/rules";
+import { applicationStage, commissionFor, countSince, MAX_COMMISSION_PERCENT, MIN_WITHDRAWAL_FLOOR, monthlyCounts, referralStats, stageLabels, targetPercent, walletSummary } from "@/lib/volunteers/rules";
 import { fmtDate, kycTone, Panel, ReferralTools, rupees, StageBadge, Stat, StatusPill, withdrawalTone, downloadWorkbook } from "./shared";
 import { TicketThread } from "./tickets";
+import { IncentiveSetter, SchemeManager, SettleFixedIncentives } from "./rewards";
 
 type Role = "employee" | "admin";
 /** Sections of the employee volunteer workspace, used by the left menu on the My Volunteers page. */
@@ -25,6 +26,7 @@ export const teamSections = [
   { key: "withdrawals", label: "Withdrawals", icon: Wallet },
   { key: "messages", label: "Messages & tickets", icon: MessageSquare },
   { key: "reports", label: "Performance & reports", icon: FileSpreadsheet },
+  { key: "rewards", label: "Reward schemes", icon: Award },
   { key: "commission", label: "Commission calculator", icon: Calculator },
 ] as const;
 const STATES = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Ladakh", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Puducherry", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Other"];
@@ -74,6 +76,7 @@ function Workspace({ data, role, demo, uid, tab, onTab }: { data: VolunteerBundl
         <TabsTrigger value="withdrawals"><Wallet size={14} className="mr-1" />Withdrawals{pendingWd.length ? ` (${pendingWd.length})` : ""}</TabsTrigger>
         <TabsTrigger value="messages"><MessageSquare size={14} className="mr-1" />Messages & tickets</TabsTrigger>
         <TabsTrigger value="reports"><FileSpreadsheet size={14} className="mr-1" />Performance & reports</TabsTrigger>
+        <TabsTrigger value="rewards"><Award size={14} className="mr-1" />Reward schemes</TabsTrigger>
         <TabsTrigger value="commission">{role === "admin" ? <><Settings2 size={14} className="mr-1" />Commission settings</> : <><Calculator size={14} className="mr-1" />Commission calculator</>}</TabsTrigger>
       </TabsList>}
 
@@ -121,7 +124,9 @@ function Workspace({ data, role, demo, uid, tab, onTab }: { data: VolunteerBundl
           <tbody>{[...perVol].sort((a, b) => b.monthVerified - a.monthVerified).map((p, i) => <tr key={p.v.id} className="border-t border-border"><td className="py-2 font-semibold">{i === 0 && p.monthVerified > 0 ? "🏆 " : ""}{p.v.full_name}</td><td><StatusPill tone={p.v.status === "active" ? "good" : "muted"}>{p.v.status}</StatusPill></td><td className="tabular-nums">{p.month}</td><td className="tabular-nums">{p.monthVerified}</td><td className="text-xs">{p.v.monthly_target ? `${p.target}% of ${p.v.monthly_target}` : "Not set"}</td><td className="tabular-nums">{p.st.conversion}%</td><td className="tabular-nums">{rupees(p.wallet.lifetime)}</td></tr>)}</tbody></table></div></Panel>
       </TabsContent>
 
-      <TabsContent value="commission" className="mt-4 space-y-5">{role === "admin" && <CommissionSettings data={data} act={act} />}<CommissionCalculator data={data} /></TabsContent>
+      <TabsContent value="rewards" className="mt-4 space-y-5"><SchemeManager data={data} role={role} demo={demo} uid={uid} /></TabsContent>
+
+      <TabsContent value="commission" className="mt-4 space-y-5">{role === "admin" && <><SettleFixedIncentives demo={demo} /><CommissionSettings data={data} act={act} /></>}<CommissionCalculator data={data} /></TabsContent>
     </Tabs>
     {profile && <ProfileDialog p={perVol.find(x => x.v.id === profile.id)!} role={role} demo={demo} onClose={() => setProfile(null)} data={data} />}
   </div>;
@@ -226,6 +231,7 @@ function ProfileDialog({ p, role, demo, onClose, data }: { p: PerVol; role: Role
   return <Dialog open onOpenChange={o => { if (!o) onClose(); }}>
     <DialogContent className="dash-shell max-h-[90vh] max-w-4xl overflow-y-auto">
       <DialogHeader><DialogTitle>{v.full_name} · {v.volunteer_code}</DialogTitle></DialogHeader>
+      <IncentiveSetter v={v} demo={demo} />
       <div className="flex flex-wrap items-end gap-3 rounded-lg border border-border p-3">
         <div className="grid gap-1.5"><Label htmlFor={`verify-code-${v.id}`}>Volunteer verification code (for the website Team page)</Label>
           <Input id={`verify-code-${v.id}`} type="password" autoComplete="new-password" maxLength={64} value={verifyCode} onChange={e => setVerifyCode(e.target.value)} placeholder="6–64 characters" />
@@ -314,9 +320,9 @@ function CommissionSettings({ data, act }: { data: VolunteerBundle; act: ReturnT
   const [s, setS] = useState({ max: String(data.settings.max_percent), min: String(data.settings.min_withdrawal), note: data.settings.payout_note });
   const [rates, setRates] = useState(data.rates.map(r => ({ ...r, percent: String(r.percent), flat_amount: String(r.flat_amount) })));
   return <div className="grid gap-5 lg:grid-cols-2">
-    <Panel title="Programme settings"><form className="grid gap-3" onSubmit={e => { e.preventDefault(); const max = Number(s.max), min = Number(s.min); if (!(max >= 0 && max <= MAX_COMMISSION_PERCENT)) { toast.error(`Maximum must be 0 to ${MAX_COMMISSION_PERCENT}%.`); return; } if (!(min >= 1)) { toast.error("Enter the minimum withdrawal."); return; } void act(() => must(vdb.rpc("critical_change_propose", { _kind: "payout_rules", _target: "true", _payload: { max_percent: max, min_withdrawal: Math.round(min), payout_note: s.note }, _summary: `Payout rules: max ${max}%, minimum ₹${Math.round(min)}` })), "Sent for a second admin's approval (Admin → Change approvals)."); }}>
+    <Panel title="Programme settings"><form className="grid gap-3" onSubmit={e => { e.preventDefault(); const max = Number(s.max), min = Number(s.min); if (!(max >= 0 && max <= MAX_COMMISSION_PERCENT)) { toast.error(`Maximum must be 0 to ${MAX_COMMISSION_PERCENT}%.`); return; } if (!(min >= MIN_WITHDRAWAL_FLOOR)) { toast.error(`Minimum withdrawal cannot be below ₹${MIN_WITHDRAWAL_FLOOR}.`); return; } void act(() => must(vdb.rpc("critical_change_propose", { _kind: "payout_rules", _target: "true", _payload: { max_percent: max, min_withdrawal: Math.round(min), payout_note: s.note }, _summary: `Payout rules: max ${max}%, minimum ₹${Math.round(min)}` })), "Sent for a second admin's approval (Admin → Change approvals)."); }}>
       <div className="grid gap-1.5"><Label htmlFor="cs-max">Maximum commission % (up to {MAX_COMMISSION_PERCENT})</Label><Input id="cs-max" inputMode="decimal" value={s.max} onChange={e => setS({ ...s, max: e.target.value })} /></div>
-      <div className="grid gap-1.5"><Label htmlFor="cs-min">Minimum withdrawal (₹)</Label><Input id="cs-min" inputMode="numeric" value={s.min} onChange={e => setS({ ...s, min: e.target.value })} /></div>
+      <div className="grid gap-1.5"><Label htmlFor="cs-min">Minimum withdrawal (₹) — never below {rupees(MIN_WITHDRAWAL_FLOOR)}</Label><Input id="cs-min" inputMode="numeric" min={MIN_WITHDRAWAL_FLOOR} value={s.min} onChange={e => setS({ ...s, min: e.target.value })} /></div>
       <div className="grid gap-1.5"><Label htmlFor="cs-note">Note shown on the wallet (e.g. payout time)</Label><Input id="cs-note" value={s.note} maxLength={300} onChange={e => setS({ ...s, note: e.target.value })} /></div>
       <Button type="submit" className="justify-self-start">Propose change</Button><p className="text-xs text-muted-foreground">Payout rules change only after a second admin approves.</p>
     </form></Panel>
