@@ -1,10 +1,3 @@
-/*
- * Tailwind v4 entry: config lives here, with no tailwind.config.js or PostCSS plugin.
- * - Keep every @import in this top block, above @theme and the rest of the file. Install an
- *   npm package before @importing its CSS. Never @import a remote URL (web fonts, CDN CSS): the
- *   build resolves @import from the filesystem. Load those with a <link> in the head() of
- *   src/routes/__root.tsx and name the family in a --font-* token in @theme inline below.
- */
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -13,10 +6,6 @@
 
 /*
  * Design system definition.
- *
- * The design lives in this file: oklch color tokens on the shadcn variables
- * (--background, --foreground, --primary, --secondary, --muted, --accent, ...) plus
- * new tokens as needed, font tokens, and custom styles and animations.
  *
  * The @theme inline block maps CSS custom properties to Tailwind utility
  * classes (e.g. --color-primary -> bg-primary, text-primary).
@@ -30,6 +19,7 @@
  */
 
 @theme inline {
+  --font-sans: "Montserrat", sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -38,6 +28,7 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
   --color-background: var(--background);
+  --color-footer: var(--footer);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -70,29 +61,61 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-soft: var(--soft);
+  --color-surface: var(--surface);
+  --color-challenge-gold: var(--challenge-gold);
+  --color-foundation-green: var(--foundation-green);
+  --color-foundation-maroon: var(--foundation-maroon);
+  --color-foundation-gold: var(--foundation-gold);
+  --color-foundation-paper: var(--foundation-paper);
+  --color-foundation-sage: var(--foundation-sage);
+  --color-foundation-ink: var(--foundation-ink);
+  --color-edu-navy: var(--edu-navy);
+  --color-edu-royal: var(--edu-royal);
+  --color-edu-sky: var(--edu-sky);
+  --color-edu-paper: var(--edu-paper);
+  --color-edu-ink: var(--edu-ink);
+  --color-crm-success: var(--crm-success);
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
+  --crm-success: oklch(0.52 0.13 160);
+  --radius: 0.375rem;
+  /* RILOYD Foundation brand palette: fixed across site themes. */
+  --foundation-green: #123d30;
+  --foundation-maroon: #8b1426;
+  --foundation-gold: #d9b65d;
+  --foundation-paper: #f8f8f5;
+  --foundation-sage: #e8f0ea;
+  --foundation-ink: #17221d;
+  /* Education Support registration palette (navy / royal blue): fixed across site themes. */
+  --edu-navy: #0b1f4b;
+  --edu-royal: #1d4ed8;
+  --edu-sky: #eaf0ff;
+  --edu-paper: #ffffff;
+  --edu-ink: #0f172a;
+  --background: oklch(0.055 0 0);
+  --footer: oklch(0 0 0);
+  --foreground: oklch(0.985 0 0);
+  --soft: oklch(0.84 0 0);
+  --surface: oklch(0.085 0 0);
+  --card: oklch(0.13 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.13 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.625 0.27 28);
+  --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
   --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
+  --muted-foreground: oklch(0.72 0 0);
   --accent: oklch(0.968 0.007 247.896);
   --accent-foreground: oklch(0.208 0.042 265.755);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.25 0 0);
+  --input: oklch(0.25 0 0);
+  --ring: oklch(0.625 0.27 28);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -143,6 +166,85 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+/* The original Riloyd charcoal palette remains the default. Light mode
+   switches surfaces without changing the brand's red accent. */
+.light {
+  /* Soft warm paper instead of pure white, with near-black text: calm on the eyes, still high contrast. */
+  --background: oklch(0.975 0.006 80);
+  --footer: oklch(0.945 0.007 80);
+  --foreground: oklch(0.2 0.006 40);
+  --soft: oklch(0.32 0.006 40);
+  --surface: oklch(0.948 0.007 80);
+  --card: oklch(0.995 0.002 80);
+  --card-foreground: oklch(0.2 0.006 40);
+  --popover: oklch(0.995 0.002 80);
+  --popover-foreground: oklch(0.2 0.006 40);
+  --primary: oklch(0.53 0.21 28);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.925 0.007 80);
+  --secondary-foreground: oklch(0.2 0.006 40);
+  --muted: oklch(0.93 0.007 80);
+  --muted-foreground: oklch(0.32 0.006 40);
+  --accent: oklch(0.925 0.007 80);
+  --accent-foreground: oklch(0.2 0.006 40);
+  --border: oklch(0.86 0.008 80);
+  --input: oklch(0.8 0.008 80);
+  --ring: oklch(0.53 0.21 28);
+}
+/* Picture banners without bright light-theme artwork keep their dark photo shading and the dark palette, so light text stays readable on dark photos. */
+.light :is(section, .why-panel):has(> :is(img.absolute, .hero-shade, .why-shade, .contact-shade, .contact-page-hero-shade, .global-hero-shade, .global-cta-shade, .about-hero-shade, .about-vision-shade, .about-global-shade)):not(:has(.art-light)) {
+  --background: oklch(0.055 0 0);
+  --foreground: oklch(0.985 0 0);
+  --soft: oklch(0.84 0 0);
+  --surface: oklch(0.085 0 0);
+  color: var(--foreground);
+}
+/* Dark theme for the Foundation and Education Support pages: surfaces turn dark and text turns light.
+   Brand blocks (hero bands, the 20% card) keep the original palette, so they look the same in every theme. */
+:root:not(.light) .education-support-page {
+  --edu-navy: #e6ecff;
+  --edu-royal: #86a8ff;
+  --edu-sky: #0b1430;
+  --edu-paper: #111c3a;
+  --edu-ink: #d5dcf0;
+}
+:root:not(.light) .foundation-page {
+  --foundation-green: #86cfa9;
+  --foundation-maroon: #f28b9b;
+  --foundation-gold: #e2c06b;
+  --foundation-paper: #0e1613;
+  --foundation-sage: #16221d;
+  --foundation-ink: #dce7e0;
+}
+:root:not(.light) .education-support-page .edu-brand {
+  --edu-navy: #0b1f4b; --edu-royal: #1d4ed8; --edu-sky: #eaf0ff; --edu-paper: #ffffff; --edu-ink: #0f172a;
+}
+:root:not(.light) .foundation-page .foundation-brand {
+  --foundation-green: #123d30; --foundation-maroon: #8b1426; --foundation-gold: #d9b65d;
+  --foundation-paper: #f8f8f5; --foundation-sage: #e8f0ea; --foundation-ink: #17221d;
+}
+:root:not(.light) :is(.education-support-page, .foundation-page) :is(input, select, textarea) { color-scheme: dark; }
+/* Light theme: calm neutral page background like the rest of the site. */
+.light .education-support-page { --edu-sky: #eef2f9; }
+.light .foundation-page { --foundation-sage: #edf2ee; }
+.light .location-band { background: var(--surface); }
+.light .registration-form input[type="date"], .light .registration-form select { color-scheme: light; }
+.light .incubation-community-shade { background: linear-gradient(90deg, oklch(0.03 0 0 / .94), oklch(0.03 0 0 / .68) 48%, transparent 82%); }
+/* Banners with bright light-theme artwork show the bright photo on every screen size; words use full-strength dark text.
+   Computers and tablets show the photo with no wash; phones stack the words over the photo, so a soft paper wash keeps them readable. */
+.light :is(section, .why-panel):has(.art-light):has(> :is(.hero-shade, .why-shade, .contact-shade, .contact-page-hero-shade, .global-hero-shade, .global-cta-shade, .about-hero-shade, .about-vision-shade, .about-global-shade)) :is(p, li) { color: var(--foreground); font-weight: 500; }
+.light :is(section, .why-panel):has(.art-light) > :is(.hero-shade, .why-shade, .contact-shade, .contact-page-hero-shade, .global-hero-shade, .global-cta-shade, .about-hero-shade, .about-vision-shade, .about-global-shade) {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--background) 78%, transparent) 0%, color-mix(in oklab, var(--background) 62%, transparent) 55%, color-mix(in oklab, var(--background) 48%, transparent) 100%);
+}
+@media (min-width: 768px) {
+  .light :is(section, .why-panel):has(.art-light) > :is(.hero-shade, .why-shade, .contact-shade, .contact-page-hero-shade, .global-hero-shade, .global-cta-shade, .about-hero-shade, .about-vision-shade, .about-global-shade) { background: none; }
+}
+.light .about-image-shade { background: none; }
+.light .hero-shell::after { background: none; }
+.light .headline { text-shadow: none; }
+.art-light { display: none; }
+.light .art-dark { display: none; } .light .art-light { display: block; }
+
 @layer base {
   * {
     border-color: var(--color-border);
@@ -151,5 +253,410 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
   }
+
+  html { scroll-behavior: smooth; }
 }
+
+.hero-shade {
+  background: linear-gradient(90deg, oklch(0.03 0 0 / 0.99) 0%, oklch(0.03 0 0 / 0.9) 31%, oklch(0.03 0 0 / 0.25) 62%, oklch(0.03 0 0 / 0.24) 100%);
+}
+.prototype-hero { min-height: 580px; }
+.innovators-hero { min-height: 530px; }
+.innovators-shade { background: linear-gradient(90deg, var(--background), color-mix(in oklab, var(--background) 86%, transparent) 30%, transparent 68%); }
+.innovators-tricolour { --india-saffron: oklch(0.76 0.17 58); --india-white: oklch(0.985 0 0); --india-green: oklch(0.5 0.14 145); background: linear-gradient(90deg, var(--india-saffron) 0% 33.33%, var(--india-white) 33.33% 66.66%, var(--india-green) 66.66% 100%); }
+.young-challenge-page {
+  --background: oklch(0.07 0 0);
+  --foreground: oklch(0.985 0 0);
+  --surface: oklch(0.12 0.008 20);
+  --primary: oklch(0.62 0.255 25);
+  --primary-foreground: oklch(1 0 0);
+  --muted-foreground: oklch(0.79 0.005 20);
+  --border: oklch(0.3 0.04 20);
+  --input: oklch(0.32 0.025 20);
+  --secondary: oklch(0.95 0 0);
+  --secondary-foreground: oklch(0.15 0 0);
+  --challenge-gold: oklch(0.83 0.16 82);
+  --challenge-wine: oklch(0.2 0.065 23);
+  --challenge-glow: 0 0 28px color-mix(in oklab, var(--primary) 24%, transparent);
+  color-scheme: dark;
+}
+.young-challenge-hero { min-height: 590px; }
+.young-challenge-hero > img { object-position: center center; }
+.young-challenge-shade { background: linear-gradient(90deg, var(--background), color-mix(in oklab, var(--background) 92%, transparent) 25%, transparent 64%); }
+.young-benefits-band { background: var(--challenge-wine); }
+.young-challenge-page > section > div { padding-top: 40px; padding-bottom: 40px; }
+.young-challenge-page #journey h2, .young-challenge-page #fees-rewards h2 { font-size: 28px; text-transform: uppercase; }
+.young-challenge-page #journey ol { gap: 12px; }
+.young-challenge-page #journey li { position: relative; padding: 20px 16px; border: 1px solid var(--border); border-radius: 8px; background: linear-gradient(145deg, var(--surface), var(--background)); }
+.young-challenge-page #journey li > span { display: inline-grid; width: 40px; height: 40px; place-items: center; border-radius: 50%; background: var(--primary); color: var(--primary-foreground); font-size: 20px; box-shadow: var(--challenge-glow); }
+.young-challenge-page #journey li h3 { min-height: 40px; }
+.young-challenge-page #fees-rewards { border-top: 1px solid var(--primary); }
+.young-challenge-page #fees-rewards article { border-top: 3px solid var(--primary); }
+.young-challenge-page #fees-rewards article:nth-child(2) { border-top-color: var(--challenge-gold); }
+.young-challenge-page #fees-rewards article:nth-child(3) { border-top-color: var(--chart-2); }
+.young-rewards-total { background: var(--primary); color: var(--primary-foreground); box-shadow: var(--challenge-glow); }
+.young-challenge-page .registration-form select { color-scheme: dark; }
+.light .young-challenge-page {
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.2 0.005 25);
+  --surface: oklch(0.96 0.005 25);
+  --primary: oklch(0.52 0.21 25);
+  --muted-foreground: oklch(0.43 0.008 25);
+  --border: oklch(0.82 0.015 25);
+  --input: oklch(0.75 0.015 25);
+  --challenge-gold: oklch(0.48 0.09 75);
+  --challenge-wine: oklch(0.94 0.025 25);
+  --secondary: oklch(0.93 0.006 25);
+  --secondary-foreground: oklch(0.2 0 0);
+  color-scheme: light;
+}
+.young-challenge-page :is(input,textarea,select) { min-width: 0; font-size: 16px; }
+.young-challenge-page :is(input,select) { min-height: 44px; }
+.young-challenge-page :is(form,fieldset,section > div,section > div > div) { min-width: 0; }
+.young-challenge-page .young-section-nav a { min-height: 36px; white-space: normal; }
+.young-challenge-page [data-slot="checkbox"] { flex-shrink: 0; }
+.young-challenge-page .young-hero-copy { position: relative; z-index: 1; }
+.light .young-challenge-page .young-challenge-hero {
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.2 0.005 25);
+  --muted-foreground: oklch(0.43 0.008 25);
+  color: var(--foreground);
+}
+.young-challenge-page .young-section-nav a { color: var(--foreground); }
+@media (max-width: 639px) {
+  .young-challenge-page .young-challenge-hero { min-height: 0; padding-bottom: 250px; }
+  .young-challenge-page .young-challenge-hero > img { height: 300px; }
+  .young-challenge-page .young-challenge-shade { background: linear-gradient(180deg, var(--background) 0%, var(--background) calc(100% - 290px), transparent calc(100% - 220px)); }
+  .young-challenge-page .young-hero-copy h1 > span:nth-child(3) { font-size: 32px; }
+  .young-challenge-page .young-hero-copy > p:nth-of-type(2) { font-size: 18px; }
+  .young-challenge-page .young-hero-copy > div:last-child { display: grid; gap: 10px; }
+  .young-challenge-page .young-hero-copy > div:last-child a { width: 100%; }
+  .young-challenge-page #journey li { display: grid; grid-template-columns: 40px minmax(0,1fr); column-gap: 14px; padding: 16px; }
+  .young-challenge-page #journey li > span { grid-row: span 2; }
+  .young-challenge-page #journey li h3 { margin-top: 0; }
+  .young-challenge-page #journey li p { margin-top: 7px; }
+  .young-challenge-page #fees-rewards h3 { font-size: 18px; }
+  .young-challenge-page #fees-rewards article { padding: 12px 8px; }
+  .young-challenge-page #fees-rewards article a { gap: 4px; }
+  .young-challenge-page #fees-rewards .grid-cols-\[110px_1fr\] { grid-template-columns: 78px minmax(0,1fr); gap: 12px; }
+  .young-challenge-page #fees-rewards .grid-cols-\[110px_1fr\] p.text-lg { font-size: 16px; }
+  .young-challenge-page .young-rewards-total { font-size: 16px; }
+  .young-challenge-page #idea-video ol > li { grid-template-columns: 70px minmax(0,1fr); gap: 12px; }
+  .young-challenge-page :is(#registration,#market-plan,#project-ideas) button { max-width: 100%; white-space: normal; height: auto; min-height: 44px; }
+  .young-challenge-page > section:last-child a { white-space: normal; height: auto; min-height: 48px; }
+}
+@media (max-width: 1023px) and (min-width: 640px) { .young-challenge-hero > img { object-position: 58% center; } .young-challenge-shade { background: linear-gradient(90deg, var(--background), color-mix(in oklab, var(--background) 90%, transparent) 40%, transparent); } }
+@media (max-width: 639px) {
+  .young-challenge-hero { min-height: 820px; }
+  .young-challenge-hero > img { object-position: 70% bottom; height: 410px; top: auto; }
+  .young-challenge-shade { background: linear-gradient(180deg, var(--background) 0%, var(--background) 49%, color-mix(in oklab, var(--background) 72%, transparent) 65%, transparent 85%); }
+  .young-challenge-page > section > div { padding-top: 32px; padding-bottom: 32px; }
+  .young-challenge-page #journey li h3 { min-height: 0; }
+}
+@media (max-width: 639px) {
+  .innovators-hero { min-height: 700px; }
+  .innovators-hero > img { object-position: 65% bottom; }
+  .innovators-shade { background: linear-gradient(180deg, var(--background), color-mix(in oklab, var(--background) 94%, transparent) 40%, color-mix(in oklab, var(--background) 18%, transparent) 78%); }
+}
+.prototype-hero .hero-shade { background: linear-gradient(90deg, var(--background) 0%, color-mix(in oklab, var(--background) 92%, transparent) 30%, color-mix(in oklab, var(--background) 20%, transparent) 70%, transparent); }
+.prototype-page article { transition: border-color .2s ease, transform .2s ease; }
+.prototype-page article:hover { border-color: var(--primary); transform: translateY(-3px); }
+@media (max-width: 639px) {
+  .prototype-hero { min-height: 690px; }
+  .prototype-hero > img { object-position: 64% center; }
+  .prototype-hero .hero-shade { background: linear-gradient(180deg, var(--background) 0%, color-mix(in oklab, var(--background) 90%, transparent) 40%, color-mix(in oklab, var(--background) 30%, transparent) 75%, transparent); }
+}
+.hero-shell::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, oklch(0.03 0 0 / .7), transparent 35%); pointer-events: none; }
+.headline { letter-spacing: 0; text-shadow: 0 3px 20px oklch(0 0 0 / .45); }
+.eyebrow { letter-spacing: .38em; }
+.eyebrow::after { content: ""; display: inline-block; width: 2.2rem; height: 2px; margin-left: 1rem; vertical-align: middle; background: var(--primary); }
+.nav-link { position: relative; padding-block: .75rem; }
+.nav-link::after { content: ""; position: absolute; left: 0; right: 100%; bottom: .25rem; height: 2px; background: var(--primary); transition: right .2s ease; }
+.nav-link:hover::after, .nav-active::after { right: 0; }
+.outline-cta { border-color: var(--primary); transition: background-color .2s ease; }
+.outline-cta:hover, .solid-cta:hover { background-color: oklch(0.54 0.25 28); }
+.solid-cta { transition: background-color .2s ease, transform .2s ease; }
+.solid-cta:hover { transform: translateY(-2px); }
+.mobile-menu summary { list-style: none; cursor: pointer; }
+.mobile-menu summary::-webkit-details-marker { display: none; }
+.service-item:nth-child(odd) { border-bottom: 1px solid var(--border); }
+.service-icon { background: var(--surface); border: 1px solid var(--border); }
+.stat-block { border-color: var(--border); }
+.why-shade { background: linear-gradient(90deg, oklch(0.03 0 0 / .97), oklch(0.03 0 0 / .8) 50%, oklch(0.03 0 0 / .2)); }
+.contact-background { object-position: center 55%; }
+.contact-shade { background: linear-gradient(90deg, oklch(0.03 0 0 / .94) 0%, oklch(0.03 0 0 / .77) 34%, oklch(0.03 0 0 / .24) 58%, oklch(0.03 0 0 / .08) 100%); }
+.contact-link { display: flex; flex-direction: column; align-items: center; gap: .55rem; font-size: .75rem; text-align: center; border-radius: .75rem; padding: .25rem; outline: none; }
+.contact-link > svg { color: var(--primary); border: 2px solid var(--primary); border-radius: 999px; padding: .42rem; width: 2.25rem; height: 2.25rem; transition: background-color .2s ease, color .2s ease; }
+.contact-link:hover > svg { background: var(--primary); color: var(--primary-foreground); }
+.contact-link:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.contact-link:focus-visible > svg { background: var(--primary); color: var(--primary-foreground); }
+.contact-link span, .contact-link small { display: block; }
+.contact-link b { font-size: .75rem; }
+.contact-link small { margin-top: .2rem; color: var(--soft); }
+.contact-page-hero-shade { background: linear-gradient(90deg, oklch(0.03 0 0 / .98) 0%, oklch(0.03 0 0 / .9) 35%, oklch(0.03 0 0 / .35) 68%, oklch(0.03 0 0 / .56) 100%); }
+.section-label { position: relative; padding-left: 3rem; font-size: .625rem; font-weight: 700; letter-spacing: .32em; text-transform: uppercase; color: var(--soft); }
+.section-label::before { content: ""; position: absolute; left: 0; top: 50%; width: 2rem; height: 2px; background: var(--primary); }
+.contact-field { position: relative; display: block; }
+.contact-field > svg { position: absolute; z-index: 1; left: .9rem; top: .95rem; width: 1rem; height: 1rem; color: var(--soft); }
+.contact-field > input { padding-left: 2.6rem; }
+.location-band { background: oklch(0.075 0 0); }
+.location-grid { opacity: .3; background-image: linear-gradient(25deg, transparent 46%, var(--border) 47%, var(--border) 49%, transparent 50%), linear-gradient(155deg, transparent 46%, var(--border) 47%, var(--border) 49%, transparent 50%); background-size: 150px 90px; }
+.faq-item[open] summary span { transform: rotate(45deg); }
+.faq-item summary span { transition: transform .2s ease; }
+.registration-hero { background: radial-gradient(circle at 78% 42%, oklch(0.2 0.02 28 / .35), transparent 24%), linear-gradient(115deg, var(--background), var(--surface)); }
+.registration-grid { opacity: .22; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 56px 56px; mask-image: linear-gradient(90deg, transparent, black 45%, black); }
+.registration-card { transition: border-color .2s ease, transform .2s ease, background-color .2s ease; }
+.registration-card:hover { border-color: var(--primary); background-color: var(--surface); transform: translateY(-4px); }
+.registration-form input[type="date"] { color-scheme: dark; }
+.registration-form select { color-scheme: dark; }
+.registration-form input[type="file"]::file-selector-button { margin-right: .75rem; border: 0; border-radius: 999px; background: var(--primary); padding: .45rem .8rem; color: var(--primary-foreground); font-weight: 700; }
+.social-link { display: grid; width: 1.8rem; height: 1.8rem; place-items: center; border-radius: 999px; background: var(--foreground); color: var(--background); transition: background-color .2s ease; }
+.social-link:hover { background: var(--primary); color: var(--primary-foreground); }
+.hero-shell i { width: 3px; height: 3px; background: var(--primary); }
+.hero-shell b { width: 2.4rem; height: 2px; background: var(--primary); }
+.global-hero-shade { background: linear-gradient(90deg, oklch(0.03 0 0 / .97), oklch(0.03 0 0 / .78) 32%, transparent 69%); }
+.incubation-community-shade { background: linear-gradient(90deg, var(--background) 0%, var(--background) 26%, oklch(0.03 0 0 / .86) 48%, oklch(0.03 0 0 / .2) 82%); }
+.global-cta-shade { background: linear-gradient(90deg, oklch(0.03 0 0 / .92), oklch(0.03 0 0 / .5) 48%, transparent 80%); }
+.about-hero-shade { background: linear-gradient(90deg, oklch(0.02 0 0 / .98) 0%, oklch(0.02 0 0 / .9) 34%, oklch(0.02 0 0 / .24) 66%, oklch(0.02 0 0 / .18) 100%); }
+.about-vision-shade { background: linear-gradient(90deg, oklch(0.02 0 0 / .96) 0%, oklch(0.02 0 0 / .82) 56%, oklch(0.02 0 0 / .28) 100%); }
+.about-image-shade { background: linear-gradient(180deg, oklch(0.02 0 0 / .12), transparent 45%, oklch(0.02 0 0 / .35)); }
+.about-global-shade { background: linear-gradient(90deg, oklch(0.02 0 0 / .98) 0%, oklch(0.02 0 0 / .9) 45%, oklch(0.02 0 0 / .46) 75%, oklch(0.02 0 0 / .34) 100%); }
+@media (min-width: 1024px) { .service-item:nth-child(odd) { border-bottom: 0; } }
+@media (max-width: 640px) {
+  .hero-shade { background: linear-gradient(90deg, oklch(0.03 0 0 / .96), oklch(0.03 0 0 / .66)); }
+  .hero-shell { min-height: 560px; }
+  .eyebrow { letter-spacing: .22em; }
+  .contact-background { object-position: 57% center; }
+  .contact-shade { background: linear-gradient(90deg, oklch(0.03 0 0 / .98), oklch(0.03 0 0 / .72)); }
+  .contact-page-hero-shade { background: linear-gradient(90deg, oklch(0.03 0 0 / .98), oklch(0.03 0 0 / .72)); }
+  .contact-link { min-width: 0; }
+  .contact-link small { font-size: .625rem; }
+  .registration-grid { background-size: 34px 34px; }
+  .global-hero-shade { background: linear-gradient(90deg, oklch(0.03 0 0 / .94), oklch(0.03 0 0 / .67)); }
+  .about-hero-shade, .about-vision-shade, .about-global-shade { background: linear-gradient(90deg, oklch(0.02 0 0 / .96), oklch(0.02 0 0 / .7)); }
+  .incubation-community-shade { background: linear-gradient(90deg, oklch(0.03 0 0 / .95), oklch(0.03 0 0 / .65)); }
+.global-cta-shade { background: linear-gradient(90deg, oklch(0.03 0 0 / .95), oklch(0.03 0 0 / .5)); }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+
+/* Country logos ship in two artworks: one for dark surfaces, one for light.
+   Each theme shows only its matching file so flag colours stay intact. */
+.logo-show-dark { display: block; }
+.light .logo-show-dark { display: none; }
+.logo-show-light { display: none; }
+.light .logo-show-light { display: block; }
+
+.logo-preview-light {
+  --surface: oklch(0.94 0.004 80);
+  --foreground: oklch(0.16 0.005 40);
+  --border: oklch(0.81 0.005 80);
+}
+.logo-preview-dark {
+  --surface: oklch(0.085 0 0);
+  --foreground: oklch(0.985 0 0);
+  --border: oklch(0.25 0 0);
+}
+
+/* White card surfaces: supporting text reads black, not grey. */
+.bg-card {
+  --muted-foreground: var(--card-foreground);
+  --soft: var(--card-foreground);
+}
+
+/* Footer copyright: each of the three legal lines must stay on one row on phones,
+   so the size shrinks just enough as the screen narrows. */
+.copyright-bar { font-size: max(7px, min(9px, 2.1vw)); }
+@media (min-width: 640px) { .copyright-bar { font-size: 10px; } }
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* The employee workspace has a restrained palette, independent of the public site themes. */
+.crm-workspace, [role="dialog"]:has(form [name="ownerId"]), [role="dialog"]:has(input[name="employeeCode"]) {
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.24 0.01 260);
+  --surface: oklch(0.965 0.005 260);
+  --muted-foreground: oklch(0.49 0.01 260);
+  --border: oklch(0.88 0.005 260);
+  --input: var(--border);
+  --primary: oklch(0.53 0.2 25);
+  --primary-foreground: oklch(1 0 0);
+  --accent: oklch(0.94 0.005 260);
+  --accent-foreground: var(--foreground);
+  letter-spacing: 0;
+}
+/* The admin workspace uses the same restrained, always-readable palette in every site theme. */
+.admin-workspace {
+  --background: oklch(0.975 0.003 260);
+  --foreground: oklch(0.22 0.012 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.012 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.012 260);
+  --surface: oklch(0.965 0.004 260);
+  --soft: oklch(0.4 0.01 260);
+  --muted: oklch(0.955 0.004 260);
+  --muted-foreground: oklch(0.47 0.012 260);
+  --secondary: oklch(0.955 0.004 260);
+  --secondary-foreground: oklch(0.22 0.012 260);
+  --border: oklch(0.89 0.005 260);
+  --input: oklch(0.86 0.006 260);
+  --primary: oklch(0.53 0.2 25);
+  --primary-foreground: oklch(1 0 0);
+  --accent: oklch(0.95 0.012 25);
+  --accent-foreground: oklch(0.38 0.12 25);
+  --ring: oklch(0.53 0.2 25);
+  color-scheme: light;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+.admin-workspace section { background-image: none !important; }
+/* Each section already gets a title in the admin header, so the panel's own first heading is not repeated. */
+.admin-panel-body > :is(section, div):first-of-type > h2:first-child { display: none; }
+.admin-panel-body > :is(section, div):first-of-type:has(> h2:first-child) { margin-top: 1.25rem; }
+.admin-workspace :is(h1, h2, h3, h4, p, li, span, a, label) { text-shadow: none; }
+.crm-workspace section { background-image: none !important; }
+.crm-workspace header { background: var(--background); border-bottom: 1px solid var(--border); }
+.crm-progress { accent-color: var(--crm-success); }
+.crm-workspace input, .crm-workspace select { max-width: 100%; }
+
+/* Employee & admin workspaces (Admin, CRM, BDE/BDM, My Volunteers, Volunteer): one premium light palette with a dark menu,
+   independent of the public site themes. Placed after the older workspace palettes so it wins. */
+.dash-shell, html:has(.dash-shell) {
+  --background: oklch(0.975 0.003 260);
+  --foreground: oklch(0.205 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.205 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.205 0 0);
+  --surface: oklch(0.965 0.003 260);
+  --soft: oklch(0.42 0 0);
+  --muted: oklch(0.955 0.003 260);
+  --muted-foreground: oklch(0.52 0 0);
+  --secondary: oklch(0.955 0.003 260);
+  --secondary-foreground: oklch(0.205 0 0);
+  --border: oklch(0.925 0 0);
+  --input: oklch(0.88 0 0);
+  --primary: oklch(0.42 0.14 18);
+  --primary-foreground: oklch(1 0 0);
+  --accent: oklch(0.955 0.02 18);
+  --accent-foreground: oklch(0.38 0.13 18);
+  --ring: oklch(0.42 0.14 18);
+  --destructive: oklch(0.6 0.19 25);
+  --dash-success: oklch(0.55 0.12 160);
+  --dash-warning: oklch(0.73 0.15 75);
+  --dash-danger: oklch(0.6 0.19 25);
+  --dash-side-bg: oklch(0.195 0 0);
+  --dash-side-fg: oklch(0.96 0 0);
+  --dash-side-muted: oklch(0.68 0 0);
+  --dash-side-line: oklch(0.28 0 0);
+  --dash-side-hover: oklch(0.25 0 0);
+  --dash-side-active: oklch(0.42 0.14 18);
+  --dash-side-active-fg: oklch(1 0 0);
+  font-family: "Inter", "Montserrat", sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  color-scheme: light;
+}
+.dash-shell .bg-card { --muted-foreground: oklch(0.5 0 0); }
+/* Workspace themes chosen from the top bar (saved per device): light (above), dark and eye comfort.
+   Set on <html> so dialogs and menus that open outside the workspace frame use the same readable colours. */
+html[data-dash-theme="dark"]:has(.dash-shell), html[data-dash-theme="dark"] .dash-shell {
+  --background: oklch(0.17 0.006 260);
+  --foreground: oklch(0.95 0.003 260);
+  --card: oklch(0.215 0.007 260);
+  --card-foreground: oklch(0.95 0.003 260);
+  --popover: oklch(0.235 0.008 260);
+  --popover-foreground: oklch(0.95 0.003 260);
+  --surface: oklch(0.2 0.006 260);
+  --soft: oklch(0.82 0.005 260);
+  --muted: oklch(0.26 0.007 260);
+  --muted-foreground: oklch(0.76 0.008 260);
+  --secondary: oklch(0.27 0.008 260);
+  --secondary-foreground: oklch(0.95 0.003 260);
+  --border: oklch(0.32 0.008 260);
+  --input: oklch(0.38 0.01 260);
+  --primary: oklch(0.68 0.16 22);
+  --primary-foreground: oklch(0.15 0.01 22);
+  --accent: oklch(0.3 0.05 20);
+  --accent-foreground: oklch(0.9 0.06 20);
+  --ring: oklch(0.68 0.16 22);
+  --destructive: oklch(0.7 0.18 25);
+  --dash-success: oklch(0.72 0.14 160);
+  --dash-warning: oklch(0.8 0.14 80);
+  --dash-danger: oklch(0.7 0.18 25);
+  --dash-side-bg: oklch(0.13 0.005 260);
+  --dash-side-line: oklch(0.24 0.006 260);
+  --dash-side-hover: oklch(0.21 0.006 260);
+  --dash-side-active: oklch(0.5 0.15 20);
+  color-scheme: dark;
+}
+html[data-dash-theme="dark"] .dash-shell .bg-card { --muted-foreground: oklch(0.76 0.008 260); }
+/* Eye comfort: warm paper tones, softer contrast and no pure white, for long working hours. */
+html[data-dash-theme="comfort"]:has(.dash-shell), html[data-dash-theme="comfort"] .dash-shell {
+  --background: oklch(0.945 0.022 85);
+  --foreground: oklch(0.27 0.025 60);
+  --card: oklch(0.97 0.02 85);
+  --card-foreground: oklch(0.27 0.025 60);
+  --popover: oklch(0.97 0.02 85);
+  --popover-foreground: oklch(0.27 0.025 60);
+  --surface: oklch(0.93 0.025 85);
+  --soft: oklch(0.4 0.025 60);
+  --muted: oklch(0.915 0.028 85);
+  --muted-foreground: oklch(0.45 0.03 60);
+  --secondary: oklch(0.915 0.028 85);
+  --secondary-foreground: oklch(0.27 0.025 60);
+  --border: oklch(0.86 0.03 80);
+  --input: oklch(0.8 0.035 75);
+  --primary: oklch(0.45 0.13 35);
+  --primary-foreground: oklch(0.98 0.015 85);
+  --accent: oklch(0.9 0.045 60);
+  --accent-foreground: oklch(0.38 0.1 40);
+  --ring: oklch(0.45 0.13 35);
+  --dash-side-bg: oklch(0.28 0.03 55);
+  --dash-side-fg: oklch(0.94 0.025 85);
+  --dash-side-muted: oklch(0.78 0.03 80);
+  --dash-side-line: oklch(0.36 0.03 55);
+  --dash-side-hover: oklch(0.34 0.035 55);
+  --dash-side-active: oklch(0.48 0.12 40);
+  color-scheme: light;
+}
+html[data-dash-theme="comfort"] .dash-shell .bg-card { --muted-foreground: oklch(0.45 0.03 60); }
+/* Form fields stay readable in every workspace theme, including ones styled for the public site. */
+.dash-shell :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]) { color: var(--foreground); background-color: var(--card); }
+.dash-shell :is(input, textarea)::placeholder { color: var(--muted-foreground); opacity: 1; }
+.dash-shell option { color: var(--foreground); background: var(--card); }
+.dash-side { background: var(--dash-side-bg); color: var(--dash-side-fg); }
+.dash-side-scroll { scrollbar-width: thin; scrollbar-color: var(--dash-side-line) transparent; }
+.dash-nav-item {
+  position: relative; display: flex; width: 100%; align-items: center; gap: 0.75rem; border-radius: 0.5rem;
+  padding: 0.55rem 0.75rem; font-size: 0.8125rem; font-weight: 500; color: var(--dash-side-muted);
+  transition: background-color .15s, color .15s;
+}
+.dash-nav-item:hover { background: var(--dash-side-hover); color: var(--dash-side-fg); }
+.dash-nav-item:focus-visible { outline: 2px solid var(--dash-side-active); outline-offset: 1px; }
+.dash-nav-active, .dash-nav-active:hover { background: var(--dash-side-active); color: var(--dash-side-active-fg); font-weight: 600; }
+.dash-nav-badge {
+  min-width: 1.25rem; border-radius: 999px; padding: 0 0.4rem; font-size: 10px; font-weight: 700; line-height: 1.25rem; text-align: center;
+  background: color-mix(in oklab, var(--dash-side-fg) 14%, transparent); color: var(--dash-side-fg);
+}
+.dash-nav-active .dash-nav-badge { background: color-mix(in oklab, white 25%, transparent); }
+.dash-topbar { background: color-mix(in oklab, var(--background) 88%, transparent); backdrop-filter: blur(10px); }
+.dash-card { border: 1px solid var(--border); border-radius: 0.75rem; background: var(--card); color: var(--card-foreground); box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent); }
+.dash-gate-art {
+  background:
+    radial-gradient(60% 50% at 85% 15%, color-mix(in oklab, var(--dash-side-active) 45%, transparent), transparent 70%),
+    radial-gradient(50% 40% at 10% 90%, color-mix(in oklab, var(--dash-side-active) 25%, transparent), transparent 70%),
+    repeating-linear-gradient(115deg, transparent 0 46px, color-mix(in oklab, var(--dash-side-fg) 4%, transparent) 46px 47px);
+}
+.dash-shell table thead th { letter-spacing: 0.04em; }
+/* Keep sideways swipes for the workspace menu instead of the browser's back/forward gesture where the browser allows it. */
+html:has(.dash-shell), body:has(.dash-shell) { overscroll-behavior-x: none; }
+
+.dash-logo-on-dark { display: none; }
+html[data-dash-theme="dark"] .dash-logo-on-dark { display: block; }
+html[data-dash-theme="dark"] .dash-logo-on-light { display: none; }

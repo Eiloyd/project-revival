@@ -1,0 +1,49 @@
+import { getRequestHeader } from "@tanstack/react-start/server";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { logFailure, submissionFailure } from "./db-errors.server";
+
+/**
+ * With `failOpen`, an unavailable database does not block the visitor (used where a Google Sheet backup exists).
+ * With `ipOnly`, `email` is a scope name and only that visitor's address is counted under it.
+ */
+export async function limitSubmission(email: string, opts: { failOpen?: boolean; ipOnly?: boolean } = {}) {
+  const ip = getRequestHeader("cf-connecting-ip");
+  // The hosting edge sets this header; do not trust arbitrary forwarded headers.
+  const keys = opts.ipOnly ? (ip ? [`${email}:${ip}`] : []) : [email.trim().toLowerCase(), ...(ip ? [ip] : [])];
+  for (const value of keys) {
+    const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+    const key = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
+    const { data, error } = await supabaseAdmin.rpc("consume_form_submission_limit", { _key_hash: key });
+    if (error) { if (opts.failOpen) { logFailure("rpc", "consume_form_submission_limit", error); return; } throw submissionFailure("Submissions are unavailable right now. Please try again.", "rpc", "consume_form_submission_limit", error); }
+    if (!data) throw new Error("Too many submissions. Please try again after 15 minutes.");
+  }
+}
+
+export async function storeRegistration(parsed: ReturnType<typeof import("./submission-schemas").validateRegistration>) {
+  await limitSubmission(parsed.email);
+  const id = crypto.randomUUID();
+  let documentPath: string | null = null;
+  if (parsed.document) {
+    const file = parsed.document;
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const extension = file.name.split(".").pop()?.toLowerCase();
+    const isPdf = extension === "pdf" && new TextDecoder().decode(bytes.slice(0, 5)) === "%PDF-";
+    const isZip = ["docx", "pptx"].includes(extension ?? "") && bytes[0] === 0x50 && bytes[1] === 0x4b;
+    const isOffice = ["doc", "ppt"].includes(extension ?? "") && bytes[0] === 0xd0 && bytes[1] === 0xcf && bytes[2] === 0x11 && bytes[3] === 0xe0;
+    if (!isPdf && !isZip && !isOffice) throw new Error("The document content does not match its file type.");
+    documentPath = `${id}/document.${extension}`;
+    const { error } = await supabaseAdmin.storage.from("registration-documents").upload(documentPath, bytes, { contentType: file.type, upsert: false });
+    if (error) throw submissionFailure("Your document could not be saved. Please try again.", "storage upload", "registration-documents", error);
+  }
+  // The database issues the acknowledgement number (form 05) on insert.
+  const { data: saved, error } = await supabaseAdmin.from("registration_applications").insert({
+    id, category: parsed.category,
+    full_name: parsed.fullName, email: parsed.email, phone: parsed.phone,
+    details: parsed.details, coordinator_code: parsed.coordinatorCode || null, document_path: documentPath, document_name: parsed.document?.name ?? null,
+  }).select("application_code").single();
+  if (error || !saved) {
+    if (documentPath) await supabaseAdmin.storage.from("registration-documents").remove([documentPath]);
+    throw submissionFailure("Registration could not be saved. Please try again.", "insert", "registration_applications", error ?? new Error("No row returned"));
+  }
+  return { ok: true, duplicate: false, applicationCode: saved.application_code };
+}
