@@ -34,7 +34,7 @@ export const verifyAccountEmail = createServerFn({ method: 'POST' }).middleware(
     const { data: found, error } = await supabaseAdmin.auth.admin.getUserById(data.userId);
     if (error || !found.user) throw new Error('Account not found.');
     const { data: admin } = await context.supabase.rpc('has_role', { _user_id: context.userId, _role: 'admin' });
-    if (!admin && found.user.app_metadata?.created_by !== context.userId) throw new Error('Only an admin or the person who created this login can verify it.');
+    if (!admin && found.user.app_metadata?.['created_by'] !== context.userId) throw new Error('Only an admin or the person who created this login can verify it.');
     if (found.user.email_confirmed_at) return { ok: true, already: true };
     const { error: upd } = await supabaseAdmin.auth.admin.updateUserById(data.userId, { email_confirm: true });
     if (upd) throw new Error('The email could not be verified. Please try again.');

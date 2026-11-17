@@ -22,7 +22,7 @@ export function temporaryPasswordProblem(pw: string): string | null {
 }
 
 /** A readable temporary password (no 0/O/1/l look-alikes), e.g. "Riloyd-7KQ4-M9TX". */
-export function generateTemporaryPassword(random: (n: number) => number = n => crypto.getRandomValues(new Uint32Array(1))[0] % n): string {
+export function generateTemporaryPassword(random: (n: number) => number = n => (crypto.getRandomValues(new Uint32Array(1))[0] ?? 0) % n): string {
   const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
   const part = () => Array.from({ length: 4 }, () => chars[random(chars.length)]).join('');
   let pw = `Riloyd-${part()}-${part()}`;
@@ -48,5 +48,5 @@ export function maySetTemporaryPassword(account: { lastSignInAt: string | null |
 
 /** The first-login flag lives in app_metadata, which only the server can write. */
 export function mustChangePassword(appMetadata: unknown): boolean {
-  return Boolean(appMetadata && typeof appMetadata === 'object' && (appMetadata as Record<string, unknown>).must_change_password === true);
+  return Boolean(appMetadata && typeof appMetadata === 'object' && (appMetadata as Record<string, unknown>)['must_change_password'] === true);
 }

@@ -36,7 +36,7 @@ export async function ensureLogin(admin: SupabaseClient, input: { email: string;
     if (error || !data.user) throw new Error(/registered|exists/i.test(error?.message ?? '') ? 'An account with this email already exists.' : 'The login could not be created. Please try again.');
     user = data.user; created = true; passwordSet = Boolean(password);
   } else {
-    const patch: Record<string, unknown> = {};
+    const patch: { password?: string; app_metadata?: Record<string, unknown>; email_confirm?: boolean } = {};
     if (password) {
       if (!maySetTemporaryPassword({ lastSignInAt: user.last_sign_in_at, mustChange: mustChangePassword(user.app_metadata) }))
         throw new Error('This person already uses their own password, so it cannot be replaced. They can use "Forgot password" on the sign-in page.');
