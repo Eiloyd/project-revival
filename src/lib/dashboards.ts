@@ -22,7 +22,7 @@ export const dashboards: Record<DashboardKey, { path: DashboardPath; label: stri
 };
 
 /** Paths that use the dashboard frame (no public header/footer). */
-export const workspacePaths = ['/login', ...dashboardKeys.map(k => dashboards[k].path)] as readonly string[];
+export const workspacePaths = ['/login', '/crm/sales', ...dashboardKeys.map(k => dashboards[k].path)] as readonly string[];
 
 /** Keeps only known dashboards, once each, in the standard order. */
 export function parseDashboards(value: unknown): DashboardKey[] {

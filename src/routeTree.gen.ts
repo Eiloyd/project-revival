@@ -48,6 +48,7 @@ import { Route as BusinessesIndexRouteImport } from './routes/businesses.index'
 import { Route as BusinessesSlugRouteImport } from './routes/businesses.$slug'
 import { Route as CareersIndexRouteImport } from './routes/careers.index'
 import { Route as CareersCodeRouteImport } from './routes/careers.$code'
+import { Route as CrmSalesRouteImport } from './routes/crm_.sales'
 import { Route as GlobalPresenceIndexRouteImport } from './routes/global-presence.index'
 import { Route as GlobalPresenceSlugRouteImport } from './routes/global-presence.$slug'
 import { Route as InvestorsIndexRouteImport } from './routes/investors.index'
@@ -270,6 +271,11 @@ const CareersCodeRoute = CareersCodeRouteImport.update({
   path: '/careers/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CrmSalesRoute = CrmSalesRouteImport.update({
+  id: '/crm_/sales',
+  path: '/crm/sales',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GlobalPresenceIndexRoute = GlobalPresenceIndexRouteImport.update({
   id: '/global-presence/',
   path: '/global-presence/',
@@ -446,6 +452,7 @@ export interface FileRoutesByFullPath {
   '/young-innovators-2026': typeof YoungInnovators2026Route
   '/businesses/$slug': typeof BusinessesSlugRoute
   '/careers/$code': typeof CareersCodeRoute
+  '/crm/sales': typeof CrmSalesRoute
   '/global-presence/$slug': typeof GlobalPresenceSlugRoute
   '/investors/$slug': typeof InvestorsSlugRoute
   '/mentors/$slug': typeof MentorsSlugRoute
@@ -513,6 +520,7 @@ export interface FileRoutesByTo {
   '/young-innovators-2026': typeof YoungInnovators2026Route
   '/businesses/$slug': typeof BusinessesSlugRoute
   '/careers/$code': typeof CareersCodeRoute
+  '/crm/sales': typeof CrmSalesRoute
   '/global-presence/$slug': typeof GlobalPresenceSlugRoute
   '/investors/$slug': typeof InvestorsSlugRoute
   '/mentors/$slug': typeof MentorsSlugRoute
@@ -581,6 +589,7 @@ export interface FileRoutesById {
   '/young-innovators-2026': typeof YoungInnovators2026Route
   '/businesses/$slug': typeof BusinessesSlugRoute
   '/careers/$code': typeof CareersCodeRoute
+  '/crm_/sales': typeof CrmSalesRoute
   '/global-presence/$slug': typeof GlobalPresenceSlugRoute
   '/investors/$slug': typeof InvestorsSlugRoute
   '/mentors/$slug': typeof MentorsSlugRoute
@@ -650,6 +659,7 @@ export interface FileRouteTypes {
     | '/young-innovators-2026'
     | '/businesses/$slug'
     | '/careers/$code'
+    | '/crm/sales'
     | '/global-presence/$slug'
     | '/investors/$slug'
     | '/mentors/$slug'
@@ -717,6 +727,7 @@ export interface FileRouteTypes {
     | '/young-innovators-2026'
     | '/businesses/$slug'
     | '/careers/$code'
+    | '/crm/sales'
     | '/global-presence/$slug'
     | '/investors/$slug'
     | '/mentors/$slug'
@@ -784,6 +795,7 @@ export interface FileRouteTypes {
     | '/young-innovators-2026'
     | '/businesses/$slug'
     | '/careers/$code'
+    | '/crm_/sales'
     | '/global-presence/$slug'
     | '/investors/$slug'
     | '/mentors/$slug'
@@ -852,6 +864,7 @@ export interface RootRouteChildren {
   YoungInnovators2026Route: typeof YoungInnovators2026Route
   BusinessesSlugRoute: typeof BusinessesSlugRoute
   CareersCodeRoute: typeof CareersCodeRoute
+  CrmSalesRoute: typeof CrmSalesRoute
   GlobalPresenceSlugRoute: typeof GlobalPresenceSlugRoute
   InvestorsSlugRoute: typeof InvestorsSlugRoute
   MentorsSlugRoute: typeof MentorsSlugRoute
@@ -1157,6 +1170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CareersCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/crm_/sales': {
+      id: '/crm_/sales'
+      path: '/crm/sales'
+      fullPath: '/crm/sales'
+      preLoaderRoute: typeof CrmSalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/global-presence/': {
       id: '/global-presence/'
       path: '/global-presence'
@@ -1380,6 +1400,7 @@ const rootRouteChildren: RootRouteChildren = {
   YoungInnovators2026Route: YoungInnovators2026Route,
   BusinessesSlugRoute: BusinessesSlugRoute,
   CareersCodeRoute: CareersCodeRoute,
+  CrmSalesRoute: CrmSalesRoute,
   GlobalPresenceSlugRoute: GlobalPresenceSlugRoute,
   InvestorsSlugRoute: InvestorsSlugRoute,
   MentorsSlugRoute: MentorsSlugRoute,

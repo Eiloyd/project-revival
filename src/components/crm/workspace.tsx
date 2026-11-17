@@ -27,17 +27,18 @@ import { CoachingPanel, Customer360, DailyReportPanel, IncentiveCalculator, Lead
 import { DailyWagePanel, ZeroNudge } from './sales-pay-panel';
 
 type Data=Awaited<ReturnType<typeof getCrm>>;
-type View='overview'|'my-day'|'call-coach'|'dsr'|'sources'|'refunds'|'team-compare'|'workload'|'coaching'|'pipeline'|'contacts'|'tasks'|'support'|'targets'|'collections'|'incentives'|'pay'|'my-bde'|'team'|'inbox'|'ai'|'manufacturers'|`w-${string}`;
+export type CrmView='overview'|'my-day'|'call-coach'|'dsr'|'sources'|'refunds'|'team-compare'|'workload'|'coaching'|'pipeline'|'contacts'|'tasks'|'support'|'targets'|'collections'|'incentives'|'pay'|'my-bde'|'team'|'inbox'|'ai'|'manufacturers'|`w-${string}`;
+type View=CrmView;
 const nav=[{key:'overview',label:'Overview',icon:LayoutDashboard},{key:'my-day',label:'My day planner',icon:CalendarClock},{key:'call-coach',label:'Call notes → AI next step',icon:Lightbulb},{key:'dsr',label:'Daily sales report',icon:FileText},{key:'sources',label:'Lead sources',icon:PieChart},{key:'refunds',label:'Cancellations & refunds',icon:Undo2},{key:'team-compare',label:'Team performance',icon:BarChart3},{key:'workload',label:'Workload & reassign',icon:Shuffle},{key:'coaching',label:'Coaching & training',icon:GraduationCap},{key:'pipeline',label:'Sales pipeline',icon:Columns3},{key:'contacts',label:'Customers',icon:Users},{key:'tasks',label:'Tasks & follow-ups',icon:CheckSquare},{key:'support',label:'Support desk',icon:Headphones},{key:'targets',label:'Targets & reports',icon:Target},{key:'collections',label:'Collections',icon:Wallet},{key:'incentives',label:'Incentives',icon:Trophy},{key:'pay',label:'Daily wage & attendance',icon:Coins},{key:'my-bde',label:'My BDE',icon:Users},{key:'team',label:'Employees',icon:UserPlus},{key:'inbox',label:'Website leads',icon:Inbox},{key:'ai',label:'AI enquiry helper',icon:Sparkles},{key:'manufacturers',label:'Manufacturer onboarding',icon:Factory}] as const;
 const money=(n:number)=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(n);
 const input='mt-1 h-10 w-full rounded-md border border-border bg-background px-3 text-sm';
 
-export function CrmWorkspace(){
+export function CrmWorkspace({initialView='overview'}:{initialView?:CrmView}={}){
  const load=useServerFn(getCrm);const qc=useQueryClient();const navigate=useNavigate();
  const [signedIn,setSignedIn]=useState<boolean|null>(null);
  useEffect(()=>{void supabase.auth.getSession().then(({data})=>setSignedIn(Boolean(data.session)));const {data:sub}=supabase.auth.onAuthStateChange((e,s)=>{setSignedIn(Boolean(s));if(e==='SIGNED_IN')void qc.invalidateQueries({queryKey:['crm']});if(e==='SIGNED_OUT')qc.removeQueries({queryKey:['crm']});});return ()=>sub.subscription.unsubscribe();},[qc]);
  const query=useQuery({queryKey:['crm'],queryFn:()=>load(),retry:false,enabled:signedIn===true});
- const [view,setView]=useState<View>('overview');const [search,setSearch]=useState('');const [owner,setOwner]=useState('');const [modal,setModal]=useState<'lead'|'task'|'ticket'|'member'|'target'|null>(null);const [selected,setSelected]=useState<string|null>(null);const [error,setError]=useState('');
+ const [view,setView]=useState<View>(initialView);const [search,setSearch]=useState('');const [owner,setOwner]=useState('');const [modal,setModal]=useState<'lead'|'task'|'ticket'|'member'|'target'|null>(null);const [selected,setSelected]=useState<string|null>(null);const [error,setError]=useState('');
  const createLead=useServerFn(createCrmLead),move=useServerFn(moveCrmLead),saveMember=useServerFn(saveCrmMember),action=useServerFn(crmAction),lookup=useServerFn(crmCustomerLookup),assign=useServerFn(assignCrmLead);
  const mutation=useMutation({mutationFn:async(fn:()=>Promise<unknown>)=>fn(),onSuccess:()=>{void qc.invalidateQueries({queryKey:['crm']});setModal(null);setError('');},onError:e=>setError(e.message)});
  const [customer360,setCustomer360]=useState<string|null>(null);const [coachLead,setCoachLead]=useState<string|null>(null);const [lookupValue,setLookupValue]=useState('');const [lookupRows,setLookupRows]=useState<Record<string,unknown>[]>([]);const [note,setNote]=useState('');const [noteKind,setNoteKind]=useState<'note'|'call'|'email'|'meeting'>('note');const [month,setMonth]=useState('');

@@ -17,6 +17,10 @@
 3. Paste and run `seed.sql`.
 4. Check: run `select form_code, last_serial from public.ack_form_counters;` — six rows (01–06) with `0`. (If seed.sql is skipped, counters are created on first use, so numbers still start at 00001.)
 
+### Before running `update-2026-11-17-sales-pay-volunteer-rewards.sql`
+
+Turn on **pg_cron** first (Supabase Dashboard → Database → Extensions → search `pg_cron` → Enable). It sends the "Remove your zero" bell alert every 20 minutes before 12:00 PM IST to BDE/BDM with ₹0 collection. Without it the red banner in the CRM still works; enable pg_cron later and run the file again to add the bell alerts.
+
 Why forms failed before: a new Supabase project gives the website no permission on new tables. Without the GRANT lines at the end of `schema.sql`, every save fails with `permission denied` (error code `42501`). If you ran an older `schema.sql`, run all three steps above again.
 
 ### What each role may do

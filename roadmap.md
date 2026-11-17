@@ -1,4 +1,5 @@
 ## Collection-linked BDE/BDM pay + volunteer rewards (17 Nov 2026)
+- [x] `/crm/sales` page opens the sales workspace on Collections (Direct vs Volunteer-sourced); pg_cron switch-on note added to database/README.md
 - [x] Rules written and tested in code: attendance/wage only on verified collection days, zero-collection reminder before 12:00 PM, volunteer revenue counts for targets at 0% incentive, no mandatory volunteer target unless a fixed incentive is assigned, ₹3,000 withdrawal floor
 - [x] Sales dashboard: "Remove your zero" banner + reminder popup, Daily wage & attendance screen, Direct BDE vs Volunteer-sourced collection breakdown, target pace now includes volunteer revenue
 - [x] Volunteer dashboard: Rewards section with live progress; My Volunteers: Reward schemes tab, fixed-incentive setting, ₹3,000 minimum on withdrawal requests
