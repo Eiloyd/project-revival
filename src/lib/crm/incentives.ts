@@ -22,26 +22,33 @@ export function readSlabs(raw: unknown): IncentiveSlab[] {
 
 export type IncentiveResult = {
   status: 'no_plan' | 'no_target' | 'below_first_slab' | 'earned';
-  revenue: number; target: number; achievement: number; incentive: number;
+  /** Direct verified collection — the only revenue the incentive is paid on. */
+  revenue: number;
+  /** Volunteer-sourced revenue: counts toward target achievement, earns 0% incentive. */
+  volunteerRevenue: number;
+  target: number; achievement: number; incentive: number;
   slab: IncentiveSlab | null; next: IncentiveSlab | null; nextGap: number;
 };
 
 /**
- * Incentive = verified revenue × slab rate % + slab bonus, using the highest slab whose starting %
- * is reached (achievement = verified revenue ÷ revenue target, rounded down).
+ * Incentive = DIRECT verified revenue × slab rate % + slab bonus. The slab is the highest one whose
+ * starting % is reached, where achievement = (direct verified + volunteer-sourced revenue) ÷ target,
+ * rounded down. Volunteer revenue helps reach the target but is never paid incentive on.
  * No active plan, or no target, means no incentive — nothing is invented.
  */
-export function calculateIncentive(plan: Pick<IncentivePlan, 'slabs' | 'active'> | null | undefined, verifiedRevenue: number, target: number): IncentiveResult {
+export function calculateIncentive(plan: Pick<IncentivePlan, 'slabs' | 'active'> | null | undefined, verifiedRevenue: number, target: number, volunteerRevenue = 0): IncentiveResult {
   const revenue = Math.max(0, Number.isFinite(verifiedRevenue) ? verifiedRevenue : 0);
+  const vol = Math.max(0, Number.isFinite(volunteerRevenue) ? volunteerRevenue : 0);
+  const towardTarget = revenue + vol;
   const slabs = sortSlabs(plan?.slabs ?? []);
   // Achievement is shown even without a plan, so people still see how close they are to target.
-  const achievement = target > 0 ? Math.floor((revenue / target) * 100) : 0;
-  const base = { revenue, target: target > 0 ? target : 0, achievement, incentive: 0, slab: null, next: null, nextGap: 0 };
+  const achievement = target > 0 ? Math.floor((towardTarget / target) * 100) : 0;
+  const base = { revenue, volunteerRevenue: vol, target: target > 0 ? target : 0, achievement, incentive: 0, slab: null, next: null, nextGap: 0 };
   if (!plan?.active || slabs.length === 0) return { ...base, status: 'no_plan' };
   if (!(target > 0)) return { ...base, status: 'no_target' };
   const slab = [...slabs].reverse().find(s => achievement >= s.min) ?? null;
   const next = slabs.find(s => s.min > achievement) ?? null;
-  const nextGap = next ? Math.max(0, Math.ceil((next.min / 100) * target - revenue)) : 0;
+  const nextGap = next ? Math.max(0, Math.ceil((next.min / 100) * target - towardTarget)) : 0;
   if (!slab) return { ...base, achievement, next, nextGap, status: 'below_first_slab' };
   const incentive = Math.round(revenue * slab.rate / 100 + slab.bonus);
   return { ...base, achievement, slab, next, nextGap, incentive, status: 'earned' };
@@ -52,4 +59,11 @@ export function collectionTotals(rows: Collection[], owners: string[] | null, da
   const pick = rows.filter(r => (!owners || owners.includes(r.owner_id)) && (!day || r.collected_on === day) && (!month || r.collected_on.startsWith(month)));
   const sum = (status: string) => pick.filter(r => r.status === status).reduce((n, r) => n + Number(r.amount), 0);
   return { verified: sum('verified'), unverified: sum('unverified'), rejected: sum('rejected'), collected: sum('verified') };
+}
+
+/** Volunteer-sourced revenue rows (fee of each credited volunteer referral, per owning employee and India day). */
+export type VolunteerRevenueRow = { employee_id: string; day: string; revenue: number | string; forms: number | string };
+export function volunteerTotals(rows: VolunteerRevenueRow[], owners: string[] | null, day?: string, month?: string) {
+  const pick = rows.filter(r => (!owners || owners.includes(r.employee_id)) && (!day || r.day === day) && (!month || r.day.startsWith(month)));
+  return { revenue: pick.reduce((n, r) => n + Number(r.revenue), 0), forms: pick.reduce((n, r) => n + Number(r.forms), 0) };
 }

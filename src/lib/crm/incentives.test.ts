@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { calculateIncentive, collectionTotals, incentivePlanSchema } from './incentives';
+import { calculateIncentive, collectionTotals, incentivePlanSchema, volunteerTotals } from './incentives';
 
 const plan = { active: true, slabs: [{ min: 50, rate: 2, bonus: 0 }, { min: 100, rate: 5, bonus: 2000 }, { min: 80, rate: 3, bonus: 500 }] };
 
@@ -43,5 +43,26 @@ describe("today's collection", () => {
   });
   it('totals a month across the team', () => {
     expect(collectionTotals(rows, null, undefined, '2026-11').collected).toBe(14000);
+  });
+});
+
+describe('volunteer revenue and BDE/BDM incentive', () => {
+  const plan = { active: true, slabs: [{ min: 50, rate: 5, bonus: 0 }, { min: 100, rate: 10, bonus: 1000 }] };
+  it('volunteer revenue counts toward target achievement', () => {
+    expect(calculateIncentive(plan, 5000, 7000).achievement).toBe(71);
+    expect(calculateIncentive(plan, 5000, 7000, 2000).achievement).toBe(100);
+  });
+  it('but earns 0% incentive: the amount is paid on direct collection only', () => {
+    const r = calculateIncentive(plan, 5000, 7000, 2000);
+    expect(r.slab?.min).toBe(100);
+    expect(r.incentive).toBe(1500); // 10% of ₹5,000 direct + ₹1,000 bonus — nothing on the ₹2,000 volunteer revenue
+    expect(r.volunteerRevenue).toBe(2000);
+  });
+  it('volunteer revenue alone never earns incentive beyond the slab bonus', () => {
+    expect(calculateIncentive({ active: true, slabs: [{ min: 50, rate: 10, bonus: 0 }] }, 0, 1000, 1000).incentive).toBe(0);
+  });
+  it('totals volunteer revenue per employee and month', () => {
+    const rows = [{ employee_id: 'e', day: '2026-11-03', revenue: '2000', forms: 1 }, { employee_id: 'x', day: '2026-11-03', revenue: 999, forms: 1 }, { employee_id: 'e', day: '2026-10-30', revenue: 50, forms: 1 }];
+    expect(volunteerTotals(rows, ['e'], undefined, '2026-11')).toEqual({ revenue: 2000, forms: 1 });
   });
 });

@@ -2,6 +2,9 @@
 
 export const MAX_COMMISSION_PERCENT = 10;
 export const DEFAULT_MIN_WITHDRAWAL = 3000;
+/** Withdrawals below ₹3,000 are never allowed (the admin setting may raise it, never lower it). */
+export const MIN_WITHDRAWAL_FLOOR = 3000;
+export const effectiveMinWithdrawal = (setting: number | null | undefined) => Math.max(MIN_WITHDRAWAL_FLOOR, Number(setting) || 0);
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
@@ -39,7 +42,8 @@ export function withdrawalProblem(amount: number, available: number, minimum: nu
   if (!hasPayoutMethod) return "Add your UPI ID or bank account first.";
   if (!Number.isFinite(amount) || amount <= 0) return "Enter the amount.";
   if (Math.round(amount * 100) !== amount * 100) return "Use at most two decimal places.";
-  if (amount < minimum) return `The minimum withdrawal is ₹${minimum.toLocaleString("en-IN")}.`;
+  const min = effectiveMinWithdrawal(minimum);
+  if (amount < min) return `The minimum withdrawal is ₹${min.toLocaleString("en-IN")}.`;
   if (amount > available) return `The amount is more than your available balance (₹${available.toLocaleString("en-IN")}).`;
   return null;
 }
@@ -107,3 +111,56 @@ export const ticketCategories = [
 ] as const;
 
 export const rupees = (n: number | string) => `₹${(Number(n) || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
+
+// ── Incentive mode ────────────────────────────────────────────────────────────────────────────
+// Default: commission per verified form, no mandatory revenue target. When Admin/BDM sets a fixed
+// incentive, a mandatory monthly revenue target comes with it and per-form commission is 0%.
+export type IncentiveMode = "commission" | "fixed";
+export type RevenueRow = { form_key: string; fee_amount: number | string; status: string; credited_at: string | null; created_at: string };
+const istDay = (iso: string) => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date(iso));
+
+/** Revenue a volunteer generated: fees of credited referrals (fixed-incentive payouts excluded), optionally within [from, to] India days. */
+export function volunteerRevenue(rows: RevenueRow[], from?: string, to?: string) {
+  return round2(rows.filter(r => r.status === "credited" && r.form_key !== "fixed_incentive").filter(r => { const d = istDay(r.credited_at ?? r.created_at); return (!from || d >= from) && (!to || d <= to); })
+    .reduce((s, r) => s + num(r.fee_amount), 0));
+}
+
+/** Why a fixed incentive cannot be saved, or null. A fixed incentive always needs a revenue target. */
+export function incentiveProblem(mode: IncentiveMode, fixed: number, target: number): string | null {
+  if (mode === "commission") return null;
+  if (!(fixed > 0)) return "Enter the fixed incentive amount.";
+  if (!(target > 0)) return "A fixed incentive needs a mandatory monthly revenue target.";
+  return null;
+}
+
+export function fixedIncentiveProgress(revenue: number, target: number, fixed: number) {
+  const pct = targetPercent(revenue, target);
+  return { revenue, target, fixed, percent: pct, remaining: round2(Math.max(0, target - revenue)), earned: target > 0 && revenue >= target ? fixed : 0 };
+}
+
+// ── Reward & recognition schemes ──────────────────────────────────────────────────────────────
+export type SchemeCriteria = "verified_forms" | "referrals" | "revenue";
+export const schemeCriteriaLabels: Record<SchemeCriteria, string> = { verified_forms: "Verified forms", referrals: "Forms submitted", revenue: "Revenue (₹)" };
+export const rewardTypeLabels = { cash: "Cash bonus", gift: "Gift / prize", certificate: "Certificate", trip: "Trip", other: "Other" } as const;
+export type RewardScheme = {
+  id: string; title: string; description: string; reward_type: keyof typeof rewardTypeLabels; reward: string; reward_amount: number;
+  criteria: SchemeCriteria; criteria_target: number; starts_on: string; ends_on: string; badge: string; banner_tone: "gold" | "green" | "blue" | "red";
+  audience: "all" | "team" | "own"; status: "active" | "paused" | "ended"; created_by: string; created_at: string;
+};
+
+/** Live (active and today inside its dates), upcoming, or over. */
+export function schemeState(s: Pick<RewardScheme, "status" | "starts_on" | "ends_on">, today: string): "live" | "upcoming" | "over" | "paused" {
+  if (s.status === "paused") return "paused";
+  if (s.status === "ended" || today > s.ends_on) return "over";
+  return today < s.starts_on ? "upcoming" : "live";
+}
+
+/** One volunteer's progress toward a scheme, counted only inside the scheme's dates. */
+export function schemeProgress(s: Pick<RewardScheme, "criteria" | "criteria_target" | "starts_on" | "ends_on">, refs: Pick<Referral, "form_key" | "form_status" | "payment_status" | "review_status" | "submitted_at">[], revenueRows: RevenueRow[]) {
+  const inside = refs.filter(r => { const d = istDay(r.submitted_at); return d >= s.starts_on && d <= s.ends_on; });
+  const done = s.criteria === "revenue" ? volunteerRevenue(revenueRows, s.starts_on, s.ends_on)
+    : s.criteria === "referrals" ? inside.filter(r => applicationStage(r) !== "incomplete").length
+    : inside.filter(r => ["verified", "approved", "completed"].includes(applicationStage(r))).length;
+  const target = Number(s.criteria_target) || 0;
+  return { done, target, percent: targetPercent(done, target), remaining: Math.max(0, round2(target - done)), qualified: target > 0 && done >= target };
+}
