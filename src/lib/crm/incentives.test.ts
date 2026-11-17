@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { calculateIncentive, collectionTotals, incentivePlanSchema } from './incentives';
+import { calculateIncentive, collectionTotals, incentivePlanSchema, volunteerTotals } from './incentives';
 
 const plan = { active: true, slabs: [{ min: 50, rate: 2, bonus: 0 }, { min: 100, rate: 5, bonus: 2000 }, { min: 80, rate: 3, bonus: 500 }] };
 
