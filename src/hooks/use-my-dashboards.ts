@@ -21,7 +21,11 @@ export function useMyDashboards() {
     retry: false,
     queryFn: async () => {
       const { data, error } = await supabase.rpc('my_dashboards');
-      if (error) throw new Error('Your dashboards could not be checked. Please try again.');
+      if (error) {
+        // PGRST202 = the database has no my_dashboards() function: the setup SQL was not run on this database.
+        if (error.code === 'PGRST202') throw new Error('Database setup is not finished: the dashboard check is missing. Run database/complete-setup-existing-database.sql in this site\'s database, then try again.');
+        throw new Error('Your dashboards could not be checked. Please try again.');
+      }
       return parseDashboards(data);
     },
   });
