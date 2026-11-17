@@ -64,6 +64,13 @@
       "when": 1794906455173,
       "tag": "0008_hrms_payroll",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794906619295,
+      "tag": "0009_crm_support_admin",
+      "breakpoints": true
     }
   ]
 }

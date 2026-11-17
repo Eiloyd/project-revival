@@ -32,6 +32,33 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_view_as_log: {
+        Row: {
+          admin_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          reason: string
+          target_id: string
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          reason: string
+          target_id: string
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          reason?: string
+          target_id?: string
+        }
+        Relationships: []
+      }
       attendance_records: {
         Row: {
           check_in: string | null
@@ -384,6 +411,48 @@ export type Database = {
           },
         ]
       }
+      crm_coaching_notes: {
+        Row: {
+          acknowledged_at: string | null
+          action_items: string
+          coach_id: string
+          created_at: string
+          employee_id: string
+          follow_up_date: string | null
+          id: string
+          kind: string
+          notes: string
+          session_date: string
+          topic: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          action_items?: string
+          coach_id?: string
+          created_at?: string
+          employee_id: string
+          follow_up_date?: string | null
+          id?: string
+          kind?: string
+          notes?: string
+          session_date?: string
+          topic: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          action_items?: string
+          coach_id?: string
+          created_at?: string
+          employee_id?: string
+          follow_up_date?: string | null
+          id?: string
+          kind?: string
+          notes?: string
+          session_date?: string
+          topic?: string
+        }
+        Relationships: []
+      }
       crm_collections: {
         Row: {
           amount: number
@@ -485,6 +554,123 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_daily_reports: {
+        Row: {
+          blockers: string
+          calls: number
+          collected: number
+          created_at: string
+          follow_ups_done: number
+          id: string
+          meetings: number
+          new_leads: number
+          owner_id: string
+          plan_tomorrow: string
+          report_date: string
+          review_note: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          summary: string
+          updated_at: string
+          won_deals: number
+        }
+        Insert: {
+          blockers?: string
+          calls?: number
+          collected?: number
+          created_at?: string
+          follow_ups_done?: number
+          id?: string
+          meetings?: number
+          new_leads?: number
+          owner_id: string
+          plan_tomorrow?: string
+          report_date: string
+          review_note?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          summary?: string
+          updated_at?: string
+          won_deals?: number
+        }
+        Update: {
+          blockers?: string
+          calls?: number
+          collected?: number
+          created_at?: string
+          follow_ups_done?: number
+          id?: string
+          meetings?: number
+          new_leads?: number
+          owner_id?: string
+          plan_tomorrow?: string
+          report_date?: string
+          review_note?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          summary?: string
+          updated_at?: string
+          won_deals?: number
+        }
+        Relationships: []
+      }
+      crm_documents: {
+        Row: {
+          created_at: string
+          customer_id: string
+          doc_type: string
+          file_name: string
+          file_path: string
+          id: string
+          lead_id: string | null
+          note: string
+          owner_id: string | null
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          doc_type?: string
+          file_name: string
+          file_path: string
+          id?: string
+          lead_id?: string | null
+          note?: string
+          owner_id?: string | null
+          uploaded_by?: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          doc_type?: string
+          file_name?: string
+          file_path?: string
+          id?: string
+          lead_id?: string | null
+          note?: string
+          owner_id?: string | null
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_documents_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "crm_customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_documents_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "crm_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crm_employee_profiles: {
         Row: {
           designation: string
@@ -547,6 +733,44 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_lead_assignments: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          from_owner: string | null
+          id: string
+          lead_id: string
+          reason: string
+          to_owner: string | null
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          from_owner?: string | null
+          id?: string
+          lead_id: string
+          reason?: string
+          to_owner?: string | null
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          from_owner?: string | null
+          id?: string
+          lead_id?: string
+          reason?: string
+          to_owner?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_lead_assignments_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "crm_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crm_leads: {
         Row: {
           amount: number
@@ -602,6 +826,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      crm_manufacturers: {
+        Row: {
+          capacity: string
+          certifications: string
+          company: string
+          contact_name: string
+          created_at: string
+          factory_address: string
+          gstin: string
+          id: string
+          kyc_status: string
+          machinery: string
+          notes: string
+          owner_id: string
+          phone: string
+          products: string
+          stage: string
+          updated_at: string
+        }
+        Insert: {
+          capacity?: string
+          certifications?: string
+          company: string
+          contact_name?: string
+          created_at?: string
+          factory_address?: string
+          gstin?: string
+          id?: string
+          kyc_status?: string
+          machinery?: string
+          notes?: string
+          owner_id?: string
+          phone?: string
+          products?: string
+          stage?: string
+          updated_at?: string
+        }
+        Update: {
+          capacity?: string
+          certifications?: string
+          company?: string
+          contact_name?: string
+          created_at?: string
+          factory_address?: string
+          gstin?: string
+          id?: string
+          kyc_status?: string
+          machinery?: string
+          notes?: string
+          owner_id?: string
+          phone?: string
+          products?: string
+          stage?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       crm_memberships: {
         Row: {
@@ -665,6 +946,7 @@ export type Database = {
       crm_tasks: {
         Row: {
           assigned_by: string | null
+          completed_at: string | null
           created_at: string
           customer_id: string | null
           description: string
@@ -677,6 +959,7 @@ export type Database = {
         }
         Insert: {
           assigned_by?: string | null
+          completed_at?: string | null
           created_at?: string
           customer_id?: string | null
           description?: string
@@ -689,6 +972,7 @@ export type Database = {
         }
         Update: {
           assigned_by?: string | null
+          completed_at?: string | null
           created_at?: string
           customer_id?: string | null
           description?: string
@@ -795,20 +1079,71 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_ticket_events: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_name: string
+          created_at: string
+          id: string
+          note: string
+          ticket_id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_name?: string
+          created_at?: string
+          id?: string
+          note?: string
+          ticket_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_name?: string
+          created_at?: string
+          id?: string
+          note?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_ticket_events_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "customer_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customer_tickets: {
         Row: {
           assigned_to: string | null
           category: string
+          channel: string
           created_at: string
+          csat_at: string | null
+          csat_comment: string | null
+          csat_rating: number | null
           customer_reference: string | null
           description: string
+          due_at: string | null
           email: string
+          escalated_at: string | null
+          escalation_level: number
+          finance_request_id: string | null
+          finance_status: string
+          first_response_at: string | null
           full_name: string
           id: string
           phone: string
           priority: string
           private_notes: string
+          refund_amount: number | null
+          request_type: string
           resolution: string
+          resolved_at: string | null
           status: string
           subject: string
           ticket_code: string
@@ -817,16 +1152,29 @@ export type Database = {
         Insert: {
           assigned_to?: string | null
           category: string
+          channel?: string
           created_at?: string
+          csat_at?: string | null
+          csat_comment?: string | null
+          csat_rating?: number | null
           customer_reference?: string | null
           description: string
+          due_at?: string | null
           email: string
+          escalated_at?: string | null
+          escalation_level?: number
+          finance_request_id?: string | null
+          finance_status?: string
+          first_response_at?: string | null
           full_name: string
           id?: string
           phone?: string
           priority?: string
           private_notes?: string
+          refund_amount?: number | null
+          request_type?: string
           resolution?: string
+          resolved_at?: string | null
           status?: string
           subject: string
           ticket_code: string
@@ -835,16 +1183,29 @@ export type Database = {
         Update: {
           assigned_to?: string | null
           category?: string
+          channel?: string
           created_at?: string
+          csat_at?: string | null
+          csat_comment?: string | null
+          csat_rating?: number | null
           customer_reference?: string | null
           description?: string
+          due_at?: string | null
           email?: string
+          escalated_at?: string | null
+          escalation_level?: number
+          finance_request_id?: string | null
+          finance_status?: string
+          first_response_at?: string | null
           full_name?: string
           id?: string
           phone?: string
           priority?: string
           private_notes?: string
+          refund_amount?: number | null
+          request_type?: string
           resolution?: string
+          resolved_at?: string | null
           status?: string
           subject?: string
           ticket_code?: string
@@ -3365,6 +3726,138 @@ export type Database = {
         }
         Relationships: []
       }
+      support_kb_articles: {
+        Row: {
+          body: string
+          category: string
+          created_at: string
+          created_by: string | null
+          id: string
+          status: string
+          tags: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+          version: number
+        }
+        Insert: {
+          body?: string
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          status?: string
+          tags?: string
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Update: {
+          body?: string
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          status?: string
+          tags?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Relationships: []
+      }
+      target_revisions: {
+        Row: {
+          action: string
+          changed_by: string
+          changed_by_name: string
+          changed_by_role: string
+          created_at: string
+          id: string
+          month: string
+          new_calls: number
+          new_revenue: number
+          new_wins: number
+          old_calls: number | null
+          old_revenue: number | null
+          old_wins: number | null
+          owner_id: string
+          reason: string
+        }
+        Insert: {
+          action: string
+          changed_by: string
+          changed_by_name?: string
+          changed_by_role: string
+          created_at?: string
+          id?: string
+          month: string
+          new_calls: number
+          new_revenue: number
+          new_wins: number
+          old_calls?: number | null
+          old_revenue?: number | null
+          old_wins?: number | null
+          owner_id: string
+          reason?: string
+        }
+        Update: {
+          action?: string
+          changed_by?: string
+          changed_by_name?: string
+          changed_by_role?: string
+          created_at?: string
+          id?: string
+          month?: string
+          new_calls?: number
+          new_revenue?: number
+          new_wins?: number
+          old_calls?: number | null
+          old_revenue?: number | null
+          old_wins?: number | null
+          owner_id?: string
+          reason?: string
+        }
+        Relationships: []
+      }
+      user_activity_logs: {
+        Row: {
+          created_at: string
+          dashboard: string
+          email: string
+          event: string
+          id: string
+          path: string
+          section: string
+          user_agent: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dashboard?: string
+          email?: string
+          event: string
+          id?: string
+          path?: string
+          section?: string
+          user_agent?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dashboard?: string
+          email?: string
+          event?: string
+          id?: string
+          path?: string
+          section?: string
+          user_agent?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -3695,6 +4188,35 @@ export type Database = {
           },
         ]
       }
+      volunteer_verify_codes: {
+        Row: {
+          code_hash: string
+          set_by: string | null
+          updated_at: string
+          volunteer_id: string
+        }
+        Insert: {
+          code_hash: string
+          set_by?: string | null
+          updated_at?: string
+          volunteer_id: string
+        }
+        Update: {
+          code_hash?: string
+          set_by?: string | null
+          updated_at?: string
+          volunteer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "volunteer_verify_codes_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: true
+            referencedRelation: "volunteers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       volunteer_withdrawals: {
         Row: {
           amount: number
@@ -3856,6 +4378,21 @@ export type Database = {
         }
         Relationships: []
       }
+      work_request_counters: {
+        Row: {
+          last_serial: number
+          period: string
+        }
+        Insert: {
+          last_serial?: number
+          period: string
+        }
+        Update: {
+          last_serial?: number
+          period?: string
+        }
+        Relationships: []
+      }
       young_innovators_registrations: {
         Row: {
           application_code: string
@@ -3991,6 +4528,7 @@ export type Database = {
       _work_manager: { Args: { _uid: string }; Returns: string }
       _work_team: { Args: { _uid: string }; Returns: boolean }
       ack_state_code: { Args: { _state: string }; Returns: string }
+      admin_automation_status: { Args: never; Returns: Json }
       admin_department_staff: {
         Args: never
         Returns: {
@@ -4020,6 +4558,11 @@ export type Database = {
           status: string
         }[]
       }
+      admin_period_report: {
+        Args: { _from: string; _to: string }
+        Returns: Json
+      }
+      admin_retry_sheet_copies: { Args: never; Returns: number }
       admin_save_employee: {
         Args: {
           _code: string
@@ -4044,6 +4587,23 @@ export type Database = {
         Returns: undefined
       }
       admin_setup_metadata: { Args: never; Returns: Json }
+      admin_user_directory: {
+        Args: never
+        Returns: {
+          access: string[]
+          confirmed: boolean
+          created_at: string
+          email: string
+          employee_code: string
+          full_name: string
+          last_sign_in_at: string
+          user_id: string
+        }[]
+      }
+      admin_view_as: {
+        Args: { _reason: string; _target: string }
+        Returns: Json
+      }
       attendance_mark: {
         Args: { _action: string }
         Returns: {
@@ -4095,6 +4655,7 @@ export type Database = {
         }
         Returns: string
       }
+      crm_ack_coaching: { Args: { _id: string }; Returns: undefined }
       crm_assign_lead: {
         Args: { _lead: string; _owner: string }
         Returns: undefined
@@ -4102,9 +4663,21 @@ export type Database = {
       crm_can_access: { Args: { _owner: string }; Returns: boolean }
       crm_create_lead: { Args: { _input: Json }; Returns: string }
       crm_customer_lookup: { Args: { _reference: string }; Returns: Json }
+      crm_doc_folder_ok: { Args: { _name: string }; Returns: boolean }
       crm_import_submission: {
         Args: { _id: string; _kind: string; _owner: string }
         Returns: undefined
+      }
+      crm_leaderboard: {
+        Args: { _month: string }
+        Returns: {
+          full_name: string
+          rank: number
+          role: string
+          user_id: string
+          verified: number
+          won_deals: number
+        }[]
       }
       crm_my_manager: { Args: never; Returns: string }
       crm_onboard_member: {
@@ -4112,6 +4685,10 @@ export type Database = {
         Returns: undefined
       }
       crm_owner_for_code: { Args: { _code: string }; Returns: string }
+      crm_reassign_leads: {
+        Args: { _leads: string[]; _owner: string; _reason: string }
+        Returns: number
+      }
       crm_record_collection: {
         Args: {
           _amount: number
@@ -4124,6 +4701,10 @@ export type Database = {
           _reference: string
         }
         Returns: string
+      }
+      crm_review_daily_report: {
+        Args: { _id: string; _note?: string; _status: string }
+        Returns: undefined
       }
       crm_role: { Args: never; Returns: string }
       crm_route_submission: {
@@ -4144,6 +4725,15 @@ export type Database = {
       }
       crm_submission_lead: {
         Args: { _kind: string; _owner?: string; r: Json }
+        Returns: string
+      }
+      crm_submit_daily_report: {
+        Args: {
+          _blockers?: string
+          _date: string
+          _plan?: string
+          _summary: string
+        }
         Returns: string
       }
       crm_verify_collection: {
@@ -4274,6 +4864,7 @@ export type Database = {
         }[]
       }
       first_admin_setup_status: { Args: never; Returns: string }
+      g4_report_rows: { Args: { _table: string }; Returns: Json[] }
       grievance_status: {
         Args: { _code: string }
         Returns: {
@@ -4478,6 +5069,19 @@ export type Database = {
           valid_until: string
         }[]
       }
+      my_target_progress: {
+        Args: { _month: string }
+        Returns: {
+          calls: number
+          calls_target: number
+          has_target: boolean
+          revenue_target: number
+          verified_collection: number
+          wins_target: number
+          won_deals: number
+          won_value: number
+        }[]
+      }
       notifications_mark_read: { Args: { _id?: string }; Returns: undefined }
       people_profile_safe_text: { Args: { _value: string }; Returns: string }
       person_name: { Args: { _uid: string }; Returns: string }
@@ -4621,6 +5225,140 @@ export type Database = {
       research_reverify: { Args: { _lead: string }; Returns: boolean }
       run_request_escalations: { Args: never; Returns: number }
       support_is_manager: { Args: never; Returns: boolean }
+      support_log_ticket: {
+        Args: {
+          _category?: string
+          _channel: string
+          _description: string
+          _email: string
+          _full_name: string
+          _phone: string
+          _priority?: string
+          _reference?: string
+          _request_type: string
+          _subject: string
+        }
+        Returns: {
+          assigned_to: string | null
+          category: string
+          channel: string
+          created_at: string
+          csat_at: string | null
+          csat_comment: string | null
+          csat_rating: number | null
+          customer_reference: string | null
+          description: string
+          due_at: string | null
+          email: string
+          escalated_at: string | null
+          escalation_level: number
+          finance_request_id: string | null
+          finance_status: string
+          first_response_at: string | null
+          full_name: string
+          id: string
+          phone: string
+          priority: string
+          private_notes: string
+          refund_amount: number | null
+          request_type: string
+          resolution: string
+          resolved_at: string | null
+          status: string
+          subject: string
+          ticket_code: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "customer_tickets"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      support_send_refund: {
+        Args: { _amount: number; _note?: string; _ticket: string }
+        Returns: {
+          assigned_to: string | null
+          category: string
+          channel: string
+          created_at: string
+          csat_at: string | null
+          csat_comment: string | null
+          csat_rating: number | null
+          customer_reference: string | null
+          description: string
+          due_at: string | null
+          email: string
+          escalated_at: string | null
+          escalation_level: number
+          finance_request_id: string | null
+          finance_status: string
+          first_response_at: string | null
+          full_name: string
+          id: string
+          phone: string
+          priority: string
+          private_notes: string
+          refund_amount: number | null
+          request_type: string
+          resolution: string
+          resolved_at: string | null
+          status: string
+          subject: string
+          ticket_code: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "customer_tickets"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      support_sla: { Args: { _priority: string }; Returns: string }
+      support_team: {
+        Args: never
+        Returns: {
+          active: boolean
+          full_name: string
+          level: string
+          user_id: string
+        }[]
+      }
+      target_set: {
+        Args: {
+          _calls: number
+          _month: string
+          _owner: string
+          _reason?: string
+          _revenue: number
+          _wins: number
+        }
+        Returns: {
+          action: string
+          changed_by: string
+          changed_by_name: string
+          changed_by_role: string
+          created_at: string
+          id: string
+          month: string
+          new_calls: number
+          new_revenue: number
+          new_wins: number
+          old_calls: number | null
+          old_revenue: number | null
+          old_wins: number | null
+          owner_id: string
+          reason: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "target_revisions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       team_attendance: {
         Args: { _from: string; _to: string }
         Returns: {
@@ -4681,6 +5419,16 @@ export type Database = {
           valid_until: string
         }[]
       }
+      verify_volunteer: {
+        Args: { _code: string; _volunteer_id: string }
+        Returns: {
+          full_name: string
+          location: string
+          member_since: string
+          status: string
+          volunteer_id: string
+        }[]
+      }
       volunteer_access: { Args: { _volunteer: string }; Returns: string }
       volunteer_available_balance: {
         Args: { _volunteer: string }
@@ -4692,6 +5440,10 @@ export type Database = {
         Returns: undefined
       }
       volunteer_folder_access: { Args: { _name: string }; Returns: string }
+      volunteer_has_verify_code: {
+        Args: { _volunteer: string }
+        Returns: boolean
+      }
       volunteer_mark_notices_read: { Args: never; Returns: undefined }
       volunteer_notify: {
         Args: {
@@ -4776,6 +5528,10 @@ export type Database = {
       volunteer_set_ticket_status: {
         Args: { _status: string; _ticket: string }
         Returns: undefined
+      }
+      volunteer_set_verify_code: {
+        Args: { _code: string; _volunteer: string }
+        Returns: boolean
       }
       volunteer_submit_kyc: { Args: never; Returns: undefined }
       volunteer_touch_login: { Args: never; Returns: undefined }
