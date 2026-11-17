@@ -7,6 +7,7 @@ import { HelpSearch, StillNeedHelp, topicIcons } from '@/components/help/help-ui
 const popular = ['getting-started', 'raise-ticket', 'new-request', 'forgot-password', 'apply-leave', 'record-collection', 'volunteer-withdraw', 'no-dashboard'];
 
 export const Route = createFileRoute('/help/')({
+  staticData: { sitemap: true },
   validateSearch: (s: Record<string, unknown>): { topic?: HelpTopicKey } => (isHelpTopic(s['topic']) ? { topic: s['topic'] } : {}),
   head: () => ({ meta: [
     { title: 'Help Centre | RILOYD portal' },
@@ -35,7 +36,7 @@ function HelpHome() {
       {t ? <TopicView topic={t.key} /> : <>
         <p className="section-label">Browse by topic</p>
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{helpTopics.map(x => { const Icon = topicIcons[x.key]; const n = articlesForTopic(x.key).length; return <Link key={x.key} to="/help" search={{ topic: x.key }} className="help-card group flex items-start gap-4 p-5">
-          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accent text-primary"><Icon className="size-5" aria-hidden="true" /></span>
+          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary"><Icon className="size-5" aria-hidden="true" /></span>
           <span className="min-w-0 flex-1"><span className="flex items-center gap-1 text-sm font-bold">{x.title}<ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" /></span>
             <span className="mt-1 block text-sm text-soft">{x.blurb}</span><span className="mt-2 block text-xs text-muted-foreground">{n} article{n === 1 ? '' : 's'}</span></span>
         </Link>; })}</div>
@@ -54,7 +55,7 @@ function TopicView({ topic }: { topic: HelpTopicKey }) {
   const t = findTopic(topic)!; const Icon = topicIcons[topic]; const list = articlesForTopic(topic);
   return <section>
     <Link to="/help" className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-soft hover:text-primary"><ArrowLeft className="size-3.5" />All topics</Link>
-    <div className="mt-5 flex items-center gap-4"><span className="grid size-12 place-items-center rounded-xl bg-accent text-primary"><Icon className="size-6" aria-hidden="true" /></span>
+    <div className="mt-5 flex items-center gap-4"><span className="grid size-12 place-items-center rounded-xl bg-primary/10 text-primary"><Icon className="size-6" aria-hidden="true" /></span>
       <div><h2 className="text-2xl font-black uppercase leading-none sm:text-3xl">{t.title}</h2><p className="mt-1.5 text-sm text-soft">{t.blurb}</p></div></div>
     <ul className="mt-8 grid gap-3 md:grid-cols-2">{list.map(a => <li key={a.slug}><Link to="/help/$slug" params={{ slug: a.slug }} className="help-card group flex h-full flex-col p-5">
       <span className="text-sm font-bold">{a.title}</span><span className="mt-1 flex-1 text-sm text-soft">{a.summary}</span>

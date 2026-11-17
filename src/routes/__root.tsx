@@ -7,7 +7,7 @@ import {
   Scripts,
   useRouterState,
 } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
@@ -116,10 +116,22 @@ function RootComponent() {
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       {!workspace && <SiteHeader />}
       <Outlet />
+      <NavProgress />
       <Toaster position="top-right" richColors closeButton />
       <SiteTracker />
       {!workspace && <SiteFooter />}
       </CountryLogosProvider>
     </QueryClientProvider>
   );
+}
+
+/** Thin bar at the top while a slow page change loads (hidden for quick ones so nothing flickers). */
+function NavProgress() {
+  const loading = useRouterState({ select: s => s.status === "pending" });
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (!loading) { setShow(false); return; }
+    const t = window.setTimeout(() => setShow(true), 150); return () => window.clearTimeout(t);
+  }, [loading]);
+  return show ? <div className="nav-progress" role="progressbar" aria-label="Loading page"><span /></div> : null;
 }

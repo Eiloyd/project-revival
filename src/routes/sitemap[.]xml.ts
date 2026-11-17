@@ -1,4 +1,5 @@
 import { serviceConfigs, serviceOrder } from "@/lib/service-config";
+import { helpArticles } from "@/lib/help/content";
 import { isSitemapRouteIncluded, sitemapPathForLocation } from "@/lib/sitemap";
 import { createFileRoute } from "@tanstack/react-router";
 import { getRouterInstance } from "@tanstack/react-start";
@@ -26,6 +27,13 @@ export const Route = createFileRoute("/sitemap.xml")({
             if (!service) continue;
             const location = router.buildLocation({ to: "/services/$slug", params: { slug: service.slug }, search: () => ({}), hash: "" });
             const path = sitemapPathForLocation(router, location, "/services/$slug");
+            if (path) entries.push({ path });
+          }
+        }
+        if (isSitemapRouteIncluded(router.routesById["/help/$slug"])) {
+          for (const article of helpArticles) {
+            const location = router.buildLocation({ to: "/help/$slug", params: { slug: article.slug }, search: () => ({}), hash: "" });
+            const path = sitemapPathForLocation(router, location, "/help/$slug");
             if (path) entries.push({ path });
           }
         }

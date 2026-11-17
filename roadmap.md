@@ -4,7 +4,7 @@
 - [ ] Help button in every dashboard top bar; Help links on public site and sign-in page
 - [ ] Smoother feel: page-change progress bar, soft fade between sections and pages
 - [ ] Full README for the repository
-- [ ] Owner: enter new values for INTEGRATIONS_ENCRYPTION_KEY and EDUCATION_KYC_ENCRYPTION_KEY in the secure form
+- [x] INTEGRATIONS_ENCRYPTION_KEY and EDUCATION_KYC_ENCRYPTION_KEY already hold fresh random values (set earlier in this project); form closed by owner
 
 ## Collection-linked BDE/BDM pay + volunteer rewards (17 Nov 2026)
 - [x] `/crm/sales` page opens the sales workspace on Collections (Direct vs Volunteer-sourced); pg_cron switch-on note added to database/README.md

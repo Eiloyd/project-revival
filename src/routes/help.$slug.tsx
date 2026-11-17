@@ -4,6 +4,7 @@ import { articlesForTopic, findArticle, findTopic } from '@/lib/help/search';
 import { HelpSearch, StillNeedHelp } from '@/components/help/help-ui';
 
 export const Route = createFileRoute('/help/$slug')({
+  staticData: { sitemap: true },
   loader: ({ params }) => { const article = findArticle(params.slug); if (!article) throw notFound(); return { article }; },
   head: ({ loaderData }) => {
     const a = loaderData?.article; const title = a ? `${a.title} | RILOYD Help Centre` : 'Help article | RILOYD Help Centre';
@@ -33,7 +34,7 @@ function HelpArticlePage() {
         <h1 className="text-[clamp(1.75rem,4vw,2.75rem)] font-black leading-tight">{a.title}</h1>
         <p className="mt-3 text-base text-soft">{a.summary}</p>
         <ol className="mt-8 space-y-4">{a.steps.map((s, n) => <li key={n} className="help-step flex gap-4 rounded-xl border border-border bg-card p-4 text-sm leading-relaxed text-card-foreground sm:text-[15px]">{s}</li>)}</ol>
-        {a.tips?.length ? <div className="mt-6 flex gap-3 rounded-xl border border-primary/40 bg-accent p-4 text-sm text-accent-foreground"><Lightbulb className="mt-0.5 size-5 shrink-0" aria-hidden="true" /><div className="space-y-1">{a.tips.map(t => <p key={t}>{t}</p>)}</div></div> : null}
+        {a.tips?.length ? <div className="mt-6 flex gap-3 rounded-xl border border-primary/40 bg-primary/10 p-4 text-sm text-foreground"><Lightbulb className="mt-0.5 size-5 shrink-0" aria-hidden="true" /><div className="space-y-1">{a.tips.map(t => <p key={t}>{t}</p>)}</div></div> : null}
         {topic.key !== 'start' && topic.key !== 'tickets' && topic.key !== 'account' && <p className="mt-6 flex flex-wrap items-center gap-2 text-sm text-soft"><LogIn className="size-4" aria-hidden="true" />Ready to try it? <Link to="/login" className="font-bold text-primary underline-offset-4 hover:underline">Sign in</Link> and press Help in the top bar to replay the guided tour.</p>}
         {related.length > 0 && <section className="mt-10"><h2 className="text-sm font-bold uppercase tracking-wider text-soft">Related answers</h2>
           <ul className="mt-3 grid gap-2 sm:grid-cols-2">{related.map(r => <li key={r.slug}><Link to="/help/$slug" params={{ slug: r.slug }} className="help-card block p-4 text-sm font-semibold">{r.title}<span className="mt-1 block text-xs font-normal text-soft">{r.summary}</span></Link></li>)}</ul></section>}

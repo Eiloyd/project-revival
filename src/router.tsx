@@ -16,6 +16,8 @@ export const getRouter = () => {
     scrollRestoration: true,
     // Start loading a page's code and data when the visitor hovers or touches its link.
     defaultPreload: "intent",
+    // Soft cross-fade between pages where the browser supports it (skipped for reduced-motion users by CSS).
+    defaultViewTransition: true,
     // Lets Query own freshness; set caching defaults on the QueryClient, not the router.
     defaultPreloadStaleTime: 0,
   });
