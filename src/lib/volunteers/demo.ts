@@ -29,5 +29,7 @@ export function demoVolunteerBundle(): VolunteerBundle {
     { id: "d-n-2", volunteer_id: ids[0]!, kind: "status" as const, title: "Commission credited: ₹559.90", body: "A referred form was verified.", read_at: day(2), created_at: day(2) },
   ];
   return { volunteers, referrals, commissions, withdrawals, tickets, notices, settings: { max_percent: 10, min_withdrawal: 3000, payout_note: "Withdrawals are paid within 7 working days." },
-    rates: [{ form_key: "education", label: "Student Scholarship & Sponsorship", percent: 10, flat_amount: 500, active: true }, { form_key: "young_innovators", label: "Young Innovators 2026", percent: 10, flat_amount: 0, active: true }] };
+    rates: [{ form_key: "education", label: "Student Scholarship & Sponsorship", percent: 10, flat_amount: 500, active: true }, { form_key: "young_innovators", label: "Young Innovators 2026", percent: 10, flat_amount: 0, active: true }],
+    schemes: [{ id: "d-s-1", title: "Sample: 15 verified forms this month", description: "Clearly fictional sample scheme.", reward_type: "cash" as const, reward: "₹1,500 bonus + Star Volunteer badge", reward_amount: 1500,
+      criteria: "verified_forms" as const, criteria_target: 15, starts_on: day(10).slice(0, 10), ends_on: day(-20).slice(0, 10), badge: "Star Volunteer", banner_tone: "gold" as const, audience: "own" as const, status: "active" as const, created_by: "d-emp", created_at: day(10) }] };
 }
