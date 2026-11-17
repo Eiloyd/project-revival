@@ -57,10 +57,12 @@ export const moveCrmLead=createServerFn({method:'POST'}).middleware([requireSupa
 export const saveCrmMember=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>memberSchema.parse(v)).handler(async({context,data})=>{
   const {data:admin}=await context.supabase.rpc('has_role',{_user_id:context.userId,_role:'admin'}); if(!admin) throw new Error('Admin access required.');
   const {supabaseAdmin}=await import('@/integrations/supabase/client.server');
-  let userId:string|undefined;
-  for(let page=1;page<=100;page++){const {data:users,error}=await supabaseAdmin.auth.admin.listUsers({page,perPage:100}); if(error) throw new Error('Account lookup failed.'); const u=users.users.find(u=>u.email?.toLowerCase()===data.email.toLowerCase()); if(u){if(!u.email_confirmed_at)throw new Error('Employee must verify their email first.');userId=u.id;break;}if(users.users.length<100)break;}
-  if(!userId) throw new Error('Employee must create and verify their account before onboarding.');
-  const {error}=await context.supabase.rpc('crm_onboard_member',{_user_id:userId,_input:data}); if(error) throw new Error('Employee could not be saved. Check employee code and manager.'); return {ok:true};
+  // Admin creates the login when it does not exist yet (optional temporary password, email verified by the admin).
+  const {ensureLogin}=await import('./accounts/logins.server');
+  const login=await ensureLogin(supabaseAdmin as unknown as import('@supabase/supabase-js').SupabaseClient,{email:data.email,fullName:data.fullName,setup:data.setup??{verify:true},actorId:context.userId,purpose:'crm'});
+  if(!login.verified) throw new Error('The email is not verified yet. Tick "Mark email as verified" and save again.');
+  const userId=login.userId; const {setup:_s,...input}=data; void _s;
+  const {error}=await context.supabase.rpc('crm_onboard_member',{_user_id:userId,_input:input}); if(error) throw new Error('Employee could not be saved. Check employee code and manager.'); return {ok:true};
 });
 const actionSchema=z.discriminatedUnion('kind',[
  z.object({kind:z.literal('task'),data:taskSchema}),

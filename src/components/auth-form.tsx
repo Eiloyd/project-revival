@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { logActivity } from "@/lib/activity-log";
 import { useAuthMethods } from "@/hooks/use-auth-methods";
-import { enabledOAuthProviders, normalisePhone, type AuthOAuthProvider } from "@/lib/auth/methods";
+import { enabledOAuthProviders, normalisePhone, signupAllowedFor, type AuthOAuthProvider } from "@/lib/auth/methods";
 
 const emailSchema = z.string().trim().email("Enter a valid email").max(255);
 const authSchema = z.object({ email: emailSchema, password: z.string().min(8, "Password must be at least 8 characters").max(72) });
@@ -20,7 +20,8 @@ export function AuthForm({ redirectPath = "/" }: { redirectPath?: string }) {
   const emailOn = s.auth_email_code || s.auth_magic_link;
   const available: Method[] = [...(emailOn ? ["email" as const] : []), ...(s.auth_password ? ["password" as const] : []), ...(s.auth_phone_code ? ["phone" as const] : [])];
   const oauth = enabledOAuthProviders(s);
-  const canSignUp = s.auth_signup;
+  // Admin and employee logins are made only by an admin; self sign-up is for candidates, volunteers and institutes.
+  const canSignUp = s.auth_signup && signupAllowedFor(redirectPath);
 
   const [method, setMethod] = useState<Method>("email");
   const [mode, setMode] = useState<"in" | "up">("in");

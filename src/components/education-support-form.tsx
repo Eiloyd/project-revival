@@ -49,6 +49,7 @@ export function EducationSupportForm({ lang, initialCode, adminEdit }: { lang: E
   const [notice, setNotice] = useState("");
   const [done, setDone] = useState<Done | null>(null);
   const [referral, setReferral] = useState<Referral | null>(null);
+  const [typedRef, setTypedRef] = useState(false); // true when the code was typed (not from a referral link)
   const [reopen, setReopen] = useState(false);
   // On copies of the site hosted elsewhere (riloyd.in), these calls go to the published Lovable site instead.
   const start = viaHome(useServerFn(startEducationRegistration), "start");
@@ -198,6 +199,19 @@ export function EducationSupportForm({ lang, initialCode, adminEdit }: { lang: E
     } catch (e) { fail(e); } finally { setSending(false); }
   }
 
+  // Typed referral / coordinator code: look it up and fill the coordinator details (they stay locked while this code is used).
+  async function applyTypedCode() {
+    if (isAdmin || (referral && !typedRef)) return;
+    const code = String(values["coordinatorCode"] ?? "").trim().toUpperCase();
+    if (!/^[A-Z0-9-]{2,40}$/.test(code) || (referral && referral.code === code)) return;
+    try {
+      const r = await lookupReferral({ data: { code } });
+      if (!r || String(values["coordinatorCode"] ?? "").trim().toUpperCase() !== code) return;
+      setReferral(r); setTypedRef(true);
+      setValues(v => ({ ...v, withoutCoordinator: false, coordinatorCode: r.code, coordinatorName: r.name, coordinatorMobile: r.mobile, coordinatorEmail: r.email, coordinatorType: r.type }));
+    } catch { /* keep the typed code */ }
+  }
+
   function resetAll() { localStorage.removeItem(DRAFT_KEY); setDone(null); setSession(null); setValues(emptyValues()); setStep(0); setReferral(null); setErrors({}); setFormError(""); }
 
   if (done) return <RegistrationDone lang={lang} done={done} values={values} onNew={resetAll} />;
@@ -209,7 +223,7 @@ export function EducationSupportForm({ lang, initialCode, adminEdit }: { lang: E
       {opts.label ?? t(name)}{opts.required !== false ? <span className="text-edu-royal"> *</span> : <span className="font-normal text-edu-ink/55"> ({t("optional")})</span>}
       {opts.options ? <select {...common} disabled={opts.readOnly} value={String(values[name] ?? "")} onChange={e => set(name, e.target.value)}><option value="">{t("select")}</option>{opts.options.map(o => <option key={o} value={o}>{name === "currentClass" ? `Class ${o}` : o}</option>)}</select>
         : opts.type === "textarea" ? <textarea {...common} rows={2} maxLength={300} value={String(values[name] ?? "")} onChange={e => set(name, e.target.value)} />
-        : <input {...common} readOnly={opts.readOnly} type={opts.type ?? "text"} list={opts.list} inputMode={opts.inputMode} placeholder={opts.placeholder} maxLength={name === "coordinatorCode" ? 40 : 200} value={String(values[name] ?? "")} onChange={e => set(name, name === "coordinatorCode" ? e.target.value.toUpperCase() : e.target.value)} />}
+        : <input {...common} readOnly={opts.readOnly} type={opts.type ?? "text"} list={opts.list} inputMode={opts.inputMode} placeholder={opts.placeholder} maxLength={name === "coordinatorCode" ? 40 : 200} value={String(values[name] ?? "")} onChange={e => { if (name === "coordinatorCode") { const next = e.target.value.toUpperCase(); set(name, next); if (typedRef && referral && next !== referral.code) { setReferral(null); setTypedRef(false); } } else set(name, e.target.value); }} onBlur={name === "coordinatorCode" ? () => void applyTypedCode() : undefined} />}
       {err && <span id={`${id}-err`} className="mt-1 block text-xs font-semibold text-destructive">{err}</span>}
     </label>;
   };
@@ -222,7 +236,8 @@ export function EducationSupportForm({ lang, initialCode, adminEdit }: { lang: E
   const level = category === "pg" ? "pg" : "ug";
   const courses = category && category !== "school" && category !== "competitive" ? coursesFor(level, String(values["educationSector"])) : [];
   const appType = values["applicationType"] as ApplicationType | "";
-  const referralLocked = Boolean(referral) && !isAdmin;
+  const detailsLocked = Boolean(referral) && !isAdmin;
+  const referralLocked = detailsLocked && !typedRef;
 
   return <div id="registration-form" className="scroll-mt-6 rounded-3xl border border-edu-navy/10 bg-edu-paper p-3 shadow-[0_20px_60px_-30px_rgba(11,31,75,0.35)] sm:p-8">
     {!isAdmin && !session && step === 0 && <ReopenPanel lang={lang} open={reopen} setOpen={setReopen} onOpened={(r, verify) => {
@@ -324,8 +339,10 @@ export function EducationSupportForm({ lang, initialCode, adminEdit }: { lang: E
         {referralLocked && <p className="rounded-lg bg-edu-sky px-3 py-2 text-sm text-edu-navy sm:col-span-2">{lang === "en" ? "These details come from your referral link." : "ये जानकारी आपके रेफ़रल लिंक से भरी गई है।"}</p>}
         {!referralLocked && check("withoutCoordinator")}
         {values["withoutCoordinator"] !== true && <>
-          {field("coordinatorName", { readOnly: referralLocked })}{field("coordinatorType", { options: coordinatorTypes, readOnly: referralLocked })}{field("coordinatorMobile", { type: "tel", inputMode: "tel", readOnly: referralLocked })}{field("coordinatorWhatsapp", { type: "tel", inputMode: "tel", required: false })}
-          {field("coordinatorEmail", { type: "email", required: false, readOnly: referralLocked })}{field("coordinatorInstitution", { required: false })}{field("coordinatorIdText", { required: false, label: t("coordinatorIdText").replace(/ \((optional|वैकल्पिक)\)/, "") })}{field("coordinatorCode", { required: false, readOnly: referralLocked, label: t("coordinatorCode").replace(/ \((optional|वैकल्पिक)\)/, "") })}
+          {field("coordinatorCode", { required: false, full: true, readOnly: referralLocked, label: lang === "en" ? "Referral / Coordinator code" : "रेफ़रल / कोऑर्डिनेटर कोड", placeholder: lang === "en" ? "Type the code and press Tab — details fill in automatically" : "कोड लिखें — जानकारी अपने आप भर जाएगी" })}
+          {typedRef && referral && <p className="rounded-lg bg-edu-sky px-3 py-2 text-sm text-edu-navy sm:col-span-2">{lang === "en" ? `Coordinator found: ${referral.name || referral.code}. Details filled from the code.` : `कोऑर्डिनेटर मिला: ${referral.name || referral.code}। जानकारी कोड से भरी गई है।`}</p>}
+          {field("coordinatorName", { readOnly: detailsLocked })}{field("coordinatorType", { options: coordinatorTypes, readOnly: detailsLocked })}{field("coordinatorMobile", { type: "tel", inputMode: "tel", readOnly: detailsLocked })}{field("coordinatorWhatsapp", { type: "tel", inputMode: "tel", required: false })}
+          {field("coordinatorEmail", { type: "email", required: false, readOnly: detailsLocked })}{field("coordinatorInstitution", { required: false })}{field("coordinatorIdText", { required: false, label: t("coordinatorIdText").replace(/ \((optional|वैकल्पिक)\)/, "") })}
         </>}
       </>}
 

@@ -91,4 +91,9 @@ export async function openVolunteerFile(bucket: "volunteer-photos" | "volunteer-
   fail(error); return data?.signedUrl ?? "";
 }
 
-export const isActiveEmployee = async (uid: string) => Boolean(await rpc<boolean>("is_active_employee", { _uid: uid }));
+/** Active BDE/BDM/CRM employee — or Admin, who can open every dashboard. */
+export const isActiveEmployee = async (uid: string) => {
+  if (await rpc<boolean>("is_active_employee", { _uid: uid })) return true;
+  const { data } = await supabase.rpc("has_role", { _user_id: uid, _role: "admin" });
+  return data === true;
+};

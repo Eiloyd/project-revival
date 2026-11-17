@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dashboardForPath, parseDashboards, routeAfterLogin } from './dashboards';
+import { dashboardForPath, parseDashboards, routeAfterLogin, withAdminAccess } from './dashboards';
 
 describe('dashboard routing after sign-in', () => {
   it('opens the only dashboard straight away', () => {
@@ -18,5 +18,15 @@ describe('dashboard routing after sign-in', () => {
   it('matches a page to its dashboard', () => {
     expect(dashboardForPath('/my-volunteers/')).toBe('my-volunteers');
     expect(dashboardForPath('/about')).toBeNull();
+  });
+});
+
+describe('admin sees every dashboard', () => {
+  it('gives admin every staff dashboard to switch to', () => {
+    expect(withAdminAccess(['admin'])).toEqual(['admin', 'crm', 'staff', 'my-volunteers', 'hr', 'support', 'finance', 'research', 'ventures', 'manpower', 'work']);
+  });
+  it('keeps an admin\'s own portal and adds nothing for non-admins', () => {
+    expect(withAdminAccess(['admin', 'volunteer'])).toContain('volunteer');
+    expect(withAdminAccess(['crm', 'work'])).toEqual(['crm', 'work']);
   });
 });

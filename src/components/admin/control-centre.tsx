@@ -8,6 +8,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { integrationCatalog, missingFields, type IntegrationDef } from '@/lib/integrations/catalog';
 import { integrationAction, saveIntegration } from '@/lib/integrations.functions';
 import { proposeIncentivePlan } from '@/lib/crm.functions';
+import { provisionLogin } from '@/lib/accounts/logins.functions';
+import { LoginSetupFields, loginDoneText } from '@/components/accounts/login-setup';
+import type { LoginSetup } from '@/lib/accounts/logins';
 import { readSlabs, type IncentiveSlab } from '@/lib/crm/incentives';
 import { dateTime, money, stepLabels } from '@/lib/requests';
 import { downloadCsv } from '@/lib/finance';
@@ -22,20 +25,29 @@ export function DepartmentsAdmin() {
   const qc = useQueryClient(); const [err, setErr] = useState<unknown>(null); const [msg, setMsg] = useState('');
   const staff = useQuery({ queryKey: ['admin-dept-staff'], queryFn: async () => { const { data, error } = await supabase.rpc('admin_department_staff'); if (error) throw error; return data; } });
   const [v, setV] = useState({ email: '', department: 'hr', level: 'executive', limit: '' });
-  const set = async (email: string, department: string, active: boolean, level: string, limit: string) => {
+  const [loginSetup, setLoginSetup] = useState<LoginSetup>({ verify: true });
+  const provision = useServerFn(provisionLogin);
+  const set = async (email: string, department: string, active: boolean, level: string, limit: string, withLogin = false) => {
     setErr(null); setMsg('');
+    let loginNote = '';
+    if (withLogin) {
+      // Create the login first if this person has none yet (optional temporary password, email verified by the admin).
+      try { const r = await provision({ data: { email, purpose: 'department', setup: loginSetup } }); loginNote = ` ${loginDoneText(r)}`; setLoginSetup({ verify: true }); }
+      catch (e) { setErr(e); return; }
+    }
     const { error } = await supabase.rpc('admin_set_department_staff', { _email: email, _department: department, _active: active, _level: level, ...(limit ? { _limit: Number(limit) } : {}) });
-    if (error) setErr(error); else { setMsg(active ? `${email} now has ${deptLabels[department]} access.` : 'Access removed.'); void qc.invalidateQueries({ queryKey: ['admin-dept-staff'] }); }
+    if (error) setErr(error); else { setMsg(active ? `${email} now has ${deptLabels[department]} access.${loginNote}` : 'Access removed.'); void qc.invalidateQueries({ queryKey: ['admin-dept-staff'] }); }
   };
   return <div className="grid gap-5">
     <Panel title="Department access">
-      <p className="mb-3 text-sm text-muted-foreground">The person must already have an account (they sign up at the employee login). Until a department has someone, its approvals come to the admins.</p>
-      <form className="grid gap-3 sm:grid-cols-5" onSubmit={e => { e.preventDefault(); void set(v.email, v.department, true, v.level, v.limit); }}>
+      <p className="mb-3 text-sm text-muted-foreground">If the person has no login yet, it is created here — set a temporary password and they choose their own at first sign-in. Until a department has someone, its approvals come to the admins.</p>
+      <form className="grid gap-3 sm:grid-cols-5" onSubmit={e => { e.preventDefault(); void set(v.email, v.department, true, v.level, v.limit, true); }}>
         <Field label="Email"><input type="email" required className={inputCls} value={v.email} onChange={e => setV({ ...v, email: e.target.value })} /></Field>
         <Field label="Department"><select className={inputCls} value={v.department} onChange={e => setV({ ...v, department: e.target.value })}>{Object.entries(deptLabels).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></Field>
         <Field label="Level"><select className={inputCls} value={v.level} onChange={e => setV({ ...v, level: e.target.value })}><option value="executive">Executive</option><option value="manager">Manager</option></select></Field>
         <Field label="Payment approval limit (₹)" hint="Finance managers only; blank = no limit"><input type="number" min="0" className={inputCls} value={v.limit} onChange={e => setV({ ...v, limit: e.target.value })} /></Field>
         <div className="self-end"><Button>Give access</Button></div>
+        <LoginSetupFields value={loginSetup} onChange={setLoginSetup} idPrefix="dept-login" className="sm:col-span-5" />
       </form>
       {msg && <p className="mt-2 text-sm text-[var(--dash-success)]">{msg}</p>}<ErrorNote error={err} />
       <div className="mt-4">{staff.isPending ? <Loading /> : !staff.data?.length ? <Empty>No department staff yet.</Empty> :

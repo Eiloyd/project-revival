@@ -10,6 +10,7 @@ import { dashboardKeyForPath, guideSeenKey } from '@/lib/help/search';
 import { HelpMenu } from '@/components/help/help-menu';
 import { GuideTour } from './guide-tour';
 import { AccountSecurity, TwoStepChallenge, useNeedsTwoStep } from './two-step';
+import { FirstPasswordChange, useMustChangePassword } from './first-password';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useAuthMethods } from '@/hooks/use-auth-methods';
 import logo from '@/assets/local/riloyd-logo.png.optimized.nav.webp';
@@ -30,8 +31,10 @@ type ShellProps = {
 /** Shared employee/admin workspace frame. Accounts with an authenticator app must enter its code before any dashboard opens. */
 export function DashboardShell(props: ShellProps) {
   const twoStep = useNeedsTwoStep(true);
-  if (twoStep.state === 'checking') return <DashboardGate workspace={props.workspace} title="Checking your sign-in"><p className="text-sm text-muted-foreground">One moment…</p></DashboardGate>;
+  const firstPassword = useMustChangePassword();
+  if (twoStep.state === 'checking' || firstPassword.state === 'checking') return <DashboardGate workspace={props.workspace} title="Checking your sign-in"><p className="text-sm text-muted-foreground">One moment…</p></DashboardGate>;
   if (twoStep.state === 'needed') return <DashboardGate workspace={props.workspace} title="Enter your 2-step code"><TwoStepChallenge onDone={twoStep.done} /></DashboardGate>;
+  if (firstPassword.state === 'needed') return <DashboardGate workspace={props.workspace} title="Set your own password"><FirstPasswordChange onDone={firstPassword.done} /></DashboardGate>;
   return <ShellFrame {...props} />;
 }
 

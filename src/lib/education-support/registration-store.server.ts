@@ -87,7 +87,10 @@ export async function referralCoordinator(db: Client, rawCode: string): Promise<
     return { code, name: profile?.full_name ?? "", mobile: profile?.phone ?? "", email: user?.user?.email ?? "", type: "RILOYD Employee" };
   }
   const { data: c } = await db.from("coordinators").select("full_name, phone, email").eq("active", true).eq("referral_code", code).maybeSingle();
-  return c ? { code, name: c.full_name, mobile: c.phone, email: c.email, type: "Other" } : null;
+  if (c) return { code, name: c.full_name, mobile: c.phone, email: c.email, type: "Other" };
+  // Volunteers share their own referral code; only active volunteers count.
+  const { data: v } = await db.from("volunteers").select("full_name, mobile, email, status").eq("referral_code", code).maybeSingle();
+  return v && v.status === "active" ? { code, name: v.full_name, mobile: v.mobile, email: v.email, type: "RILOYD Volunteer" } : null;
 }
 
 /** Full form values with empty strings for everything not yet entered. */

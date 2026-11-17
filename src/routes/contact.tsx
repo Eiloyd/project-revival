@@ -3,10 +3,9 @@ import { useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { enquirySchema } from "@/lib/submission-schemas";
 import { submitEnquiry as saveEnquiry } from "@/lib/enquiries.functions";
-import { useReferralCode } from "@/hooks/use-referral-code";
+import { ReferralCodeField } from "@/components/referral/referral-code-field";
 import {
   ArrowRight,
-  BadgeCheck,
   BriefcaseBusiness,
   Check,
   Clock3,
@@ -79,7 +78,6 @@ const faqs = [
 function ContactPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const save = useServerFn(saveEnquiry);
-  const referralCode = useReferralCode();
   const [sending, setSending] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -148,7 +146,7 @@ function ContactPage() {
                 <FieldError message={errors.industry}><select className={fieldClass} name="industry" defaultValue=""><option value="" disabled>Select Industry *</option><option>Startup / MSME</option><option>Manufacturing</option><option>Retail & Consumer</option><option>Technology</option><option>Professional Services</option><option>Other</option></select></FieldError>
               </div>
               <FieldError message={errors.message}><textarea className={`${fieldClass} min-h-32 resize-y py-3`} name="message" placeholder="Your Message *" maxLength={1000} aria-invalid={Boolean(errors.message)} /></FieldError>
-              <label className="contact-field"><BadgeCheck /><input key={referralCode} className={`${fieldClass} uppercase`} name="coordinatorCode" defaultValue={referralCode} placeholder="Employee / referral code (optional)" maxLength={40} /></label>
+              <ReferralCodeField inputClassName={fieldClass} labelClassName="text-sm font-semibold" />
               {message && <p role="status" className="text-sm text-primary">{message}</p>}
               <Button type="submit" disabled={sending} size="lg" className="mt-2 h-12 rounded-full px-8 font-bold">{sending ? "Sending…" : "Send Message"} <ArrowRight /></Button>
               <p className="flex items-center gap-2 pt-2 text-[10px] text-muted-foreground"><LockKeyhole size={13} /> Your information is used only to respond to your enquiry.</p>

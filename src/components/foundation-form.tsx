@@ -4,7 +4,7 @@ import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { submitFoundationForm } from "@/lib/foundation.functions";
-import { useReferralCode } from "@/hooks/use-referral-code";
+import { ReferralCodeField } from "@/components/referral/referral-code-field";
 import { foundationKindLabels, foundationPrograms, foundationSubmissionSchema, type FoundationKind } from "@/lib/foundation";
 
 type Field = { name: string; label: string; type?: "text" | "textarea" | "select" | "number"; options?: readonly string[]; required?: boolean };
@@ -43,12 +43,11 @@ export function FoundationFields({ fields }: { fields: Field[] }) {
 }
 
 export function BasicContactFields() {
-  const referralCode = useReferralCode();
   return <>
     <label className="block text-sm font-semibold text-foundation-ink">Full name<span className="text-foundation-maroon"> *</span><input name="fullName" required minLength={2} maxLength={100} autoComplete="name" className={inputClass} /></label>
     <label className="block text-sm font-semibold text-foundation-ink">Email<span className="text-foundation-maroon"> *</span><input name="email" type="email" required maxLength={255} autoComplete="email" className={inputClass} /></label>
     <label className="block text-sm font-semibold text-foundation-ink">Mobile number<span className="text-foundation-maroon"> *</span><input name="phone" type="tel" required inputMode="tel" autoComplete="tel" className={inputClass} /></label>
-    <label className="block text-sm font-semibold text-foundation-ink">Employee / coordinator code <span className="font-normal text-foundation-ink/60">(optional)</span><input key={referralCode} name="coordinatorCode" defaultValue={referralCode} maxLength={40} className={`${inputClass} uppercase`} /></label>
+    <ReferralCodeField inputClassName={inputClass} labelClassName="block text-sm font-semibold text-foundation-ink" />
   </>;
 }
 

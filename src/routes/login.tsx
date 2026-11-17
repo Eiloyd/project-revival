@@ -42,7 +42,6 @@ function LoginPage() {
       : next.kind === 'none' ? <div className="dash-card p-5">
           <p className="text-sm">This account does not have access to any dashboard yet. Ask your admin to give you CRM, BDE/BDM or volunteer access — then sign in again.</p>
           <p className="mt-2 text-sm text-muted-foreground">A startup or business? <Link to="/client-portal" className="font-semibold text-primary underline-offset-4 hover:underline">Open the client portal</Link></p>
-          <p className="mt-2 text-sm text-muted-foreground">Setting up the website for the first time as the owner? <Link to="/admin" className="font-semibold text-primary underline-offset-4 hover:underline">Open admin setup</Link></p>
           {signedInAs}
         </div>
       : <>

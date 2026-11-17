@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { ArrowLeft, ArrowRight, Check, CheckCircle2, FileUp, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { submitRegistration } from "@/lib/registration.functions";
-import { useReferralCode } from "@/hooks/use-referral-code";
+import { ReferralCodeField } from "@/components/referral/referral-code-field";
 import type { RegistrationConfig, RegistrationField } from "@/lib/registration-config";
 import teamAsset from "@/assets/local/riloyd-team.png.optimized.webp";
 
@@ -12,7 +12,6 @@ const inputClass = "min-h-12 w-full rounded-md border border-border bg-surface p
 
 export function RegistrationPage({ config }: { config: RegistrationConfig }) {
   const submit = useServerFn(submitRegistration);
-  const referralCode = useReferralCode();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [sending, setSending] = useState(false);
@@ -72,7 +71,7 @@ export function RegistrationPage({ config }: { config: RegistrationConfig }) {
           <input type="hidden" name="category" value={config.category} />
           <div className="border-b border-border pb-5"><h2 className="text-2xl font-black uppercase sm:text-3xl">{config.title} Form</h2><p className="mt-2 text-xs text-soft">Complete the details below. Fields marked * are required.</p></div>
           {config.sections.map((section, sectionIndex) => <section key={section.title} className="border-b border-border py-6 last:border-b-0"><div className="mb-5 flex items-center gap-3"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary text-sm font-black text-primary-foreground">{sectionIndex + 1}</span><h3 className="text-sm font-bold">{section.title}</h3></div><div className="grid gap-4 sm:grid-cols-2">{section.fields.map(field => <FormField key={field.name} field={field} />)}</div></section>)}
-          <label className="mt-5 block text-sm font-semibold">Employee / referral code <span className="font-normal text-soft">(optional)</span><input key={referralCode} name="coordinatorCode" defaultValue={referralCode} maxLength={40} pattern="[A-Za-z0-9-]*" className={`${inputClass} mt-2 uppercase`} /></label>
+          <div className="mt-5"><ReferralCodeField inputClassName={inputClass} /></div>
           <label className="mt-5 flex items-start gap-3 text-xs leading-relaxed"><input className="mt-0.5 h-4 w-4 accent-primary" type="checkbox" name="consent" required /><span>I agree to the Terms of Use and Privacy Policy, and consent to Riloyd contacting me about this registration.</span></label>
           {error ? <p className="mt-4 border border-primary bg-primary/10 p-3 text-sm text-primary" role="alert">{error}</p> : null}
           <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between"><p className="flex items-center gap-2 text-[10px] text-muted-foreground"><LockKeyhole size={13} /> Your information and documents are stored privately.</p><Button type="submit" disabled={sending} className="h-12 rounded-full px-8 font-bold">{sending ? "Submitting…" : "Submit Registration"} <ArrowRight /></Button></div>

@@ -55,3 +55,10 @@ export function normalisePhone(raw: string): string | null {
   if (/^\+[1-9]\d{7,14}$/.test(digits)) return digits;
   return null;
 }
+
+/** Portals where people may create their own account: job seekers, volunteers and institute partners. Admin and every employee dashboard never offer sign-up — those logins are created by an admin. */
+export const selfSignupPortals = ['/candidate-portal', '/volunteer', '/become-a-volunteer', '/institute-portal'] as const;
+export function signupAllowedFor(path: string): boolean {
+  const clean = path.split(/[?#]/)[0]!.replace(/\/$/, '');
+  return (selfSignupPortals as readonly string[]).includes(clean);
+}

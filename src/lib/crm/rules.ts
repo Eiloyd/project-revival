@@ -1,3 +1,4 @@
+import { loginSetupSchema } from '../accounts/logins';
 import { z } from 'zod';
 export const crmRoles = ['sales','support','BDE','BDM'] as const;
 export const stages = ['new','contacted','qualified','proposal','won','lost'] as const;
@@ -8,7 +9,7 @@ const text = z.string().trim().min(1).max(200);
 const id = z.string().uuid();
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 export const leadSchema = z.object({ title:text, fullName:text, email:z.string().trim().email().or(z.literal('')), phone:z.string().trim().max(30), company:z.string().trim().max(150), amount:z.number().min(0).max(1e10), ownerId:id, followUp:date.optional(), acknowledgement:z.string().trim().max(60).optional() });
-export const memberSchema = z.object({ email:z.string().trim().email(), fullName:text, employeeCode:text, phone:z.string().trim().max(30), designation:text, photoUrl:z.string().url().startsWith('https://').or(z.literal('')), joiningDate:date, role:z.enum(crmRoles), managerId:id.optional(), active:z.boolean() });
+export const memberSchema = z.object({ email:z.string().trim().email(), fullName:text, employeeCode:text, phone:z.string().trim().max(30), designation:text, photoUrl:z.string().url().startsWith('https://').or(z.literal('')), joiningDate:date, role:z.enum(crmRoles), managerId:id.optional(), active:z.boolean(), setup:loginSetupSchema.optional() });
 export const taskSchema = z.object({ title:text, ownerId:id, dueDate:date, priority:z.enum(['normal','high','urgent']) });
 export const ticketSchema = z.object({ customerId:id, ownerId:id, subject:text, description:z.string().trim().max(3000), priority:z.enum(['normal','high','urgent']) });
 export const targetSchema = z.object({ ownerId:id, month:date, revenue:z.number().min(0).max(1e10), wins:z.number().int().min(0).max(100000), calls:z.number().int().min(0).max(100000), reason:z.string().trim().max(500).default('') });

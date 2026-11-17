@@ -2,6 +2,10 @@ import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Award, Calculator, Share2, FileSpreadsheet, LayoutDashboard, MessageSquare, Settings2, UserPlus, Users, Wallet } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { provisionLogin } from "@/lib/accounts/logins.functions";
+import { LoginSetupFields, loginDoneText } from "@/components/accounts/login-setup";
+import type { LoginSetup } from "@/lib/accounts/logins";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -140,7 +144,9 @@ function CreateVolunteer({ demo, uid }: { demo: boolean; uid: string }) {
   const [photo, setPhoto] = useState<File | null>(null);
   const [kyc, setKyc] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState<{ code: string; ref: string; email: string } | null>(null);
+  const [done, setDone] = useState<{ code: string; ref: string; email: string; login?: string } | null>(null);
+  const [loginSetup, setLoginSetup] = useState<LoginSetup>({ verify: true });
+  const provision = useServerFn(provisionLogin);
   const qc = useQueryClient();
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
   const submit = async (e: React.FormEvent) => {
@@ -157,7 +163,10 @@ function CreateVolunteer({ demo, uid }: { demo: boolean; uid: string }) {
       if (f.upi || f.account) await rpc("volunteer_set_payout", { _volunteer: data.id, _upi: f.upi, _holder: f.holder, _account: f.account, _ifsc: f.ifsc, _bank: f.bank }).catch((er: Error) => warn.push(`Payout details: ${er.message}`));
       if (photo) await uploadVolunteerFile("volunteer-photos", data.id, photo).then(path => must(vdb.from("volunteers").update({ photo_path: path }).eq("id", data.id))).catch((er: Error) => warn.push(`Photo: ${er.message}`));
       if (kyc) await uploadVolunteerFile("volunteer-kyc", data.id, kyc).catch((er: Error) => warn.push(`KYC document: ${er.message}`));
-      setDone({ code: data.volunteer_code, ref: data.referral_code, email: data.email }); setF(emptyNew); setPhoto(null); setKyc(null);
+      // Login made by the creator: no approval needed, optional temporary password, email verified by the creator.
+      let login: string | undefined;
+      await provision({ data: { email: data.email, fullName: f.full_name, purpose: "volunteer", setup: loginSetup } }).then(r => { login = loginDoneText(r); }).catch((er: Error) => warn.push(`Login: ${er.message}`));
+      setDone({ code: data.volunteer_code, ref: data.referral_code, email: data.email, ...(login ? { login } : {}) }); setF(emptyNew); setPhoto(null); setKyc(null); setLoginSetup({ verify: true });
       toast.success("Volunteer created."); warn.forEach(w => toast.error(w));
       await qc.invalidateQueries({ queryKey: ["volunteer-bundle"] });
     } catch (er) { toast.error(er instanceof Error ? er.message : "Could not create the volunteer."); } finally { setBusy(false); }
@@ -165,7 +174,8 @@ function CreateVolunteer({ demo, uid }: { demo: boolean; uid: string }) {
   const origin = typeof window === "undefined" ? "" : window.location.origin;
   if (done) return <Panel title="Volunteer created">
     <p className="text-sm text-foreground">Volunteer ID <strong>{done.code}</strong> · Referral code <strong>{done.ref}</strong></p>
-    <p className="mt-2 text-sm text-muted-foreground">Activation: ask the volunteer to open <code className="text-foreground">{origin}/volunteer</code>, choose <strong>Create account</strong> with <strong>{done.email}</strong>, confirm the email and sign in. The account activates automatically. You never set or see their password.</p>
+    {done.login ? <p className="mt-2 text-sm text-muted-foreground">{done.login} They sign in at <code className="text-foreground">{origin}/volunteer</code> with <strong>{done.email}</strong>.</p>
+      : <p className="mt-2 text-sm text-muted-foreground">Activation: ask the volunteer to open <code className="text-foreground">{origin}/volunteer</code> and sign in with <strong>{done.email}</strong> (email code). The account activates automatically.</p>}
     <div className="mt-4"><ReferralTools code={done.ref} /></div>
     <Button className="mt-4" variant="outline" onClick={() => setDone(null)}>Create another volunteer</Button>
   </Panel>;
@@ -186,6 +196,7 @@ function CreateVolunteer({ demo, uid }: { demo: boolean; uid: string }) {
       <div className="grid gap-1.5"><Label htmlFor="nv-ifsc">IFSC</Label><Input id="nv-ifsc" value={f.ifsc} onChange={e => setF({ ...f, ifsc: e.target.value.toUpperCase() })} autoComplete="off" /></div>{field("bank", "Bank name", { autoComplete: "off" })}
       <div className="grid gap-1.5"><Label htmlFor="nv-kyc">KYC document (Aadhaar/PAN, up to 5 MB)</Label><Input id="nv-kyc" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" onChange={e => setKyc(e.target.files?.[0] ?? null)} /></div>
     </div><p className="mt-3 text-xs text-muted-foreground">You can add payout details only once, at registration. After that only the volunteer or an admin can change them, and you will see them only partly hidden. KYC documents are verified by an admin; you cannot open them after upload.</p></Panel>
+    <LoginSetupFields value={loginSetup} onChange={setLoginSetup} idPrefix="nv-login" />
     <Button type="submit" disabled={busy}>{busy ? "Creating…" : "Create volunteer"}</Button>
     <p className="text-xs text-muted-foreground">Volunteer ID, referral code, referral link and QR code are created automatically. The volunteer stays permanently linked to you.</p>
   </form>;

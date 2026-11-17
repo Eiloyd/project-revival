@@ -29,3 +29,15 @@ describe('sign-in method switches', () => {
     expect(normalisePhone('12345')).toBeNull();
   });
 });
+
+describe('who may create their own account', () => {
+  it('never offers sign-up on admin or employee dashboards', async () => {
+    const { signupAllowedFor } = await import('./methods');
+    for (const p of ['/admin', '/login', '/crm', '/hr', '/finance', '/support-desk', '/research', '/manpower', '/ventures', '/work', '/staff', '/my-volunteers', '/client-portal', '/downloads'])
+      expect(signupAllowedFor(p)).toBe(false);
+  });
+  it('offers sign-up only to candidates, volunteers and institute partners', async () => {
+    const { signupAllowedFor } = await import('./methods');
+    for (const p of ['/candidate-portal', '/volunteer', '/become-a-volunteer', '/institute-portal', '/volunteer/']) expect(signupAllowedFor(p)).toBe(true);
+  });
+});

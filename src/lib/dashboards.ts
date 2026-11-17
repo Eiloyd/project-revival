@@ -30,6 +30,13 @@ export function parseDashboards(value: unknown): DashboardKey[] {
   return dashboardKeys.filter(k => list.includes(k));
 }
 
+/** Every staff dashboard. Admin can open all of them, so nothing in the company is hidden from Admin. */
+export const adminDashboardKeys: DashboardKey[] = ['admin', 'crm', 'staff', 'my-volunteers', 'hr', 'support', 'finance', 'research', 'ventures', 'manpower', 'work'];
+export function withAdminAccess(list: DashboardKey[]): DashboardKey[] {
+  if (!list.includes('admin')) return list;
+  return dashboardKeys.filter(k => list.includes(k) || adminDashboardKeys.includes(k));
+}
+
 export type LoginRoute = { kind: 'none' } | { kind: 'go'; to: DashboardPath } | { kind: 'choose'; options: DashboardKey[] };
 
 /** One dashboard opens straight away; several are offered as a choice; none means access has not been given yet. */

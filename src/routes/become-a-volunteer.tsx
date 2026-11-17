@@ -5,7 +5,7 @@ import { ArrowRight, BadgeCheck, BadgeIndianRupee, CalendarClock, Check, FileChe
 import { Button } from "@/components/ui/button";
 import { volunteerApplicationSchema } from "@/lib/submission-schemas";
 import { submitVolunteerApplication } from "@/lib/enquiries.functions";
-import { useReferralCode } from "@/hooks/use-referral-code";
+import { ReferralCodeField } from "@/components/referral/referral-code-field";
 import heroImage from "@/assets/become-volunteer-hero.webp";
 import sessionImage from "@/assets/vol-session.webp";
 import familyImage from "@/assets/vol-family.webp";
@@ -96,7 +96,6 @@ const field = "min-h-12 w-full rounded-md border border-border bg-surface px-4 t
 
 function BecomeVolunteerPage() {
   const save = useServerFn(submitVolunteerApplication);
-  const referralCode = useReferralCode();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState("");
@@ -251,7 +250,7 @@ function BecomeVolunteerPage() {
           <label className="text-xs font-semibold">City / district *<input name="city" className={`${field} mt-1`} maxLength={80} aria-invalid={Boolean(errors["city"])} />{err("city")}</label>
           <label className="text-xs font-semibold">What do you do now? *<select name="occupation" defaultValue="" className={`${field} mt-1`}><option value="" disabled>Choose…</option>{occupations.map(o => <option key={o}>{o}</option>)}</select>{err("occupation")}</label>
           <label className="text-xs font-semibold">Hours per week *<select name="hours" defaultValue="" className={`${field} mt-1`}><option value="" disabled>Choose…</option>{hours.map(o => <option key={o}>{o}</option>)}</select>{err("hours")}</label>
-          <label className="text-xs font-semibold">Referral code (optional)<input key={referralCode} name="coordinatorCode" defaultValue={referralCode} className={`${field} mt-1 uppercase`} maxLength={40} /></label>
+          <ReferralCodeField inputClassName={field} labelClassName="text-xs font-semibold" />
           <label className="text-xs font-semibold sm:col-span-2">Tell us about yourself (optional)<textarea name="message" className={`${field} mt-1 min-h-24 resize-y py-3`} maxLength={800} /></label>
           <label className="flex items-start gap-3 text-xs leading-relaxed sm:col-span-2"><input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-primary" aria-invalid={Boolean(errors["agree"])} /><span>I am {VOLUNTEER_MIN_AGE} or older and meet the <a href="#eligibility" className="font-bold text-primary underline-offset-4 hover:underline">eligibility criteria</a>, and I accept the <a href="#code-of-conduct" className="font-bold text-primary underline-offset-4 hover:underline">code of conduct</a>. *</span></label>
           {err("agree")}

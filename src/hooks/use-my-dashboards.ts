@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { parseDashboards } from '@/lib/dashboards';
+import { parseDashboards, withAdminAccess } from '@/lib/dashboards';
 
 /** The dashboards the signed-in account may open, as decided by the database. `uid` is undefined while the session loads, null when signed out. */
 export function useMyDashboards() {
@@ -26,7 +26,7 @@ export function useMyDashboards() {
         if (error.code === 'PGRST202') throw new Error('Database setup is not finished: the dashboard check is missing. Run database/complete-setup-existing-database.sql in this site\'s database, then try again.');
         throw new Error('Your dashboards could not be checked. Please try again.');
       }
-      return parseDashboards(data);
+      return withAdminAccess(parseDashboards(data));
     },
   });
   return { uid, email, dashboards: uid ? query.data : undefined, loading: uid === undefined || (Boolean(uid) && query.isPending), error: query.error, refetch: query.refetch };

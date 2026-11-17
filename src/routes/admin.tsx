@@ -12,7 +12,6 @@ const ProfilesAdmin = lazy(() => import("@/components/profiles-admin").then(m =>
 const SubmissionsAdmin = lazy(() => import("@/components/submissions-admin").then(m => ({ default: m.SubmissionsAdmin })));
 const ReportsAdmin = lazy(() => import("@/components/reports-admin").then(m => ({ default: m.ReportsAdmin })));
 const SetupAdmin = lazy(() => import("@/components/setup-admin").then(m => ({ default: m.SetupAdmin })));
-import { FirstAdminSetup } from "@/components/first-admin-setup";
 const RecordsImportAdmin = lazy(() => import("@/components/records-import-admin").then(m => ({ default: m.RecordsImportAdmin })));
 const FilesRestoreAdmin = lazy(() => import("@/components/files-restore-admin").then(m => ({ default: m.FilesRestoreAdmin })));
 const AccountProfileAdmin = lazy(() => import("@/components/account-profile-admin").then(m => ({ default: m.AccountProfileAdmin })));
@@ -221,7 +220,7 @@ function AdminPage() {
   const queryClient = useQueryClient();
   const access = useServerFn(getAdminAccess);
   const [accessError, setAccessError] = useState("");
-  const [setup, setSetup] = useState<string | null>(null);
+  const [, setSetup] = useState<string | null>(null);
   const [accessVersion, setAccessVersion] = useState(0);
   const [demo, setDemo] = useState(false);
   const signOut = async () => { if (demo) { setDemo(false); return; } await queryClient.cancelQueries(); queryClient.clear(); await supabase.auth.signOut(); };
@@ -255,7 +254,6 @@ function AdminPage() {
       : !session ? <AuthForm redirectPath="/admin" />
       : accessError ? <div className="dash-card p-5"><p role="alert" className="text-sm">{accessError}</p><div className="mt-3 flex gap-2"><Button onClick={() => setAccessVersion(v => v + 1)}>Retry access check</Button><Button variant="outline" onClick={() => void signOut()}><LogOut size={14} />Sign out</Button></div></div>
       : isAdmin === null ? <p className="text-sm text-muted-foreground">Checking access…</p>
-      : setup === "eligible" || setup === "unverified" ? <FirstAdminSetup onComplete={() => setAccessVersion(v => v + 1)} />
       : <div className="dash-card p-5"><p className="text-sm">Your account does not have admin access. Your own dashboard opens from the employee login.</p><div className="mt-4 flex flex-wrap gap-2"><Button asChild><Link to="/login">Go to my dashboard</Link></Button><Button variant="ghost" onClick={() => void signOut()}><LogOut size={14} />Sign out</Button></div></div>}
   </DashboardGate>;
 }
