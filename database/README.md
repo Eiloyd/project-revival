@@ -41,3 +41,10 @@ Why forms failed before: a new Supabase project gives the website no permission 
 Tested on a blank Postgres 17 database with Supabase-style roles: reset → schema → seed ran without errors, one test record per form was saved and read back with acknowledgement numbers ending in `00001`, and visitors were refused access to private form tables.
 
 Regenerate these files after future database changes.
+
+## Update 18 Nov 2026 — Admin full access, admin sign-up closed
+
+Run `update-2026-11-18-admin-access.sql` once in the Supabase SQL editor (safe to run again, changes no data). After it:
+- Admin gets every dashboard in the switcher (the website already shows them, this makes the database agree);
+- Admin can open My Volunteers;
+- nobody can make themself Admin from the website — add new admins from an existing admin account or in the database.

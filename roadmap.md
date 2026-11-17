@@ -5,9 +5,11 @@
 - [x] Admin can open every dashboard (switcher shows all), including BDE/BDM referrals and My Volunteers
 - [x] Logins made by Admin/HR/BDE/BDM: temporary password + verify email on BDE/BDM access, CRM employee, department access and add-volunteer forms; first sign-in asks for a new password
 - [x] Referral / coordinator code box on every public form; code from a referral link is locked; typed code fills the coordinator details
-- [ ] Admin Users & access: verify email, reset password, deactivate buttons
-- [ ] Mobile sign-in page restyle
-- [ ] Update EDUCATION_KYC_ENCRYPTION_KEY and INTEGRATIONS_ENCRYPTION_KEY (secure form)
+- [x] Admin Users & access: verify email, reset password, block/unblock buttons
+- [x] Mobile sign-in page restyle (dark brand band + sheet, bigger boxes and buttons)
+- [x] Admin → CRM control (all modules) + admin sees My BDE for every BDE
+- [ ] Update EDUCATION_KYC_ENCRYPTION_KEY and INTEGRATIONS_ENCRYPTION_KEY — secure form opened, owner closed it; both keys already hold values
+- [ ] Reconnect own Supabase in this remixed copy — the remix removed the database connection settings (owner action: Settings → Supabase)
 - [ ] Owner: run database/update-2026-11-18-admin-access.sql in Supabase
 
 ## Sign-in methods + admin switches (17 Nov 2026)

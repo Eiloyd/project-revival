@@ -132,7 +132,8 @@ export function IncentivePanel({ d, name }: { d: Data; name: (id: string | null)
 /** BDM view of their own BDEs (reporting to them only — the database already limits rows to the team). */
 export function MyBdePanel({ d, name, onOpen }: { d: Data; name: (id: string | null) => string; onOpen: (ownerId: string, view: 'pipeline' | 'collections' | 'tasks') => void }) {
   const month = istToday().slice(0, 7); const today = istToday();
-  const bdes = d.members.filter(m => m.manager_id === d.userId && m.role === 'BDE');
+  // Admin sees every BDE in the company; a BDM sees only their own team.
+  const bdes = d.members.filter(m => m.role === 'BDE' && (d.role === 'admin' || m.manager_id === d.userId));
   if (!bdes.length) return <p className="dash-card p-6 text-sm text-muted-foreground">No BDE reports to you yet. The admin assigns BDEs to a BDM from Employees.</p>;
   const team = bdes.map(b => b.user_id);
   const teamMoney = collectionTotals(d.collections, team, undefined, month);

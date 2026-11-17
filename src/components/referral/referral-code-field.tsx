@@ -19,7 +19,7 @@ export function ReferralCodeField({ inputClassName = "", labelClassName = "", la
   const [details, setDetails] = useState<ReferralDetails | null>(null);
   const [state, setState] = useState<"idle" | "checking" | "missing">("idle");
   const asked = useRef("");
-  const locked = Boolean(linkCode) && code === linkCode;
+  const locked = Boolean(linkCode) && code === linkCode && state !== "missing";
 
   const find = async (raw: string) => {
     const clean = cleanReferralCode(raw);

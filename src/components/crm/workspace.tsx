@@ -40,7 +40,8 @@ export function CrmWorkspace({initialView='overview'}:{initialView?:CrmView}={})
  const [signedIn,setSignedIn]=useState<boolean|null>(null);
  useEffect(()=>{void supabase.auth.getSession().then(({data})=>setSignedIn(Boolean(data.session)));const {data:sub}=supabase.auth.onAuthStateChange((e,s)=>{setSignedIn(Boolean(s));if(e==='SIGNED_IN')void qc.invalidateQueries({queryKey:['crm']});if(e==='SIGNED_OUT')qc.removeQueries({queryKey:['crm']});});return ()=>sub.subscription.unsubscribe();},[qc]);
  const query=useQuery({queryKey:['crm'],queryFn:()=>load(),retry:false,enabled:signedIn===true});
- const [view,setView]=useState<View>(initialView);const [search,setSearch]=useState('');const [owner,setOwner]=useState('');const [modal,setModal]=useState<'lead'|'task'|'ticket'|'member'|'target'|null>(null);const [selected,setSelected]=useState<string|null>(null);const [error,setError]=useState('');
+ const [view,setView]=useState<View>(initialView);
+ useEffect(()=>{const h=window.location.hash.slice(1);if(h&&nav.some(n=>n.key===h))setView(h as View);},[]);const [search,setSearch]=useState('');const [owner,setOwner]=useState('');const [modal,setModal]=useState<'lead'|'task'|'ticket'|'member'|'target'|null>(null);const [selected,setSelected]=useState<string|null>(null);const [error,setError]=useState('');
  const [memberSetup,setMemberSetup]=useState<LoginSetup>({verify:true});
  const createLead=useServerFn(createCrmLead),move=useServerFn(moveCrmLead),saveMember=useServerFn(saveCrmMember),action=useServerFn(crmAction),lookup=useServerFn(crmCustomerLookup),assign=useServerFn(assignCrmLead);
  const mutation=useMutation({mutationFn:async(fn:()=>Promise<unknown>)=>fn(),onSuccess:()=>{void qc.invalidateQueries({queryKey:['crm']});setModal(null);setError('');},onError:e=>setError(e.message)});
@@ -64,7 +65,7 @@ export function CrmWorkspace({initialView='overview'}:{initialView?:CrmView}={})
  const monthly=d.leads.filter(l=>l.updated_at.startsWith(chosenMonth));
  // Whose collection counts for attendance and daily wage: BDE = own, BDM = the team (BDM + their BDEs).
  const payIds=d.role==='BDM'?teamOf(d,d.userId):[d.userId];
- const allowedNav=nav.filter(n=>!(d.role==='support'&&['pipeline','inbox','collections','incentives'].includes(n.key))&&!(n.key==='ai'&&d.role!=='admin')&&!(n.key==='my-bde'&&d.role!=='BDM')&&!(['incentives','pay'].includes(n.key)&&!['admin','BDM','BDE'].includes(d.role))&&!(['my-day','manufacturers','call-coach','dsr','refunds','sources'].includes(n.key)&&d.role==='support')&&!(['team-compare','workload'].includes(n.key)&&!['admin','BDM'].includes(d.role))&&!(n.key==='coaching'&&d.role==='support'));
+ const allowedNav=nav.filter(n=>!(d.role==='support'&&['pipeline','inbox','collections','incentives'].includes(n.key))&&!(n.key==='ai'&&d.role!=='admin')&&!(n.key==='my-bde'&&!['BDM','admin'].includes(d.role))&&!(['incentives','pay'].includes(n.key)&&!['admin','BDM','BDE'].includes(d.role))&&!(['my-day','manufacturers','call-coach','dsr','refunds','sources'].includes(n.key)&&d.role==='support')&&!(['team-compare','workload'].includes(n.key)&&!['admin','BDM'].includes(d.role))&&!(n.key==='coaching'&&d.role==='support'));
  const canAssign=d.role==='admin'||d.role==='BDM';
  const websiteLeads=visibleLeads.filter(l=>l.source!=='manual');
  const unassigned=d.leads.filter(l=>l.owner_id===null).length;

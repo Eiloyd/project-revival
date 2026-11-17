@@ -42,6 +42,7 @@ const AdminPeriodReports = lazy(() => import("@/components/admin/reports-users")
 const UsersDirectory = lazy(() => import("@/components/admin/reports-users").then(m => ({ default: m.UsersDirectory })));
 const ViewAsUser = lazy(() => import("@/components/admin/view-as-automation").then(m => ({ default: m.ViewAsUser })));
 const AutomationCentre = lazy(() => import("@/components/admin/view-as-automation").then(m => ({ default: m.AutomationCentre })));
+const CrmControl = lazy(() => import("@/components/admin/crm-control").then(m => ({ default: m.CrmControl })));
 const PrototypeSubmissionsAdmin = lazy(() => import("@/components/prototype-submissions-admin").then(m => ({ default: m.PrototypeSubmissionsAdmin })));
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -67,7 +68,7 @@ export const Route = createFileRoute("/admin")({
 
 type Employee = { id: string; employee_id: string; full_name: string; photo_url: string | null; designation: string; department: string; status: string; valid_until: string | null; public_listing: boolean };
 
-type SectionKey = "overview" | "applications" | "enquiries" | "education-support" | "young-innovators" | "prototypes" | "foundation" | "employees" | "profiles" | "education-staff" | "referrals" | "volunteers" | "payment-links" | "programme-fees" | "hero-images" | "country-logos" | "reports" | "google" | "import" | "files" | "setup" | "account" | "departments" | "all-requests" | "integrations" | "incentives" | "approvals" | "global-settings" | "sign-in" | "history" | "audit" | "targets" | "salary" | "activity" | "ticket-ai" | "approvals-hub" | "permissions" | "recruitment" | "period-reports" | "users" | "view-as" | "automation" | "web-analytics";
+type SectionKey = "overview" | "applications" | "enquiries" | "education-support" | "young-innovators" | "prototypes" | "foundation" | "employees" | "profiles" | "education-staff" | "referrals" | "volunteers" | "payment-links" | "programme-fees" | "hero-images" | "country-logos" | "reports" | "google" | "import" | "files" | "setup" | "account" | "departments" | "all-requests" | "integrations" | "incentives" | "approvals" | "global-settings" | "sign-in" | "history" | "audit" | "targets" | "salary" | "activity" | "ticket-ai" | "approvals-hub" | "permissions" | "recruitment" | "period-reports" | "users" | "view-as" | "automation" | "web-analytics" | "crm-control";
 type Section = { key: SectionKey; label: string; icon: LucideIcon; description: string };
 const sectionGroups: { title: string; items: Section[] }[] = [
   { title: "Dashboard", items: [{ key: "overview", label: "Overview", icon: LayoutDashboard, description: "Shortcuts to every part of the admin workspace." }, { key: "approvals-hub", label: "Approvals Centre", icon: ClipboardList, description: "Everything waiting for a decision across all dashboards, in one place." }, { key: "period-reports", label: "Reports & analytics", icon: BarChart3, description: "Every department for any date range, with BDE/BDM targets rolled up by team." }, { key: "web-analytics", label: "Website analytics", icon: Globe2, description: "Visitors, where they came from, pages they explored, and website errors with reason and fix." }, { key: "permissions", label: "Permissions matrix", icon: ShieldCheck, description: "Which role can view or edit each module." }] },
@@ -95,6 +96,7 @@ const sectionGroups: { title: string; items: Section[] }[] = [
     { key: "reports", label: "Reports", icon: FileText, description: "Customer reports for the Downloads page." },
   ] },
   { title: "Company", items: [
+    { key: "crm-control", label: "CRM control (all modules)", icon: BriefcaseBusiness, description: "Every CRM module for the whole company — pipeline, customers, tasks, support, targets, employees, website leads — and a shortcut to every dashboard." },
     { key: "departments", label: "Departments & access", icon: Building2, description: "HR, Support, Accounts, Finance and Lead Research staff, approval routes, SLA hours and leave per year." },
     { key: "all-requests", label: "All requests", icon: ClipboardList, description: "Every request from every department, and the ones waiting for an admin." },
     { key: "recruitment", label: "Career & recruitment", icon: BriefcaseBusiness, description: "All jobs, applications, institutes, referral partners, commissions and recruitment reports. Approve and publish jobs." },
@@ -143,6 +145,7 @@ function SectionPanel({ section, email, demo }: { section: SectionKey; email: st
     case "hero-images": return <HeroImagesAdmin />;
     case "country-logos": return <CountryLogosAdmin />;
     case "reports": return <ReportsAdmin />;
+    case "crm-control": return <CrmControl />;
     case "google": return <GoogleCopyAdmin />;
     case "import": return <RecordsImportAdmin />;
     case "files": return <FilesRestoreAdmin />;

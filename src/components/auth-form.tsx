@@ -115,13 +115,13 @@ export function AuthForm({ redirectPath = "/" }: { redirectPath?: string }) {
   const submitLabel = current === "password" ? title : showCodeBox ? "Verify code & sign in" : sentTo ? "Send again" : current === "phone" ? "Send SMS code" : s.auth_email_code ? "Send login code" : "Email me a sign-in link";
   const hint = current === "password" ? "Sign in with your email and password." : current === "phone" ? "We'll send a one-time code to your mobile." : s.auth_email_code ? "We'll email you a one-time login code." : "We'll email you a link that signs you in.";
 
-  return <form onSubmit={submit} className="mt-4 grid w-full min-w-0 max-w-md gap-4 rounded-xl border border-border bg-card p-4 text-card-foreground shadow-sm sm:mt-8 sm:p-6">
+  return <form onSubmit={submit} className="grid w-full min-w-0 max-w-md gap-4 rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-[0_10px_30px_-18px_color-mix(in_oklab,var(--foreground)_40%,transparent)] sm:p-6 [&_input:not([type=checkbox])]:h-12 [&_input:not([type=checkbox])]:rounded-xl [&_input:not([type=checkbox])]:text-base sm:[&_input:not([type=checkbox])]:h-11 sm:[&_input:not([type=checkbox])]:text-sm">
     <div className="grid gap-1">
-      <h2 className="text-lg font-extrabold">{title}</h2>
+      <h2 className="text-xl font-extrabold tracking-tight">{title}</h2>
       <p className="text-xs text-muted-foreground">{hint}</p>
     </div>
-    {available.length > 1 && !sentTo && <div role="tablist" aria-label="Sign-in method" className="grid gap-1 rounded-lg bg-muted p-1" style={{ gridTemplateColumns: `repeat(${available.length}, minmax(0, 1fr))` }}>
-      {available.map(m => <button key={m} type="button" role="tab" aria-selected={current === m} onClick={() => switchMethod(m)} className={`rounded-md px-2 py-1.5 text-xs font-semibold transition-colors ${current === m ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>{methodLabel[m]}</button>)}
+    {available.length > 1 && !sentTo && <div role="tablist" aria-label="Sign-in method" className="grid gap-1 rounded-xl bg-muted p-1" style={{ gridTemplateColumns: `repeat(${available.length}, minmax(0, 1fr))` }}>
+      {available.map(m => <button key={m} type="button" role="tab" aria-selected={current === m} onClick={() => switchMethod(m)} className={`min-h-10 rounded-lg px-2 py-2 text-sm font-semibold transition-colors ${current === m ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>{methodLabel[m]}</button>)}
     </div>}
     {current === "phone"
       ? <div className="grid gap-2"><Label htmlFor="a-phone">Mobile number</Label><Input id="a-phone" type="tel" inputMode="tel" placeholder="9876543210" value={phone} disabled={!!sentTo} onChange={(e) => setPhone(e.target.value)} autoComplete="tel" /></div>
@@ -129,7 +129,7 @@ export function AuthForm({ redirectPath = "/" }: { redirectPath?: string }) {
     {current === "password" && <div className="grid gap-2"><Label htmlFor="a-pass">Password</Label><Input id="a-pass" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete={signingUp ? "new-password" : "current-password"} /></div>}
     {showCodeBox && <div className="grid gap-2"><Label htmlFor="a-code">{current === "phone" ? "SMS code" : "Login code"}</Label><Input id="a-code" inputMode="numeric" autoComplete="one-time-code" maxLength={10} autoFocus placeholder="Enter the code" value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))} className="tracking-[0.3em]" /></div>}
     {msg && <p role="status" aria-live="polite" className="break-words rounded-md border border-border bg-muted/40 px-3 py-2 text-sm text-foreground">{msg}</p>}
-    <Button type="submit" disabled={busy}>{busy ? "Please wait…" : submitLabel}</Button>
+    <Button type="submit" disabled={busy} className="h-12 rounded-xl text-base font-semibold sm:h-11 sm:text-sm">{busy ? "Please wait…" : submitLabel}</Button>
     {sentTo && <div className="flex flex-wrap gap-x-4">
       {showCodeBox && <Button type="button" variant="link" className={linkBtn} disabled={busy} onClick={() => void sendCode()}>Resend code</Button>}
       <Button type="button" variant="link" className={linkBtn} disabled={busy} onClick={() => { setSentTo(null); setCode(""); setMsg(null); }}>{current === "phone" ? "Use a different number" : "Use a different email"}</Button>
@@ -146,7 +146,7 @@ export function AuthForm({ redirectPath = "/" }: { redirectPath?: string }) {
     }}>Forgot password or first sign-in on the new site? Set a new password</Button>}
     {oauth.length > 0 && !sentTo && <div className="grid gap-2">
       <p className="flex items-center gap-2 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />or continue with<span className="h-px flex-1 bg-border" /></p>
-      <div className="grid grid-cols-2 gap-2">{oauth.map(o => <Button key={o.provider} type="button" variant="outline" size="sm" disabled={busy} onClick={() => void social(o.provider)}>{o.label}</Button>)}</div>
+      <div className="grid grid-cols-2 gap-2">{oauth.map(o => <Button key={o.provider} type="button" variant="outline" className="h-11 rounded-xl" disabled={busy} onClick={() => void social(o.provider)}>{o.label}</Button>)}</div>
     </div>}
     {canSignUp && !sentTo && <Button type="button" variant="link" className={linkBtn} onClick={() => { setMode(mode === "in" ? "up" : "in"); setMsg(null); setConfirmationPending(false); }}>{mode === "in" ? "No account yet? Create one" : "Already have an account? Sign in"}</Button>}
   </form>;

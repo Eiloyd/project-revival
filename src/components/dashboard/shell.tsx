@@ -14,7 +14,6 @@ import { FirstPasswordChange, useMustChangePassword } from './first-password';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useAuthMethods } from '@/hooks/use-auth-methods';
 import logo from '@/assets/local/riloyd-logo.png.optimized.nav.webp';
-import darkLogo from '@/assets/local/riloyd-logo-dark.png.optimized.nav.webp';
 
 export type ShellItem = { key: string; label: string; icon: LucideIcon; badge?: number | string };
 export type ShellGroup = { title?: string; items: ShellItem[] };
@@ -192,13 +191,26 @@ export function DashboardGate({ workspace, title, intro, children }: { workspace
       <p className="relative z-10 text-xs text-[var(--dash-side-muted)]">Secure sign-in · private workspace</p>
       <div aria-hidden="true" className="dash-gate-art absolute inset-0" />
     </section>
-    <section className="flex min-w-0 items-start justify-center px-4 py-6 sm:items-center sm:px-10 sm:py-12">
-      <div className="w-full min-w-0 max-w-md">
-        <div className="flex items-center justify-between gap-3"><span className="lg:hidden"><img src={darkLogo} alt="RILOYD" width={480} height={240} className="dash-logo-on-light h-12 w-auto sm:h-20" /><img src={logo} alt="" aria-hidden="true" width={480} height={240} className="dash-logo-on-dark h-12 w-auto sm:h-20" /></span><span className="ml-auto"><DashThemeToggle /></span></div>
-        <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-primary sm:mt-6 lg:mt-0">{workspace}</p>
-        <h1 className="mt-2 text-xl font-semibold sm:text-3xl">{title}</h1>
-        {intro && <div className="mt-2 text-sm text-muted-foreground">{intro}</div>}
-        <div className="mt-4 sm:mt-6">{children}</div>
+    <section className="flex min-w-0 flex-col lg:items-center lg:justify-center lg:px-10 lg:py-12">
+      {/* Phones and tablets: dark branded band, then the sign-in sheet slides up over it. */}
+      <div className="dash-side relative overflow-hidden px-5 pb-12 pt-[max(1.25rem,env(safe-area-inset-top))] sm:px-8 lg:hidden">
+        <div aria-hidden="true" className="dash-gate-art absolute inset-0" />
+        <div className="relative z-10 flex items-center justify-between gap-3"><img src={logo} alt="RILOYD" width={480} height={240} className="h-11 w-auto sm:h-14" /><DashThemeToggle /></div>
+        <p className="relative z-10 mt-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--dash-side-muted)]">{workspace}</p>
+        <h1 className="relative z-10 mt-1.5 text-[26px] font-semibold leading-tight text-[var(--dash-side-fg)] sm:text-3xl">{title}</h1>
+        {intro && <div className="relative z-10 mt-2 max-w-md text-sm leading-relaxed text-[var(--dash-side-muted)]">{intro}</div>}
+      </div>
+      <div className="relative z-10 -mt-6 flex-1 rounded-t-[28px] bg-background px-4 pb-[max(1.75rem,env(safe-area-inset-bottom))] pt-5 shadow-[0_-12px_30px_-18px_color-mix(in_oklab,var(--foreground)_35%,transparent)] sm:px-8 lg:mt-0 lg:w-full lg:max-w-md lg:flex-none lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
+        <div aria-hidden="true" className="mx-auto mb-4 h-1 w-10 rounded-full bg-border lg:hidden" />
+        <div className="mx-auto w-full min-w-0 max-w-md">
+          <div className="hidden lg:block">
+            <div className="flex justify-end"><DashThemeToggle /></div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">{workspace}</p>
+            <h1 className="mt-2 text-3xl font-semibold">{title}</h1>
+            {intro && <div className="mt-2 text-sm text-muted-foreground">{intro}</div>}
+          </div>
+          <div className="lg:mt-6">{children}</div>
+        </div>
       </div>
     </section>
   </main>;
