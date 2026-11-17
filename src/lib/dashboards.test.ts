@@ -6,7 +6,13 @@ describe('dashboard routing after sign-in', () => {
     expect(routeAfterLogin(['volunteer'])).toEqual({ kind: 'go', to: '/volunteer' });
   });
   it('asks which dashboard when the account has several', () => {
-    expect(routeAfterLogin(['crm', 'staff', 'my-volunteers'])).toEqual({ kind: 'choose', options: ['crm', 'staff', 'my-volunteers'] });
+    expect(routeAfterLogin(['hr', 'finance', 'work'])).toEqual({ kind: 'choose', options: ['hr', 'finance', 'work'] });
+  });
+  it('opens the CRM by default for BDE/BDM (CRM + referrals + My Work)', () => {
+    expect(routeAfterLogin(['crm', 'staff', 'my-volunteers', 'work'])).toEqual({ kind: 'go', to: '/crm' });
+  });
+  it('still lets an admin choose, even with CRM access', () => {
+    expect(routeAfterLogin(['admin', 'crm', 'work']).kind).toBe('choose');
   });
   it('reports no access when the account has none', () => {
     expect(routeAfterLogin([])).toEqual({ kind: 'none' });

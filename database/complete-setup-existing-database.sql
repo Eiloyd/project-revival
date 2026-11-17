@@ -5039,3 +5039,83 @@ END $function$;
 COMMENT ON FUNCTION public.claim_first_admin() IS 'Closed on purpose: admin accounts are added only by an existing admin or the database owner.';
 
 NOTIFY pgrst, 'reload schema';
+
+-- ===== update-2026-11-18-programme-payments.sql =====
+-- RILOYD update (18 Nov 2026): transaction IDs from the Young Innovators, Prototype Funding and Funding Programme forms.
+-- Safe to run more than once. Does not delete or change any data.
+
+CREATE TABLE IF NOT EXISTS public.programme_payments (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  programme text DEFAULT '' NOT NULL,
+  application_id uuid,
+  application_kind text,
+  amount_paise integer NOT NULL,
+  currency text DEFAULT 'INR' NOT NULL,
+  payer_name text NOT NULL,
+  payer_email text NOT NULL,
+  payer_phone text DEFAULT '' NOT NULL,
+  provider text DEFAULT 'zoho' NOT NULL,
+  provider_payment_id text,
+  provider_reference text,
+  razorpay_order_id text,
+  razorpay_payment_id text,
+  status text DEFAULT 'created' NOT NULL,
+  paid_at timestamptz,
+  created_at timestamptz DEFAULT now() NOT NULL
+);
+GRANT ALL ON public.programme_payments TO service_role;
+GRANT SELECT ON public.programme_payments TO authenticated;
+ALTER TABLE public.programme_payments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Admins read programme payments" ON public.programme_payments;
+CREATE POLICY "Admins read programme payments" ON public.programme_payments FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'));
+
+-- One transaction ID can be used only once (rejected ones can be sent again).
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT provider_reference FROM public.programme_payments WHERE provider_reference IS NOT NULL AND status <> 'failed' GROUP BY provider_reference HAVING count(*) > 1) THEN
+    CREATE UNIQUE INDEX IF NOT EXISTS programme_payments_reference_once ON public.programme_payments (provider_reference) WHERE provider_reference IS NOT NULL AND status <> 'failed';
+  ELSE
+    RAISE NOTICE 'Duplicate transaction IDs exist; unique index skipped. Reject the duplicates in Admin → Programme payments, then run this file again.';
+  END IF;
+END $$;
+CREATE INDEX IF NOT EXISTS programme_payments_status_created ON public.programme_payments (status, created_at DESC);
+
+NOTIFY pgrst, 'reload schema';
+
+-- ===== update-2026-11-18-bde-bdm-default-access.sql =====
+-- RILOYD update (18 Nov 2026): every active BDE/BDM gets both the Employee CRM and BDE/BDM referrals.
+-- New accounts get this automatically from the website; this file fixes accounts made before.
+-- Safe to run more than once. Adds missing access only; never changes or removes existing access.
+
+-- 1) Referral access without CRM → add CRM membership + employee profile (referral code used as employee code).
+INSERT INTO public.crm_memberships (user_id, role, manager_id, active)
+SELECT s.user_id, s.designation,
+       CASE WHEN EXISTS (SELECT 1 FROM public.crm_memberships m WHERE m.user_id = s.manager_id AND m.role = 'BDM' AND m.active) THEN s.manager_id END,
+       true
+FROM public.education_staff_access s
+WHERE s.active AND s.designation IN ('BDE','BDM')
+  AND NOT EXISTS (SELECT 1 FROM public.crm_memberships m WHERE m.user_id = s.user_id)
+ON CONFLICT (user_id) DO NOTHING;
+
+INSERT INTO public.crm_employee_profiles (user_id, employee_code, full_name, phone, designation, joining_date)
+SELECT s.user_id, s.referral_code,
+       coalesce(nullif(btrim(p.display_name), ''), split_part(u.email, '@', 1), s.referral_code), '', s.designation, current_date
+FROM public.education_staff_access s
+JOIN auth.users u ON u.id = s.user_id
+LEFT JOIN public.profiles p ON p.id = s.user_id
+WHERE s.active AND s.designation IN ('BDE','BDM')
+  AND NOT EXISTS (SELECT 1 FROM public.crm_employee_profiles e WHERE e.user_id = s.user_id)
+  AND NOT EXISTS (SELECT 1 FROM public.crm_employee_profiles e WHERE upper(e.employee_code) = upper(s.referral_code))
+ON CONFLICT DO NOTHING;
+
+-- 2) CRM BDE/BDM without referral access → add referral access (employee code used as referral code).
+INSERT INTO public.education_staff_access (user_id, designation, referral_code, manager_id, active)
+SELECT m.user_id, m.role, upper(regexp_replace(e.employee_code, '[^A-Za-z0-9-]', '', 'g')),
+       CASE WHEN m.role = 'BDE' AND EXISTS (SELECT 1 FROM public.education_staff_access x WHERE x.user_id = m.manager_id AND x.designation = 'BDM' AND x.active) THEN m.manager_id END,
+       true
+FROM public.crm_memberships m
+JOIN public.crm_employee_profiles e ON e.user_id = m.user_id
+WHERE m.active AND m.role IN ('BDE','BDM')
+  AND length(regexp_replace(e.employee_code, '[^A-Za-z0-9-]', '', 'g')) >= 3
+  AND NOT EXISTS (SELECT 1 FROM public.education_staff_access s WHERE s.user_id = m.user_id)
+  AND NOT EXISTS (SELECT 1 FROM public.education_staff_access s WHERE upper(s.referral_code) = upper(regexp_replace(e.employee_code, '[^A-Za-z0-9-]', '', 'g')))
+ON CONFLICT DO NOTHING;

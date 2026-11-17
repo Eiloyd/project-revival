@@ -19,6 +19,7 @@ import { CrmClock } from './clock';
 import { LoginSetupFields } from '../accounts/login-setup';
 import type { LoginSetup } from '@/lib/accounts/logins';
 import { ManufacturersPanel } from './manufacturers';
+import { CrmReferralsPanel } from '../staff/referrals-panel';
 import { CrmPipeline } from './pipeline';
 import { CrmEnquiryAssistant } from './enquiry-assistant';
 import { CollectionKpis, CollectionsPanel, IncentivePanel, MyBdePanel, teamOf, volRevenue } from './sales-money';
@@ -29,9 +30,9 @@ import { CoachingPanel, Customer360, DailyReportPanel, IncentiveCalculator, Lead
 import { DailyWagePanel, ZeroNudge } from './sales-pay-panel';
 
 type Data=Awaited<ReturnType<typeof getCrm>>;
-export type CrmView='overview'|'my-day'|'call-coach'|'dsr'|'sources'|'refunds'|'team-compare'|'workload'|'coaching'|'pipeline'|'contacts'|'tasks'|'support'|'targets'|'collections'|'incentives'|'pay'|'my-bde'|'team'|'inbox'|'ai'|'manufacturers'|`w-${string}`;
+export type CrmView='overview'|'my-day'|'call-coach'|'dsr'|'sources'|'refunds'|'team-compare'|'workload'|'coaching'|'pipeline'|'contacts'|'tasks'|'support'|'targets'|'collections'|'incentives'|'pay'|'my-bde'|'team'|'inbox'|'ai'|'manufacturers'|'referrals'|'referral-links'|`w-${string}`;
 type View=CrmView;
-const nav=[{key:'overview',label:'Overview',icon:LayoutDashboard},{key:'my-day',label:'My day planner',icon:CalendarClock},{key:'call-coach',label:'Call notes → AI next step',icon:Lightbulb},{key:'dsr',label:'Daily sales report',icon:FileText},{key:'sources',label:'Lead sources',icon:PieChart},{key:'refunds',label:'Cancellations & refunds',icon:Undo2},{key:'team-compare',label:'Team performance',icon:BarChart3},{key:'workload',label:'Workload & reassign',icon:Shuffle},{key:'coaching',label:'Coaching & training',icon:GraduationCap},{key:'pipeline',label:'Sales pipeline',icon:Columns3},{key:'contacts',label:'Customers',icon:Users},{key:'tasks',label:'Tasks & follow-ups',icon:CheckSquare},{key:'support',label:'Support desk',icon:Headphones},{key:'targets',label:'Targets & reports',icon:Target},{key:'collections',label:'Collections',icon:Wallet},{key:'incentives',label:'Incentives',icon:Trophy},{key:'pay',label:'Daily wage & attendance',icon:Coins},{key:'my-bde',label:'My BDE',icon:Users},{key:'team',label:'Employees',icon:UserPlus},{key:'inbox',label:'Website leads',icon:Inbox},{key:'ai',label:'AI enquiry helper',icon:Sparkles},{key:'manufacturers',label:'Manufacturer onboarding',icon:Factory}] as const;
+const nav=[{key:'overview',label:'Overview',icon:LayoutDashboard},{key:'my-day',label:'My day planner',icon:CalendarClock},{key:'call-coach',label:'Call notes → AI next step',icon:Lightbulb},{key:'dsr',label:'Daily sales report',icon:FileText},{key:'sources',label:'Lead sources',icon:PieChart},{key:'refunds',label:'Cancellations & refunds',icon:Undo2},{key:'team-compare',label:'Team performance',icon:BarChart3},{key:'workload',label:'Distribute & reassign leads',icon:Shuffle},{key:'coaching',label:'Coaching & training',icon:GraduationCap},{key:'pipeline',label:'Sales pipeline',icon:Columns3},{key:'contacts',label:'Customers',icon:Users},{key:'tasks',label:'Tasks & follow-ups',icon:CheckSquare},{key:'support',label:'Support desk',icon:Headphones},{key:'targets',label:'Targets & reports',icon:Target},{key:'collections',label:'Collections',icon:Wallet},{key:'incentives',label:'Incentives',icon:Trophy},{key:'pay',label:'Daily wage & attendance',icon:Coins},{key:'my-bde',label:'My BDE',icon:Users},{key:'team',label:'Employees',icon:UserPlus},{key:'inbox',label:'Website leads',icon:Inbox},{key:'ai',label:'AI enquiry helper',icon:Sparkles},{key:'manufacturers',label:'Manufacturer onboarding',icon:Factory},{key:'referrals',label:'BDE/BDM referrals',icon:GraduationCap},{key:'referral-links',label:'My referral links',icon:Link2}] as const;
 const money=(n:number)=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(n);
 const input='mt-1 h-10 w-full rounded-md border border-border bg-background px-3 text-sm';
 
@@ -65,7 +66,7 @@ export function CrmWorkspace({initialView='overview'}:{initialView?:CrmView}={})
  const monthly=d.leads.filter(l=>l.updated_at.startsWith(chosenMonth));
  // Whose collection counts for attendance and daily wage: BDE = own, BDM = the team (BDM + their BDEs).
  const payIds=d.role==='BDM'?teamOf(d,d.userId):[d.userId];
- const allowedNav=nav.filter(n=>!(d.role==='support'&&['pipeline','inbox','collections','incentives'].includes(n.key))&&!(n.key==='ai'&&d.role!=='admin')&&!(n.key==='my-bde'&&!['BDM','admin'].includes(d.role))&&!(['incentives','pay'].includes(n.key)&&!['admin','BDM','BDE'].includes(d.role))&&!(['my-day','manufacturers','call-coach','dsr','refunds','sources'].includes(n.key)&&d.role==='support')&&!(['team-compare','workload'].includes(n.key)&&!['admin','BDM'].includes(d.role))&&!(n.key==='coaching'&&d.role==='support'));
+ const allowedNav=nav.filter(n=>!(d.role==='support'&&['pipeline','inbox','collections','incentives'].includes(n.key))&&!(n.key==='ai'&&d.role!=='admin')&&!(n.key==='my-bde'&&!['BDM','admin'].includes(d.role))&&!(['incentives','pay'].includes(n.key)&&!['admin','BDM','BDE'].includes(d.role))&&!(['my-day','manufacturers','call-coach','dsr','refunds','sources'].includes(n.key)&&d.role==='support')&&!(['team-compare','workload'].includes(n.key)&&!['admin','BDM'].includes(d.role))&&!(n.key==='coaching'&&d.role==='support')&&!(['referrals','referral-links'].includes(n.key)&&!['admin','BDM','BDE'].includes(d.role)));
  const canAssign=d.role==='admin'||d.role==='BDM';
  const websiteLeads=visibleLeads.filter(l=>l.source!=='manual');
  const unassigned=d.leads.filter(l=>l.owner_id===null).length;
@@ -82,6 +83,7 @@ export function CrmWorkspace({initialView='overview'}:{initialView?:CrmView}={})
  const openMine=d.tasks.filter(t=>t.status==='open').length;
  const groups:ShellGroup[]=([
   {title:'Sales',items:[navItem('overview'),{...navItem('my-day'),badge:d.tasks.filter(t=>t.owner_id===d.userId&&t.status==='open'&&t.due_date<=d.today).length},navItem('call-coach'),navItem('pipeline'),navItem('contacts'),navItem('manufacturers'),{...navItem('tasks'),badge:openMine},navItem('dsr'),{...navItem('collections'),badge:d.collections.filter(c=>c.status==='unverified').length},navItem('refunds')]},
+  {title:'Referrals',items:[navItem('referrals'),navItem('referral-links')]},
   {title:'Team',items:[navItem('my-bde'),navItem('team-compare'),navItem('workload'),{...navItem('coaching'),badge:d.coaching.filter(n=>n.employee_id===d.userId&&!n.acknowledged_at).length}]},
   {title:'Service',items:[{...navItem('support'),badge:d.tickets.filter(t=>t.status!=='resolved').length}]},
   {title:'Performance',items:[navItem('targets'),navItem('incentives'),navItem('pay'),navItem('sources')]},
@@ -149,6 +151,7 @@ export function CrmWorkspace({initialView='overview'}:{initialView?:CrmView}={})
     {view==='pay'&&<DailyWagePanel d={d} name={name} ids={payIds}/>}
     {view==='my-day'&&<MyDayPanel d={d} name={name} onOpenLead={setSelected} onGo={v=>setView(v as View)}/>}
     {view==='manufacturers'&&<ManufacturersPanel/>}
+    {(view==='referrals'||view==='referral-links')&&<CrmReferralsPanel tab={view==='referrals'?'referrals':'links'}/>}
     {view==='call-coach'&&<CallCoachPanel key={coachLead??''} d={d} initialLeadId={coachLead}/>}
     {view==='dsr'&&<DailyReportPanel d={d} name={name}/>}
     {view==='sources'&&<LeadSourcesPanel d={d}/>}

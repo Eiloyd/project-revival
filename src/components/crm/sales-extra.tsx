@@ -12,6 +12,7 @@ import { sourceLabels, stageLabels, stages } from '@/lib/crm/rules';
 import { calculateIncentive, collectionTotals, readSlabs } from '@/lib/crm/incentives';
 import { paceStatus, previousWorkday, sourceReport, underperformanceAlerts } from '@/lib/crm/performance';
 import { money, modeLabels, volRevenue } from './sales-money';
+import { leadReceivers, splitEvenly } from '@/lib/crm/distribute';
 
 type Data = Awaited<ReturnType<typeof getCrm>>;
 type NameFn = (id: string | null) => string;
@@ -239,7 +240,7 @@ export function TeamComparePanel({ d, name }: { d: Data; name: NameFn }) {
 /* ------------------------- BDM: workload & reassignment ------------------------- */
 export function WorkloadPanel({ d, name }: { d: Data; name: NameFn }) {
   const a = useCrmAction(); const team = teamMembers(d); const people = d.role === 'admin' ? team : [{ user_id: d.userId, role: 'BDM' }, ...team];
-  const [from, setFrom] = useState(''); const [to, setTo] = useState(''); const [reason, setReason] = useState(''); const [picked, setPicked] = useState<string[]>([]);
+  const [from, setFrom] = useState(''); const [targets, setTargets] = useState<string[]>([]); const receivers = leadReceivers(d.role, d.userId, d.members); const [reason, setReason] = useState(''); const [picked, setPicked] = useState<string[]>([]);
   const openLeads = d.leads.filter(l => !['won', 'lost'].includes(l.stage) && (from === '__none' ? l.owner_id === null : !from || l.owner_id === from));
   const load = people.map(p => ({ id: p.user_id, leads: d.leads.filter(l => l.owner_id === p.user_id && !['won', 'lost'].includes(l.stage)).length, value: d.leads.filter(l => l.owner_id === p.user_id && !['won', 'lost'].includes(l.stage)).reduce((n, l) => n + l.amount, 0), tasks: d.tasks.filter(t => t.owner_id === p.user_id && t.status === 'open').length, overdue: d.tasks.filter(t => t.owner_id === p.user_id && t.status === 'open' && t.due_date < d.today).length }));
   const max = Math.max(1, ...load.map(l => l.leads));
@@ -248,13 +249,24 @@ export function WorkloadPanel({ d, name }: { d: Data; name: NameFn }) {
     <Panel title={<span className="flex items-center gap-2"><Users className="size-4" />Workload distribution</span>}>
       <ul className="space-y-3">{load.map(l => <li key={l.id}><div className="flex flex-wrap items-baseline justify-between gap-2 text-sm"><b>{name(l.id)}</b><span className="text-xs text-muted-foreground">{l.leads} open leads · {money(l.value)} · {l.tasks} open tasks{l.overdue ? ` · ${l.overdue} overdue` : ''}{l.leads >= 5 && l.leads > avg * 1.5 ? ' · overloaded' : ''}</span></div><div className="mt-1 h-2 rounded-full bg-muted"><div className="h-2 rounded-full bg-primary" style={{ width: `${Math.round(l.leads / max * 100)}%` }} /></div></li>)}</ul>
       <p className="mt-3 text-xs text-muted-foreground">"Overloaded" means 5 or more open leads and over 1.5× the team average.</p></Panel>
-    <Panel title="Reassign leads">
-      <div className="grid gap-3 sm:grid-cols-3"><Field label="Leads owned by"><select className={inputCls} value={from} onChange={e => { setFrom(e.target.value); setPicked([]); }}><option value="">Everyone</option>{d.role === 'admin' && <option value="__none">Unassigned</option>}{people.map(p => <option key={p.user_id} value={p.user_id}>{name(p.user_id)}</option>)}</select></Field>
-        <Field label="Move to"><select className={inputCls} value={to} onChange={e => setTo(e.target.value)}><option value="">Choose employee…</option>{people.map(p => <option key={p.user_id} value={p.user_id}>{name(p.user_id)}</option>)}</select></Field>
-        <Field label="Reason (saved in history)"><input className={inputCls} maxLength={300} value={reason} onChange={e => setReason(e.target.value)} placeholder="e.g. BDE on leave, territory change" /></Field></div>
-      <div className="mt-3 max-h-80 overflow-y-auto rounded-md border border-border">{!openLeads.length ? <Empty>No open leads.</Empty> : <ul className="divide-y divide-border text-sm">{openLeads.map(l => <li key={l.id}><label className="flex items-center gap-3 px-3 py-2"><input type="checkbox" checked={picked.includes(l.id)} onChange={e => setPicked(e.target.checked ? [...picked, l.id] : picked.filter(x => x !== l.id))} /><span className="flex-1">{l.title} · {money(l.amount)}</span><span className="text-xs text-muted-foreground">{name(l.owner_id)}</span></label></li>)}</ul>}</div>
+    <Panel title="Distribute / reassign leads">
+      <p className="mb-3 text-xs text-muted-foreground">{d.role === 'admin' ? 'Give leads to a BDM (their team) or straight to BDEs, share them equally, or keep them yourself.' : 'Give your leads to your BDEs, share them equally, or keep them yourself.'}</p>
+      <div className="grid gap-3 sm:grid-cols-2"><Field label="Leads owned by"><select className={inputCls} value={from} onChange={e => { setFrom(e.target.value); setPicked([]); }}><option value="">Everyone</option>{d.role === 'admin' && <option value="__none">Unassigned (new website leads)</option>}{people.map(p => <option key={p.user_id} value={p.user_id}>{name(p.user_id)}</option>)}</select></Field>
+        <Field label="Reason (saved in history)"><input className={inputCls} maxLength={300} value={reason} onChange={e => setReason(e.target.value)} placeholder="e.g. New leads for this week, BDE on leave" /></Field></div>
+      <fieldset className="mt-3"><legend className="text-xs font-semibold">Give to {targets.length > 1 ? `(shared equally among ${targets.length})` : ''}</legend>
+        <div className="mt-2 flex flex-wrap gap-2">{receivers.map(id => { const on = targets.includes(id); const m = d.members.find(x => x.user_id === id); return <label key={id} className={`flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-xs ${on ? 'border-primary bg-primary/10 font-semibold' : 'border-border'}`}><input type="checkbox" className="size-3.5" checked={on} onChange={e => setTargets(e.target.checked ? [...targets, id] : targets.filter(x => x !== id))} />{id === d.userId ? 'Me (keep)' : `${name(id)}${m ? ` · ${m.role}` : ''}`}</label>; })}</div></fieldset>
+      <div className="mt-3 max-h-80 overflow-y-auto rounded-md border border-border">{!openLeads.length ? <Empty>No open leads.</Empty> : <ul className="divide-y divide-border text-sm">{openLeads.map(l => <li key={l.id}><label className="flex items-center gap-3 px-3 py-2"><input type="checkbox" checked={picked.includes(l.id)} onChange={e => setPicked(e.target.checked ? [...picked, l.id] : picked.filter(x => x !== l.id))} /><span className="flex-1">{l.title} · {money(l.amount)}</span><span className="text-xs text-muted-foreground">{l.owner_id ? name(l.owner_id) : 'Unassigned'}</span></label></li>)}</ul>}</div>
       <div className="mt-3 flex flex-wrap gap-2"><Button variant="outline" size="sm" onClick={() => setPicked(openLeads.map(l => l.id))}>Select all ({openLeads.length})</Button>
-        <Button size="sm" disabled={a.busy || !picked.length || !to} onClick={() => a.run(async () => { await ok(supabase.rpc('crm_reassign_leads', { _leads: picked, _owner: to, _reason: reason })); setPicked([]); setReason(''); }, `${picked.length} lead${picked.length === 1 ? '' : 's'} reassigned.`)}>Reassign {picked.length || ''} lead{picked.length === 1 ? '' : 's'}</Button></div>
+        <Button size="sm" disabled={a.busy || !picked.length || !targets.length || reason.trim().length < 3} onClick={() => a.run(async () => {
+          for (const [owner, leads] of splitEvenly(openLeads.filter(l => picked.includes(l.id)).map(l => l.id), targets)) {
+            if (!leads.length) continue;
+            // Admin keeping leads: admins have no CRM membership, so each lead is assigned to them one by one.
+            if (d.role === 'admin' && owner === d.userId) { for (const id of leads) await ok(supabase.rpc('crm_assign_lead', { _lead: id, _owner: owner })); }
+            else await ok(supabase.rpc('crm_reassign_leads', { _leads: leads, _owner: owner, _reason: reason }));
+          }
+          setPicked([]); setReason('');
+        }, `${picked.length} lead${picked.length === 1 ? '' : 's'} given to ${targets.length === 1 ? (targets[0] === d.userId ? 'you' : name(targets[0]!)) : `${targets.length} people`}.`)}>Give {picked.length || ''} lead{picked.length === 1 ? '' : 's'}</Button>
+        {reason.trim().length < 3 && picked.length > 0 && <span className="self-center text-xs text-muted-foreground">Write a short reason first.</span>}</div>
       <Status a={a} /></Panel>
     <Panel title="Reassignment history">{!d.assignments.length ? <Empty>No reassignments yet.</Empty> : <Table head={['When', 'Lead', 'From', 'To', 'By', 'Reason']}>{d.assignments.slice(0, 200).map(x => <tr key={x.id}><Td>{new Date(x.created_at).toLocaleString('en-IN')}</Td><Td>{d.leads.find(l => l.id === x.lead_id)?.title ?? 'Lead'}</Td><Td>{x.from_owner ? name(x.from_owner) : 'Unassigned'}</Td><Td>{x.to_owner ? name(x.to_owner) : 'Unassigned'}</Td><Td>{x.changed_by ? name(x.changed_by) : 'System'}</Td><Td className="text-xs">{x.reason || '—'}</Td></tr>)}</Table>}</Panel>
   </div>;

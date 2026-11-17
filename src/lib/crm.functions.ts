@@ -62,7 +62,18 @@ export const saveCrmMember=createServerFn({method:'POST'}).middleware([requireSu
   const login=await ensureLogin(supabaseAdmin as unknown as import('@supabase/supabase-js').SupabaseClient,{email:data.email,fullName:data.fullName,setup:data.setup??{verify:true},actorId:context.userId,purpose:'crm'});
   if(!login.verified) throw new Error('The email is not verified yet. Tick "Mark email as verified" and save again.');
   const userId=login.userId; const {setup:_s,...input}=data; void _s;
-  const {error}=await context.supabase.rpc('crm_onboard_member',{_user_id:userId,_input:input}); if(error) throw new Error('Employee could not be saved. Check employee code and manager.'); return {ok:true};
+  const {error}=await context.supabase.rpc('crm_onboard_member',{_user_id:userId,_input:input}); if(error) throw new Error('Employee could not be saved. Check employee code and manager.');
+  // New BDE/BDM also get BDE/BDM referrals by default, with their employee code as referral code (shown inside the CRM).
+  if((data.role==='BDE'||data.role==='BDM')&&data.active){
+    const {data:staff}=await supabaseAdmin.from('education_staff_access').select('user_id').eq('user_id',userId).maybeSingle();
+    const code=data.employeeCode.trim().toUpperCase().replace(/[^A-Z0-9-]/g,'');
+    if(!staff&&code.length>=3){
+      const {data:mgr}=data.managerId?await supabaseAdmin.from('education_staff_access').select('user_id').eq('user_id',data.managerId).eq('designation','BDM').eq('active',true).maybeSingle():{data:null};
+      const {error:sErr}=await supabaseAdmin.from('education_staff_access').insert({user_id:userId,designation:data.role,referral_code:code,manager_id:data.role==='BDE'&&mgr?data.managerId!:null,active:true});
+      if(sErr) console.error('education_staff_access from CRM member',sErr.code,sErr.message);
+    }
+  }
+  return {ok:true};
 });
 const actionSchema=z.discriminatedUnion('kind',[
  z.object({kind:z.literal('task'),data:taskSchema}),

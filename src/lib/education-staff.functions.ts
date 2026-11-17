@@ -29,7 +29,16 @@ export const saveEducationStaff = createServerFn({ method: 'POST' }).middleware(
     }
     const { error } = await context.supabase.from('education_staff_access').upsert({ user_id: userId, designation: data.designation, referral_code: data.referralCode, manager_id: data.designation === 'BDE' ? data.managerId ?? null : null, active: data.active });
     if (error) throw new Error('Staff access could not be saved; check that the referral code is unique.');
-    return { ok: true, created: login.created, passwordSet: login.passwordSet };
+    // BDE/BDM get the Employee CRM by default (it holds My Work and the referrals). Existing CRM access is left as it is.
+    let crmLinked = false;
+    const { data: crm } = await supabaseAdmin.from('crm_memberships').select('user_id').eq('user_id', userId).maybeSingle();
+    if (!crm && data.active) {
+      const { data: mgr } = data.managerId ? await supabaseAdmin.from('crm_memberships').select('user_id').eq('user_id', data.managerId).eq('role', 'BDM').eq('active', true).maybeSingle() : { data: null };
+      const { error: crmErr } = await context.supabase.rpc('crm_onboard_member', { _user_id: userId, _input: { role: data.designation, employeeCode: data.referralCode, fullName: data.fullName || data.email.split('@')[0], designation: data.designation, phone: '', photoUrl: '', active: true, ...(mgr ? { managerId: data.managerId } : {}) } });
+      crmLinked = !crmErr;
+      if (crmErr) console.error('crm_onboard_member from staff access', crmErr.code, crmErr.message);
+    } else crmLinked = !!crm;
+    return { ok: true, created: login.created, passwordSet: login.passwordSet, crmLinked };
   });
 
 export const getEducationStaffLeads = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {

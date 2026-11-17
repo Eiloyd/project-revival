@@ -3,7 +3,7 @@ import { Component, lazy, Suspense, useCallback, useEffect, useState, type Compo
 import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getAdminAccess } from "@/lib/admin-bootstrap.functions";
-import { Activity, BarChart3, IndianRupee, Sparkles, Target, Trophy, Building2, ClipboardList, History, Plug, ScrollText, ShieldAlert, SlidersHorizontal, BriefcaseBusiness, CircleUserRound, CreditCard, FileText, Flag, FolderSync, Globe2, GraduationCap, HeartHandshake, IdCard, Image as ImageIcon, Inbox, LayoutDashboard, Lightbulb, Link2, LogOut, MessageSquare, Rocket, Sheet, ShieldCheck, Trash2, Upload, UserCog, Users, Eye, Workflow, type LucideIcon } from "lucide-react";
+import { Activity, BarChart3, IndianRupee, Sparkles, Target, Trophy, Building2, ClipboardList, History, Plug, ScrollText, ShieldAlert, SlidersHorizontal, BriefcaseBusiness, CircleUserRound, CreditCard, FileText, Flag, FolderSync, Globe2, GraduationCap, HeartHandshake, IdCard, Image as ImageIcon, Inbox, LayoutDashboard, Lightbulb, Link2, LogOut, MessageSquare, Rocket, Sheet, ShieldCheck, Trash2, Upload, UserCog, Users, Eye, Workflow, ReceiptText, type LucideIcon } from "lucide-react";
 import { DEMO_ADMIN_EMAIL, demoRecent, demoStats } from "@/lib/admin-demo";
 import { z } from "zod";
 import { AuthForm } from "@/components/auth-form";
@@ -42,6 +42,7 @@ const AdminPeriodReports = lazy(() => import("@/components/admin/reports-users")
 const UsersDirectory = lazy(() => import("@/components/admin/reports-users").then(m => ({ default: m.UsersDirectory })));
 const ViewAsUser = lazy(() => import("@/components/admin/view-as-automation").then(m => ({ default: m.ViewAsUser })));
 const AutomationCentre = lazy(() => import("@/components/admin/view-as-automation").then(m => ({ default: m.AutomationCentre })));
+const ProgrammePaymentsAdmin = lazy(() => import("@/components/admin/programme-payments-admin").then(m => ({ default: m.ProgrammePaymentsAdmin })));
 const CrmControl = lazy(() => import("@/components/admin/crm-control").then(m => ({ default: m.CrmControl })));
 const PrototypeSubmissionsAdmin = lazy(() => import("@/components/prototype-submissions-admin").then(m => ({ default: m.PrototypeSubmissionsAdmin })));
 import type { Session } from "@supabase/supabase-js";
@@ -68,7 +69,7 @@ export const Route = createFileRoute("/admin")({
 
 type Employee = { id: string; employee_id: string; full_name: string; photo_url: string | null; designation: string; department: string; status: string; valid_until: string | null; public_listing: boolean };
 
-type SectionKey = "overview" | "applications" | "enquiries" | "education-support" | "young-innovators" | "prototypes" | "foundation" | "employees" | "profiles" | "education-staff" | "referrals" | "volunteers" | "payment-links" | "programme-fees" | "hero-images" | "country-logos" | "reports" | "google" | "import" | "files" | "setup" | "account" | "departments" | "all-requests" | "integrations" | "incentives" | "approvals" | "global-settings" | "sign-in" | "history" | "audit" | "targets" | "salary" | "activity" | "ticket-ai" | "approvals-hub" | "permissions" | "recruitment" | "period-reports" | "users" | "view-as" | "automation" | "web-analytics" | "crm-control";
+type SectionKey = "overview" | "applications" | "enquiries" | "education-support" | "young-innovators" | "prototypes" | "foundation" | "employees" | "profiles" | "education-staff" | "referrals" | "volunteers" | "payment-links" | "programme-fees" | "hero-images" | "country-logos" | "reports" | "google" | "import" | "files" | "setup" | "account" | "departments" | "all-requests" | "integrations" | "incentives" | "approvals" | "global-settings" | "sign-in" | "history" | "audit" | "targets" | "salary" | "activity" | "ticket-ai" | "approvals-hub" | "permissions" | "recruitment" | "period-reports" | "users" | "view-as" | "automation" | "web-analytics" | "crm-control" | "programme-payments";
 type Section = { key: SectionKey; label: string; icon: LucideIcon; description: string };
 const sectionGroups: { title: string; items: Section[] }[] = [
   { title: "Dashboard", items: [{ key: "overview", label: "Overview", icon: LayoutDashboard, description: "Shortcuts to every part of the admin workspace." }, { key: "approvals-hub", label: "Approvals Centre", icon: ClipboardList, description: "Everything waiting for a decision across all dashboards, in one place." }, { key: "period-reports", label: "Reports & analytics", icon: BarChart3, description: "Every department for any date range, with BDE/BDM targets rolled up by team." }, { key: "web-analytics", label: "Website analytics", icon: Globe2, description: "Visitors, where they came from, pages they explored, and website errors with reason and fix." }, { key: "permissions", label: "Permissions matrix", icon: ShieldCheck, description: "Which role can view or edit each module." }] },
@@ -90,6 +91,7 @@ const sectionGroups: { title: string; items: Section[] }[] = [
   ] },
   { title: "Website", items: [
     { key: "payment-links", label: "Fees & payment", icon: CreditCard, description: "Fees, payment links and payment embed codes for every paid form." },
+    { key: "programme-payments", label: "Programme payments", icon: ReceiptText, description: "Transaction IDs sent from the Young Innovators, Prototype Funding and Funding Programme forms — verify or reject." },
     { key: "programme-fees", label: "Registration fees", icon: Globe2, description: "Funding Programme fees: India and each international country." },
     { key: "hero-images", label: "Hero pictures", icon: ImageIcon, description: "Top pictures per theme for the Homepage, Scholarship and Young Innovators." },
     { key: "country-logos", label: "Country logos", icon: Flag, description: "Logos shown in the footer and market pages." },
@@ -141,6 +143,7 @@ function SectionPanel({ section, email, demo }: { section: SectionKey; email: st
     case "referrals": return <ReferralLinksAdmin />;
     case "volunteers": return <VolunteersAdmin role="admin" demo={demo} uid="" />;
     case "payment-links": return <PaymentOptionsAdmin />;
+    case "programme-payments": return <ProgrammePaymentsAdmin />;
     case "programme-fees": return <ProgrammeFeesAdmin />;
     case "hero-images": return <HeroImagesAdmin />;
     case "country-logos": return <CountryLogosAdmin />;

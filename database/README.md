@@ -48,3 +48,11 @@ Run `update-2026-11-18-admin-access.sql` once in the Supabase SQL editor (safe t
 - Admin gets every dashboard in the switcher (the website already shows them, this makes the database agree);
 - Admin can open My Volunteers;
 - nobody can make themself Admin from the website — add new admins from an existing admin account or in the database.
+
+## Update 18 Nov 2026 — Transaction IDs on Young Innovators, Prototype and Funding Programme forms
+
+Run `update-2026-11-18-programme-payments.sql` (safe to run again). It makes sure the `programme_payments` table exists and that one transaction ID can be used only once. Payments then appear in Admin → Programme payments.
+
+## Update 18 Nov 2026 — BDE/BDM get CRM and referrals by default
+
+Run `update-2026-11-18-bde-bdm-default-access.sql` once (safe to run again). Older BDE/BDM accounts that had only referral access get the Employee CRM, and CRM BDE/BDM get referral access. New accounts get both automatically.

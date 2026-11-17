@@ -1,3 +1,10 @@
+## Payments on more forms + BDE/BDM default access (18 Nov 2026)
+- [x] Young Innovators, Prototype Funding, Funding Programme: admin embed code payment + transaction ID box, admin "Programme payments" verify/reject
+- [ ] Owner: run database/update-2026-11-18-programme-payments.sql and update-2026-11-18-bde-bdm-default-access.sql (the 2 existing BDE/BDM accounts get CRM after this)
+- [x] BDE/BDM: CRM opens by default, My Work inside CRM menu, BDE/BDM Referrals shown in CRM menu
+- [x] Lead distribution: Admin assigns leads to a BDM team (or BDE), BDM passes them to own BDEs or keeps them
+- [x] Preview "Missing Supabase environment variable" error: connection settings restored after remix
+
 ## Admin full control, closed admin sign-up, referral codes (18 Nov 2026)
 - [x] Education support backup: 32 of 34 forms loaded into the database; next form number starts at 00031
 - [ ] 2 backup forms (Abhinav RAj, RISHABH PATHAK) skipped: their payment IDs are already used by 2 newer test forms — waiting on owner to say which to keep

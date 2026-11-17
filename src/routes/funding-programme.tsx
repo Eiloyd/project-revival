@@ -42,7 +42,8 @@ import gatheringVideo from "@/assets/videos/funding-gathering-autoplay.mp4.asset
 import gatheringVideoWebm from "@/assets/videos/funding-gathering-autoplay.webm.asset.json";
 import { ViewportVideo } from "@/components/viewport-video";
 import { RegistrationCountdown } from "@/components/registration-countdown";
-import { PaymentOptionButton } from "@/components/payment-option-button";
+import { ProgrammePaymentBox } from "@/components/payments/programme-payment-box";
+import type { ProgrammePaymentKey } from "@/lib/programme-payments/rules";
 
 const ZOHOPUBLIC = "https://forms.zohopublic.in/RIPLSTORES/form/StartupIdeaRegistrationForm/formperma/1SNzTjiKwSF14T0BCEyJLvZCZDDowZl3NYWbAjpy1KE";
 
@@ -190,6 +191,8 @@ const included = [
 
 function FundingProgramme() {
   const [programmeCountry, setProgrammeCountry] = useState<ProgrammeCountry>("usa");
+  const [payKey, setPayKey] = useState<ProgrammePaymentKey>("funding_programme_registration");
+  const payFor = (key: ProgrammePaymentKey) => { setPayKey(key); document.getElementById("programme-pay")?.scrollIntoView({ behavior: "smooth", block: "start" }); };
   const fees = useFees();
   const registrationFee = fees("funding_programme_registration");
   const summitFee = fees("funding_programme_summit");
@@ -319,7 +322,7 @@ function FundingProgramme() {
             <p className="border-b border-border bg-primary px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-primary-foreground">Registration Fee</p>
             <div className="flex flex-1 flex-col gap-3 p-4">
               {indiaRegistrationOptions.map(option => <div key={option.amount} className="flex items-center gap-4 rounded-md bg-primary/15 px-4 py-4"><UsersRound className="shrink-0 text-primary" size={26} /><div><p className="text-3xl font-black">₹{registrationFee.toLocaleString("en-IN")}/-</p><p className="text-xs text-muted-foreground">+{option.gstPercent}% GST ·</p></div></div>)}
-              <PaymentOptionButton optionKey="funding_programme_registration" label="Pay registration fee" />
+              <button type="button" onClick={() => payFor("funding_programme_registration")} className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground hover:bg-primary/90">Pay registration fee <ArrowRight size={16} /></button>
               <div className="mt-auto rounded-md border border-primary/40 bg-primary/10 px-4 py-3 text-xs"><b>50% refund</b> if not selected in screening. T&amp;C applicable.</div>
             </div>
           </div>
@@ -338,7 +341,7 @@ function FundingProgramme() {
                 ))}
               </div>
               <div className="mt-auto rounded-md bg-primary/15 px-4 py-2.5 text-center"><p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Stay · Food · Local travel · Local tour</p><p className="text-2xl font-black">₹{summitFee.toLocaleString("en-IN")}/-</p><p className="text-xs font-semibold">Per participant · Optional</p></div>
-              <PaymentOptionButton optionKey="funding_programme_summit" label="Pay summit package" />
+              <button type="button" onClick={() => payFor("funding_programme_summit")} className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground hover:bg-primary/90">Pay summit package <ArrowRight size={16} /></button>
               <p className="text-[10px] text-muted-foreground">Subject to policy, eligibility and Terms and Conditions.</p>
             </div>
           </div>
@@ -353,6 +356,7 @@ function FundingProgramme() {
             </div>
           </div>
         </div>
+        <div className="mt-6"><ProgrammePaymentBox id="programme-pay" value={payKey} onChange={setPayKey} options={[{ key: "funding_programme_registration", label: "Registration fee" }, { key: "funding_programme_summit", label: "Summit package" }]} /></div>
       </Section>
 
       <Section kicker="Venue & Eligibility" title={<>Gwalior · <span className="text-primary">29–31 Dec 2026</span></>} tone="surface">

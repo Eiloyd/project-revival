@@ -39,9 +39,14 @@ export function withAdminAccess(list: DashboardKey[]): DashboardKey[] {
 
 export type LoginRoute = { kind: 'none' } | { kind: 'go'; to: DashboardPath } | { kind: 'choose'; options: DashboardKey[] };
 
-/** One dashboard opens straight away; several are offered as a choice; none means access has not been given yet. */
+/**
+ * One dashboard opens straight away; several are offered as a choice; none means access has not been given yet.
+ * BDE/BDM and other CRM employees go straight to the CRM, which already holds My Work and their referrals;
+ * their other dashboards stay one click away in the switcher.
+ */
 export function routeAfterLogin(list: DashboardKey[]): LoginRoute {
   if (list.length === 0) return { kind: 'none' };
+  if (list.includes('crm') && !list.includes('admin')) return { kind: 'go', to: '/crm' };
   if (list.length === 1) return { kind: 'go', to: dashboards[list[0]!].path };
   return { kind: 'choose', options: list };
 }

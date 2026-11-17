@@ -13,7 +13,7 @@ export const crmControlModules: { key: string; label: string; description: strin
   { key: 'targets', label: 'Targets & reports', description: 'Target meters, daily sales reports and lead sources.', icon: Target },
   { key: 'team-compare', label: 'Team performance', description: 'Compare every BDE and BDM side by side.', icon: BarChart3 },
   { key: 'collections', label: 'Collections', description: 'Direct BDE vs volunteer-sourced collections, verified and pending.', icon: Wallet },
-  { key: 'workload', label: 'Workload & reassign', description: 'Move leads between people in bulk, with a reason that is logged.', icon: Shuffle },
+  { key: 'workload', label: 'Distribute leads', description: 'Give leads to a BDM team or BDEs, share them equally, or keep them yourself. Every move is logged with a reason.', icon: Shuffle },
   { key: 'team', label: 'Employees', description: 'BDE/BDM directory, active status and reporting BDM. Add new employees with a login.', icon: UserPlus },
   { key: 'inbox', label: 'Website leads', description: 'Fresh leads from website forms; assign the unassigned ones.', icon: Inbox },
 ];
