@@ -950,8 +950,37 @@ export type Database = {
         }
         Relationships: []
       }
+      hero_images: {
+        Row: {
+          image_url: string
+          page: string
+          storage_path: string
+          theme: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          image_url: string
+          page: string
+          storage_path: string
+          theme: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          image_url?: string
+          page?: string
+          storage_path?: string
+          theme?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       payment_options: {
         Row: {
+          amount: number | null
+          embed_code: string | null
           key: string
           label: string
           payment_link: string | null
@@ -961,6 +990,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          amount?: number | null
+          embed_code?: string | null
           key: string
           label: string
           payment_link?: string | null
@@ -970,6 +1001,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          amount?: number | null
+          embed_code?: string | null
           key?: string
           label?: string
           payment_link?: string | null
