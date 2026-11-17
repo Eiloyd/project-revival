@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Sparkles, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { dashboards, type DashboardKey } from '@/lib/dashboards';
@@ -40,8 +40,11 @@ function buildSteps(dash: DashboardKey, groups: ShellGroup[], wide: boolean): St
 export function GuideTour({ dash, groups, onClose }: { dash: DashboardKey; groups: ShellGroup[]; onClose: () => void }) {
   const [wide] = useState(() => window.innerWidth >= 1024);
   // Steps whose target is not on screen (e.g. no bell for this account) are dropped once, when the tour opens.
-  const steps = useMemo(() => buildSteps(dash, groups, wide).filter(s => !s.target || visible(document.querySelector(s.target))), [dash, groups, wide]);
+  const pick = useCallback(() => buildSteps(dash, groups, wide).filter(s => !s.target || visible(document.querySelector(s.target))), [dash, groups, wide]);
+  const [steps, setSteps] = useState(pick);
   const [i, setI] = useState(0);
+  // Top-bar buttons such as the bell can appear a moment after the page; look again while the welcome card is showing.
+  useEffect(() => { if (i !== 0) return; const t = window.setTimeout(() => setSteps(pick()), 900); return () => window.clearTimeout(t); }, [i, pick]);
   const [box, setBox] = useState<Box | null>(null);
   const next = useRef<HTMLButtonElement>(null);
   const step = steps[Math.min(i, steps.length - 1)]!;
