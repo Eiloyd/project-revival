@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useServerFn } from '@tanstack/react-start';
+import { toast } from 'sonner';
+import { adminAccountAction, adminBlockedAccounts } from '@/lib/accounts/logins.functions';
+import { generateTemporaryPassword } from '@/lib/accounts/logins';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Empty, ErrorNote, inputCls, Loading, Panel, Pill, Table, Td } from '@/components/work/common';
@@ -61,15 +65,40 @@ type UserRow = { user_id: string; email: string; full_name: string; employee_cod
 export function UsersDirectory() {
   const q = useQuery({ queryKey: ['admin-user-directory'], queryFn: async () => { const { data, error } = await supabase.rpc('admin_user_directory'); if (error) throw error; return data as UserRow[]; } });
   const [f, setF] = useState(''); const [only, setOnly] = useState('');
+  const qc = useQueryClient(); const act = useServerFn(adminAccountAction); const blockedFn = useServerFn(adminBlockedAccounts);
+  const blocked = useQuery({ queryKey: ['admin-blocked-accounts'], queryFn: () => blockedFn(), retry: false });
+  const [busy, setBusy] = useState(''); const [shown, setShown] = useState<{ email: string; password: string } | null>(null);
+  const run = async (u: UserRow, action: 'verify' | 'reset' | 'deactivate' | 'reactivate') => {
+    if (action === 'deactivate' && !confirm(`Block ${u.email} from signing in to every dashboard?`)) return;
+    const password = action === 'reset' ? generateTemporaryPassword() : undefined;
+    if (action === 'reset' && !confirm(`Give ${u.email} a new temporary password? Their current password stops working and they must choose a new one at next sign-in.`)) return;
+    setBusy(u.user_id + action);
+    try {
+      await act({ data: { userId: u.user_id, action, ...(password ? { password } : {}) } });
+      if (password) setShown({ email: u.email, password });
+      toast.success(action === 'verify' ? 'Email marked as verified.' : action === 'reset' ? 'Temporary password set.' : action === 'deactivate' ? 'Account blocked.' : 'Account unblocked.');
+      await Promise.all([qc.invalidateQueries({ queryKey: ['admin-user-directory'] }), qc.invalidateQueries({ queryKey: ['admin-blocked-accounts'] })]);
+    } catch (e) { toast.error(e instanceof Error ? e.message : 'Could not update the account.'); } finally { setBusy(''); }
+  };
   const list = (q.data ?? []).filter(u => (!f || [u.email, u.full_name, u.employee_code].some(x => x.toLowerCase().includes(f.toLowerCase()))) && (!only || (only === 'none' ? !u.access.length : u.access.some(a => a.toLowerCase().includes(only)))));
   const dt = (d: string | null) => d ? new Date(d).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : 'Never';
   return <Panel title={`Users & access (${list.length})`} actions={<><input aria-label="Search users" placeholder="Search email, name, code" className={`${inputCls} w-56`} value={f} onChange={e => setF(e.target.value)} />
     <select aria-label="Access" className={`${inputCls} w-44`} value={only} onChange={e => setOnly(e.target.value)}><option value="">All accounts</option><option value="admin">Admin</option><option value="crm">CRM (BDE/BDM)</option><option value="hr">HR</option><option value="support">Support</option><option value="finance">Finance</option><option value="accounts">Accounts</option><option value="research">Research</option><option value="jury">Jury</option><option value="institute">Institute</option><option value="client">Client portal</option><option value="volunteer">Volunteer</option><option value="candidate">Candidate</option><option value="none">No access yet</option></select>
     {q.data?.length ? <Button size="sm" variant="outline" onClick={() => downloadCsv('users-access.csv', list.map(u => ({ email: u.email, name: u.full_name, employee_code: u.employee_code, access: u.access.join('; '), email_confirmed: u.confirmed ? 'yes' : 'no', signed_up: u.created_at, last_sign_in: u.last_sign_in_at ?? '' })))}>Download CSV</Button> : null}</>}>
-    <p className="mb-3 text-sm text-muted-foreground">Read-only overview. Give or remove access in Departments & access (HR, Support, Accounts, Finance, Research), BDE / BDM (CRM), Volunteers, Ventures → Stages, jury & services (jury), HR → Institutes (partner logins).</p>
+    {shown && <div role="status" className="mb-3 rounded-md border border-border bg-muted/50 p-3 text-sm">Temporary password for <b>{shown.email}</b>: <code className="font-mono text-foreground">{shown.password}</code>
+      <span className="ml-2 inline-flex gap-2"><Button size="sm" variant="outline" onClick={() => void navigator.clipboard.writeText(shown.password).then(() => toast.success('Copied. Share it privately.'))}>Copy</Button><Button size="sm" variant="ghost" onClick={() => setShown(null)}>Hide</Button></span>
+      <span className="mt-1 block text-xs text-muted-foreground">Shown once. They must set their own password at next sign-in.</span></div>}
+    <p className="mb-3 text-sm text-muted-foreground">Verify an email, give a new temporary password or block sign-in from here. Give or remove access in Departments & access (HR, Support, Accounts, Finance, Research), BDE / BDM (CRM), Volunteers, Ventures → Stages, jury & services (jury), HR → Institutes (partner logins).</p>
     {q.isPending ? <Loading /> : q.error ? <ErrorNote error={q.error} /> : !list.length ? <Empty>No accounts match.</Empty> :
-      <Table head={['Account', 'Access', 'Email confirmed', 'Signed up', 'Last sign-in']}>{list.map(u => <tr key={u.user_id} className="border-b border-border"><Td><b>{u.full_name || u.email}</b><div className="text-xs text-muted-foreground">{u.email}{u.employee_code && ` · ${u.employee_code}`}</div></Td>
+      <Table head={['Account', 'Access', 'Email confirmed', 'Signed up', 'Last sign-in', 'Actions']}>{list.map(u => <tr key={u.user_id} className="border-b border-border"><Td><b>{u.full_name || u.email}</b><div className="text-xs text-muted-foreground">{u.email}{u.employee_code && ` · ${u.employee_code}`}</div></Td>
         <Td><div className="flex flex-wrap gap-1">{u.access.length ? u.access.map(a => <Pill key={a} tone={a === 'Admin' ? 'danger' : 'info'}>{a}</Pill>) : <span className="text-xs text-muted-foreground">No dashboard yet</span>}</div></Td>
-        <Td>{u.confirmed ? <Pill tone="success">Yes</Pill> : <Pill tone="warning">No</Pill>}</Td><Td className="whitespace-nowrap">{dt(u.created_at)}</Td><Td className="whitespace-nowrap">{dt(u.last_sign_in_at)}</Td></tr>)}</Table>}
+        <Td>{u.confirmed ? <Pill tone="success">Yes</Pill> : <Pill tone="warning">No</Pill>}</Td><Td className="whitespace-nowrap">{dt(u.created_at)}</Td><Td className="whitespace-nowrap">{dt(u.last_sign_in_at)}</Td>
+        <Td><div className="flex flex-wrap gap-1">
+          {blocked.data?.includes(u.user_id) && <Pill tone="danger">Blocked</Pill>}
+          {!u.confirmed && <Button size="sm" variant="outline" disabled={!!busy} onClick={() => void run(u, 'verify')}>Verify email</Button>}
+          <Button size="sm" variant="outline" disabled={!!busy} onClick={() => void run(u, 'reset')}>Reset password</Button>
+          {blocked.data?.includes(u.user_id) ? <Button size="sm" variant="ghost" disabled={!!busy} onClick={() => void run(u, 'reactivate')}>Unblock</Button>
+            : <Button size="sm" variant="ghost" disabled={!!busy} onClick={() => void run(u, 'deactivate')}>Block</Button>}
+        </div></Td></tr>)}</Table>}
   </Panel>;
 }

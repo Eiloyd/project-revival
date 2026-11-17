@@ -1,3 +1,15 @@
+## Admin full control, closed admin sign-up, referral codes (18 Nov 2026)
+- [x] Education support backup: 32 of 34 forms loaded into the database; next form number starts at 00031
+- [ ] 2 backup forms (Abhinav RAj, RISHABH PATHAK) skipped: their payment IDs are already used by 2 newer test forms — waiting on owner to say which to keep
+- [x] Admin and employee dashboards: no "Create account" any more; only candidate, volunteer and institute portals allow sign-up; first-admin self-claim removed
+- [x] Admin can open every dashboard (switcher shows all), including BDE/BDM referrals and My Volunteers
+- [x] Logins made by Admin/HR/BDE/BDM: temporary password + verify email on BDE/BDM access, CRM employee, department access and add-volunteer forms; first sign-in asks for a new password
+- [x] Referral / coordinator code box on every public form; code from a referral link is locked; typed code fills the coordinator details
+- [ ] Admin Users & access: verify email, reset password, deactivate buttons
+- [ ] Mobile sign-in page restyle
+- [ ] Update EDUCATION_KYC_ENCRYPTION_KEY and INTEGRATIONS_ENCRYPTION_KEY (secure form)
+- [ ] Owner: run database/update-2026-11-18-admin-access.sql in Supabase
+
 ## Sign-in methods + admin switches (17 Nov 2026)
 - [x] Admin login abhinav@riloyd.in created in own Supabase with admin role
 - [x] Every Supabase sign-in method on login pages (email code, email link, password, phone code, Google/Microsoft/GitHub/Apple/LinkedIn/Facebook, 2-step authenticator, sign out everywhere)

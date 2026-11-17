@@ -55,3 +55,41 @@ export const completeFirstPasswordChange = createServerFn({ method: 'POST' }).mi
     if (upd) throw new Error(/same|different/i.test(upd.message) ? 'Choose a new password, different from the temporary one.' : 'Your password could not be saved. Please try again.');
     return { ok: true };
   });
+
+/** Admin → Users & access: verify an email, give a new temporary password, or block / unblock sign-in. Admin only; an admin cannot block themself. */
+export const adminAccountAction = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth])
+  .inputValidator((v: unknown) => z.object({ userId: z.string().uuid(), action: z.enum(['verify', 'reset', 'deactivate', 'reactivate']), password: z.string().max(72).optional() }).parse(v))
+  .handler(async ({ context, data }) => {
+    const { data: admin } = await context.supabase.rpc('has_role', { _user_id: context.userId, _role: 'admin' });
+    if (admin !== true) throw new Error('Admin access required.');
+    if (data.action === 'deactivate' && data.userId === context.userId) throw new Error('You cannot block your own account.');
+    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+    const { data: found, error } = await supabaseAdmin.auth.admin.getUserById(data.userId);
+    if (error || !found.user) throw new Error('Account not found.');
+    let patch: Record<string, unknown>;
+    if (data.action === 'verify') patch = { email_confirm: true };
+    else if (data.action === 'reset') {
+      const problem = temporaryPasswordProblem(data.password ?? ''); if (problem) throw new Error(problem);
+      patch = { password: data.password, app_metadata: { ...found.user.app_metadata, must_change_password: true } };
+    } else patch = { ban_duration: data.action === 'deactivate' ? '876000h' : 'none' };
+    const { error: upd } = await supabaseAdmin.auth.admin.updateUserById(data.userId, patch);
+    if (upd) throw new Error('The account could not be updated. Please try again.');
+    if (data.action === 'deactivate') await supabaseAdmin.auth.admin.signOut(data.userId).then(() => undefined, () => undefined);
+    await supabaseAdmin.from('audit_logs').insert({ actor_id: context.userId, action: `account_${data.action}`, entity: 'auth_user', entity_id: data.userId, details: {} }).then(() => undefined, () => undefined);
+    return { ok: true };
+  });
+
+/** Which accounts are blocked from signing in (Admin → Users & access). */
+export const adminBlockedAccounts = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
+  const { data: admin } = await context.supabase.rpc('has_role', { _user_id: context.userId, _role: 'admin' });
+  if (admin !== true) throw new Error('Admin access required.');
+  const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+  const blocked: string[] = [];
+  for (let page = 1; page <= 50; page++) {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 200 });
+    if (error) break;
+    for (const u of data.users) { const until = (u as { banned_until?: string | null }).banned_until; if (until && new Date(until) > new Date()) blocked.push(u.id); }
+    if (data.users.length < 200) break;
+  }
+  return blocked;
+});
