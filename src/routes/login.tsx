@@ -36,7 +36,7 @@ function LoginPage() {
 
   return <DashboardGate workspace="Employee login" title={title} intro={intro}>
     {uid === undefined ? null
-      : !uid ? <AuthForm redirectPath="/login" />
+      : !uid ? <><AuthForm redirectPath="/login" /><p className="mt-4 text-center text-xs text-muted-foreground">Trouble signing in? <Link to="/help/$slug" params={{ slug: 'sign-in' }} className="font-semibold text-primary underline-offset-4 hover:underline">Read the sign-in help</Link> · <Link to="/help" className="font-semibold text-primary underline-offset-4 hover:underline">Help Centre</Link></p></>
       : error ? <div className="dash-card p-5"><p role="alert" className="text-sm">{error.message}</p><div className="mt-4 flex gap-2"><Button onClick={() => void refetch()}>Try again</Button><Button variant="outline" onClick={() => void signOut()}><LogOut className="size-4" />Sign out</Button></div></div>
       : loading || !next || next.kind === 'go' ? <p className="text-sm text-muted-foreground">Finding your dashboard…</p>
       : next.kind === 'none' ? <div className="dash-card p-5">

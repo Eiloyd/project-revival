@@ -7,6 +7,7 @@ import { HelpSearch, StillNeedHelp, topicIcons } from '@/components/help/help-ui
 const popular = ['getting-started', 'raise-ticket', 'new-request', 'forgot-password', 'apply-leave', 'record-collection', 'volunteer-withdraw', 'no-dashboard'];
 
 export const Route = createFileRoute('/help/')({
+  staticData: { sitemap: true },
   validateSearch: (s: Record<string, unknown>): { topic?: HelpTopicKey } => (isHelpTopic(s['topic']) ? { topic: s['topic'] } : {}),
   head: () => ({ meta: [
     { title: 'Help Centre | RILOYD portal' },

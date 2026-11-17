@@ -4,6 +4,7 @@ import { articlesForTopic, findArticle, findTopic } from '@/lib/help/search';
 import { HelpSearch, StillNeedHelp } from '@/components/help/help-ui';
 
 export const Route = createFileRoute('/help/$slug')({
+  staticData: { sitemap: true },
   loader: ({ params }) => { const article = findArticle(params.slug); if (!article) throw notFound(); return { article }; },
   head: ({ loaderData }) => {
     const a = loaderData?.article; const title = a ? `${a.title} | RILOYD Help Centre` : 'Help article | RILOYD Help Centre';

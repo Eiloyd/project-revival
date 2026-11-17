@@ -43,6 +43,7 @@ export function SiteHeader() {
     { label: "About", to: "/about" as const },
     { label: "Services", to: "/services" as const },
     { label: "Contact", to: "/contact" as const },
+    { label: "Help", to: "/help" as const },
   ];
 
   return <header className="relative z-30 border-b border-border bg-background text-foreground">
@@ -73,6 +74,7 @@ const footerMenu = [
   { label: "Contact", to: "/contact" as const },
   { label: "Register", to: "/register" as const },
   { label: "Careers", to: "/careers" as const },
+  { label: "Help Centre", to: "/help" as const },
   { label: "Login", to: "/login" as const },
 ];
 const footerPrograms = [
