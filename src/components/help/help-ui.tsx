@@ -37,7 +37,7 @@ export function HelpSearch({ initial = '', autoFocus = false, size = 'lg' }: { i
     {show && <div id="help-results" role="listbox" className="absolute inset-x-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-border bg-popover text-popover-foreground shadow-2xl">
       {results.length ? <ul className="max-h-[60vh] overflow-y-auto py-2">{results.map((a, n) => { const t = findTopic(a.topic); return <li key={a.slug}>
         <Link ref={el => { links.current[n] = el; }} to="/help/$slug" params={{ slug: a.slug }} role="option" aria-selected={n === hi} onMouseEnter={() => setHi(n)}
-          className={`flex items-start gap-3 px-4 py-3 ${n === hi ? 'bg-muted' : ''}`}>
+          className={`flex items-start gap-3 px-4 py-3 ${n === hi ? 'bg-primary/10' : ''}`}>
           <Search className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
           <span className="min-w-0"><span className="block text-sm font-semibold">{a.title}</span><span className="block truncate text-xs text-muted-foreground">{t?.title} · {a.summary}</span></span>
         </Link></li>; })}</ul>
