@@ -23,7 +23,7 @@ async function handle({ request }: { request: Request }) {
   if (/bot|crawl|spider|headless/i.test(request.headers.get("user-agent") ?? "")) return new Response(null, { status: 204 });
   const path = d.path.split("?")[0]!.split("#")[0]!;
   // Analytics is best-effort: with no database configured (e.g. preview after disconnecting), skip silently.
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return new Response(null, { status: 204 });
+  if (!process.env['SUPABASE_URL'] || !process.env['SUPABASE_SERVICE_ROLE_KEY']) return new Response(null, { status: 204 });
   try {
     await record(d, path, request, url, ua);
   } catch (e) {
