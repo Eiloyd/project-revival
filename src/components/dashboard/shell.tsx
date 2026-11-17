@@ -9,6 +9,9 @@ import { logActivity } from '@/lib/activity-log';
 import { dashboardKeyForPath, guideSeenKey } from '@/lib/help/search';
 import { HelpMenu } from '@/components/help/help-menu';
 import { GuideTour } from './guide-tour';
+import { AccountSecurity, TwoStepChallenge, useNeedsTwoStep } from './two-step';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useAuthMethods } from '@/hooks/use-auth-methods';
 import logo from '@/assets/local/riloyd-logo.png.optimized.nav.webp';
 import darkLogo from '@/assets/local/riloyd-logo-dark.png.optimized.nav.webp';
 
@@ -19,11 +22,23 @@ export const dashboardIcons: Record<DashboardKey, LucideIcon> = { candidate: Bri
 const WIDTH = 272; // phone drawer width in px
 const EDGE = 44; // a swipe must start this close to the left edge to open the menu (wide enough to begin clear of the phone's own back gesture)
 
-/** Shared employee/admin workspace frame: dark left menu (collapses on computers, swipes in/out on phones) + sticky top bar. */
-export function DashboardShell({ workspace, groups, active, onSelect, user, onSignOut, signOutLabel = 'Sign out', actions, title, subtitle, children }: {
+type ShellProps = {
   workspace: string; groups: ShellGroup[]; active: string; onSelect: (key: string) => void;
   user?: { name: string; detail?: string }; onSignOut?: () => void; signOutLabel?: string; actions?: ReactNode; title?: string | undefined; subtitle?: string | undefined; children: ReactNode;
-}) {
+};
+
+/** Shared employee/admin workspace frame. Accounts with an authenticator app must enter its code before any dashboard opens. */
+export function DashboardShell(props: ShellProps) {
+  const twoStep = useNeedsTwoStep(true);
+  if (twoStep.state === 'checking') return <DashboardGate workspace={props.workspace} title="Checking your sign-in"><p className="text-sm text-muted-foreground">One moment…</p></DashboardGate>;
+  if (twoStep.state === 'needed') return <DashboardGate workspace={props.workspace} title="Enter your 2-step code"><TwoStepChallenge onDone={twoStep.done} /></DashboardGate>;
+  return <ShellFrame {...props} />;
+}
+
+/** Dark left menu (collapses on computers, swipes in/out on phones) + sticky top bar. */
+function ShellFrame({ workspace, groups, active, onSelect, user, onSignOut, signOutLabel = 'Sign out', actions, title, subtitle, children }: ShellProps) {
+  const [securityOpen, setSecurityOpen] = useState(false);
+  const authMethods = useAuthMethods();
   const [collapsed, setCollapsed] = useState(false);
   const [open, setOpen] = useState(false);
   const panel = useRef<HTMLElement>(null);
@@ -140,6 +155,8 @@ export function DashboardShell({ workspace, groups, active, onSelect, user, onSi
           <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--dash-side-active)] text-xs font-bold text-[var(--dash-side-active-fg)]">{initials}</span>
           <span className={`min-w-0 ${hide}`}><span className="block truncate text-sm font-semibold text-[var(--dash-side-fg)]">{user.name}</span>{user.detail && <span className="block truncate text-xs text-[var(--dash-side-muted)]">{user.detail}</span>}</span>
         </div>}
+        {signOut && <button type="button" onClick={() => setSecurityOpen(true)} title={collapsed ? 'Account security' : undefined} className={`dash-nav-item mt-1 ${collapsed ? 'lg:justify-center lg:px-0' : ''}`}><ShieldCheck className="size-[18px] shrink-0" /><span className={hide}>Account security</span></button>}
+        {signOut && <Dialog open={securityOpen} onOpenChange={setSecurityOpen}><DialogContent className="max-h-[90vh] overflow-y-auto"><DialogHeader><DialogTitle>Account security</DialogTitle></DialogHeader><AccountSecurity allowTwoStep={authMethods.settings.auth_mfa} /></DialogContent></Dialog>}
         {signOut && <button type="button" onClick={() => void signOut()} title={collapsed ? signOutLabel : undefined} className={`dash-nav-item mt-1 ${collapsed ? 'lg:justify-center lg:px-0' : ''}`}><LogOut className="size-[18px] shrink-0" /><span className={hide}>{signOutLabel}</span></button>}
       </div>
     </aside>

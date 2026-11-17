@@ -4987,3 +4987,7 @@ ALTER TABLE public.payment_options ENABLE TRIGGER c_settings_history;
 ALTER TABLE public.volunteer_settings ENABLE TRIGGER c_settings_history;
 ALTER TABLE public.volunteer_form_commissions ENABLE TRIGGER c_settings_history;
 ALTER TABLE public.crm_incentive_plans ENABLE TRIGGER c_settings_history;
+-- ===== fix-2026-11-17-admin-role-check: keep only one has_role so admin checks work =====
+DROP FUNCTION IF EXISTS public.has_role(uuid, text);
+GRANT EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) TO anon, authenticated, service_role;
+NOTIFY pgrst, 'reload schema';

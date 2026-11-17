@@ -1,3 +1,11 @@
+## Sign-in methods + admin switches (17 Nov 2026)
+- [x] Admin login abhinav@riloyd.in created in own Supabase with admin role
+- [x] Every Supabase sign-in method on login pages (email code, email link, password, phone code, Google/Microsoft/GitHub/Apple/LinkedIn/Facebook, 2-step authenticator, sign out everywhere)
+- [x] Admin → Sign-in & security: switch each method on/off (one email-based method always stays on)
+- [x] Help Centre answers for the new sign-in options
+- [ ] Owner: run `database/fix-2026-11-17-admin-role-check.sql` (admin panel shows "Access could not be checked" until then)
+- [ ] Owner: in Supabase add {{ .Token }} to the Magic Link + Confirm signup email templates; set up providers for SMS / Google etc. before switching them on
+
 ## Help centre, first-login guide, README, smoothness (17 Nov 2026)
 
 ## Clean-up for own hosting (17 Nov)

@@ -32,6 +32,7 @@ const DepartmentsAdmin = lazyCC("DepartmentsAdmin"); const AllRequestsAdmin = la
 const CriticalApprovals = lazyCC("CriticalApprovals"); const IncentivePlansAdmin = lazyCC("IncentivePlansAdmin"); const GlobalSettingsAdmin = lazyCC("GlobalSettingsAdmin"); const ChangeHistory = lazyCC("ChangeHistory"); const AuditLogAdmin = lazyCC("AuditLogAdmin");
 const lazyHr = <K extends keyof typeof import("@/components/hr/hr-panels")>(k: K) => lazy(() => import("@/components/hr/hr-panels").then(m => ({ default: m[k] as ComponentType<Record<string, unknown>> })));
 const TargetAssignmentPanel = lazyHr("TargetAssignment"); const PeopleSalaryOverviewPanel = lazyHr("PeopleSalaryOverview");
+const AuthMethodsAdmin = lazy(() => import("@/components/admin/auth-methods-admin").then(m => ({ default: m.AuthMethodsAdmin })));
 const ApprovalsHub = lazy(() => import("@/components/admin/approvals-hub").then(m => ({ default: m.ApprovalsHub })));
 const PermissionsMatrix = lazy(() => import("@/components/admin/approvals-hub").then(m => ({ default: m.PermissionsMatrix })));
 const WebsiteAnalyticsAdmin = lazy(() => import("@/components/admin/website-analytics").then(m => ({ default: m.WebsiteAnalyticsAdmin })));
@@ -67,7 +68,7 @@ export const Route = createFileRoute("/admin")({
 
 type Employee = { id: string; employee_id: string; full_name: string; photo_url: string | null; designation: string; department: string; status: string; valid_until: string | null; public_listing: boolean };
 
-type SectionKey = "overview" | "applications" | "enquiries" | "education-support" | "young-innovators" | "prototypes" | "foundation" | "employees" | "profiles" | "education-staff" | "referrals" | "volunteers" | "payment-links" | "programme-fees" | "hero-images" | "country-logos" | "reports" | "google" | "import" | "files" | "setup" | "account" | "departments" | "all-requests" | "integrations" | "incentives" | "approvals" | "global-settings" | "history" | "audit" | "targets" | "salary" | "activity" | "ticket-ai" | "approvals-hub" | "permissions" | "recruitment" | "period-reports" | "users" | "view-as" | "automation" | "web-analytics";
+type SectionKey = "overview" | "applications" | "enquiries" | "education-support" | "young-innovators" | "prototypes" | "foundation" | "employees" | "profiles" | "education-staff" | "referrals" | "volunteers" | "payment-links" | "programme-fees" | "hero-images" | "country-logos" | "reports" | "google" | "import" | "files" | "setup" | "account" | "departments" | "all-requests" | "integrations" | "incentives" | "approvals" | "global-settings" | "sign-in" | "history" | "audit" | "targets" | "salary" | "activity" | "ticket-ai" | "approvals-hub" | "permissions" | "recruitment" | "period-reports" | "users" | "view-as" | "automation" | "web-analytics";
 type Section = { key: SectionKey; label: string; icon: LucideIcon; description: string };
 const sectionGroups: { title: string; items: Section[] }[] = [
   { title: "Dashboard", items: [{ key: "overview", label: "Overview", icon: LayoutDashboard, description: "Shortcuts to every part of the admin workspace." }, { key: "approvals-hub", label: "Approvals Centre", icon: ClipboardList, description: "Everything waiting for a decision across all dashboards, in one place." }, { key: "period-reports", label: "Reports & analytics", icon: BarChart3, description: "Every department for any date range, with BDE/BDM targets rolled up by team." }, { key: "web-analytics", label: "Website analytics", icon: Globe2, description: "Visitors, where they came from, pages they explored, and website errors with reason and fix." }, { key: "permissions", label: "Permissions matrix", icon: ShieldCheck, description: "Which role can view or edit each module." }] },
@@ -107,6 +108,7 @@ const sectionGroups: { title: string; items: Section[] }[] = [
     { key: "incentives", label: "Incentive plans", icon: Trophy, description: "BDE and BDM incentive slabs on verified revenue vs target (needs a second admin's approval)." },
     { key: "approvals", label: "Change approvals", icon: ShieldAlert, description: "Payment configuration, commission and payout rule changes waiting for a second admin." },
     { key: "global-settings", label: "Global settings", icon: SlidersHorizontal, description: "Settings used across several parts of the website." },
+    { key: "sign-in", label: "Sign-in & security", icon: ShieldCheck, description: "Switch login methods on or off: email code, email link, password, SMS, Google and more, plus 2-step verification." },
     { key: "history", label: "Change history", icon: History, description: "Who changed which setting or key, and when." },
     { key: "audit", label: "Audit log", icon: ScrollText, description: "Approvals, payments and access changes across all dashboards." },
     { key: "activity", label: "Login & activity log", icon: Activity, description: "Who signed in, signed out and which dashboard tabs they opened." },
@@ -153,6 +155,7 @@ function SectionPanel({ section, email, demo }: { section: SectionKey; email: st
     case "incentives": return <IncentivePlansAdmin />;
     case "approvals": return <CriticalApprovals />;
     case "global-settings": return <GlobalSettingsAdmin />;
+    case "sign-in": return <AuthMethodsAdmin />;
     case "history": return <ChangeHistory />;
     case "audit": return <AuditLogAdmin />;
     case "targets": return <TargetAssignmentPanel mode="admin" />;
