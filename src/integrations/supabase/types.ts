@@ -949,6 +949,51 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_support_handoffs: {
+        Row: {
+          created_at: string
+          forwarded_by: string
+          id: string
+          lead_id: string
+          note: string
+          ticket_code: string
+          ticket_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          forwarded_by: string
+          id?: string
+          lead_id: string
+          note?: string
+          ticket_code?: string
+          ticket_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          forwarded_by?: string
+          id?: string
+          lead_id?: string
+          note?: string
+          ticket_code?: string
+          ticket_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_support_handoffs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: true
+            referencedRelation: "crm_leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_support_handoffs_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "customer_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crm_targets: {
         Row: {
           calls_target: number
@@ -6724,10 +6769,16 @@ export type Database = {
       crm_create_lead: { Args: { _input: Json }; Returns: string }
       crm_customer_lookup: { Args: { _reference: string }; Returns: Json }
       crm_doc_folder_ok: { Args: { _name: string }; Returns: boolean }
+      crm_downline: { Args: { _user: string }; Returns: string[] }
+      crm_forward_to_support: {
+        Args: { _lead: string; _note?: string }
+        Returns: string
+      }
       crm_import_submission: {
         Args: { _id: string; _kind: string; _owner: string }
         Returns: undefined
       }
+      crm_is_manager_role: { Args: { _role: string }; Returns: boolean }
       crm_leaderboard: {
         Args: { _month: string }
         Returns: {
@@ -6746,6 +6797,7 @@ export type Database = {
         Returns: undefined
       }
       crm_owner_for_code: { Args: { _code: string }; Returns: string }
+      crm_rank: { Args: { _role: string }; Returns: number }
       crm_reassign_leads: {
         Args: { _leads: string[]; _owner: string; _reason: string }
         Returns: number
@@ -6795,6 +6847,7 @@ export type Database = {
         }[]
       }
       crm_sales_role: { Args: { _user: string }; Returns: string }
+      crm_senior_role: { Args: { _role: string }; Returns: string }
       crm_submission_lead: {
         Args: { _kind: string; _owner?: string; r: Json }
         Returns: string
@@ -6809,6 +6862,22 @@ export type Database = {
         Returns: string
       }
       crm_team_ids: { Args: { _user: string }; Returns: string[] }
+      crm_team_volunteers: {
+        Args: never
+        Returns: {
+          created_at: string
+          district: string
+          employee_id: string
+          full_name: string
+          id: string
+          kyc_status: string
+          mobile: string
+          state: string
+          status: string
+          volunteer_code: string
+        }[]
+      }
+      crm_upline: { Args: { _user: string }; Returns: string[] }
       crm_verify_collection: {
         Args: { _approve: boolean; _id: string; _note?: string }
         Returns: string
