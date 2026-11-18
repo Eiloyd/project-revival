@@ -13,6 +13,7 @@ import { calculateIncentive, collectionTotals, readSlabs } from '@/lib/crm/incen
 import { paceStatus, previousWorkday, sourceReport, underperformanceAlerts } from '@/lib/crm/performance';
 import { money, modeLabels, volRevenue } from './sales-money';
 import { leadReceivers, splitEvenly } from '@/lib/crm/distribute';
+import { downlineOf, isManagerRole, isSalesRole } from '@/lib/crm/hierarchy';
 
 type Data = Awaited<ReturnType<typeof getCrm>>;
 type NameFn = (id: string | null) => string;
@@ -32,7 +33,8 @@ const ok = async (p: PromiseLike<{ error: unknown }>) => { const { error } = awa
 
 /** People this account manages: a BDM's active reports, or every active sales member for admin. */
 export function teamMembers(d: Data) {
-  return d.members.filter(m => m.active && m.user_id !== d.userId && (d.role === 'admin' ? ['BDE', 'BDM', 'sales'].includes(m.role) : m.manager_id === d.userId));
+  const below = downlineOf(d.userId, d.members);
+  return d.members.filter(m => m.active && m.user_id !== d.userId && (d.role === 'admin' ? (isSalesRole(m.role) || m.role === 'sales') : below.includes(m.user_id)));
 }
 function dayCounts(d: Data, uid: string, day: string) {
   return {
@@ -76,7 +78,7 @@ export function MyDayPanel({ d, name, onOpenLead, onGo }: { d: Data; name: NameF
 /* ------------------------------ Daily sales report ------------------------------ */
 export function DailyReportPanel({ d, name }: { d: Data; name: NameFn }) {
   const a = useCrmAction(); const today = d.today; const yesterday = previousWorkday(today);
-  const canSubmit = ['BDE', 'BDM', 'sales'].includes(d.role); const canReview = d.role === 'BDM' || d.role === 'admin';
+  const canSubmit = isSalesRole(d.role) || d.role === 'sales'; const canReview = isManagerRole(d.role);
   const [day, setDay] = useState(today); const mine = d.reports.find(r => r.owner_id === d.userId && r.report_date === day);
   const [f, setF] = useState({ summary: '', plan: '', blockers: '' }); const [loadedFor, setLoadedFor] = useState('');
   if (mine && loadedFor !== mine.id) { setLoadedFor(mine.id); setF({ summary: mine.summary, plan: mine.plan_tomorrow, blockers: mine.blockers }); }
@@ -239,7 +241,7 @@ export function TeamComparePanel({ d, name }: { d: Data; name: NameFn }) {
 
 /* ------------------------- BDM: workload & reassignment ------------------------- */
 export function WorkloadPanel({ d, name }: { d: Data; name: NameFn }) {
-  const a = useCrmAction(); const team = teamMembers(d); const people = d.role === 'admin' ? team : [{ user_id: d.userId, role: 'BDM' }, ...team];
+  const a = useCrmAction(); const team = teamMembers(d); const people = d.role === 'admin' ? team : [{ user_id: d.userId, role: d.role }, ...team];
   const [from, setFrom] = useState(''); const [targets, setTargets] = useState<string[]>([]); const receivers = leadReceivers(d.role, d.userId, d.members); const [reason, setReason] = useState(''); const [picked, setPicked] = useState<string[]>([]);
   const openLeads = d.leads.filter(l => !['won', 'lost'].includes(l.stage) && (from === '__none' ? l.owner_id === null : !from || l.owner_id === from));
   const load = people.map(p => ({ id: p.user_id, leads: d.leads.filter(l => l.owner_id === p.user_id && !['won', 'lost'].includes(l.stage)).length, value: d.leads.filter(l => l.owner_id === p.user_id && !['won', 'lost'].includes(l.stage)).reduce((n, l) => n + l.amount, 0), tasks: d.tasks.filter(t => t.owner_id === p.user_id && t.status === 'open').length, overdue: d.tasks.filter(t => t.owner_id === p.user_id && t.status === 'open' && t.due_date < d.today).length }));
@@ -275,7 +277,7 @@ export function WorkloadPanel({ d, name }: { d: Data; name: NameFn }) {
 /* ------------------------------ Coaching & training ------------------------------ */
 const coachKinds = { coaching: 'Coaching', training: 'Training', review: 'Performance review', warning: 'Warning' } as const;
 export function CoachingPanel({ d, name }: { d: Data; name: NameFn }) {
-  const a = useCrmAction(); const canCoach = d.role === 'BDM' || d.role === 'admin'; const team = teamMembers(d);
+  const a = useCrmAction(); const canCoach = isManagerRole(d.role); const team = teamMembers(d);
   const blank = { employee: '', kind: 'coaching', topic: '', date: d.today, notes: '', actions: '', follow: '' }; const [f, setF] = useState(blank);
   const mine = d.coaching.filter(n => n.employee_id === d.userId); const given = d.coaching.filter(n => n.employee_id !== d.userId);
   function submit(e: FormEvent) { e.preventDefault(); a.run(async () => { await ok(supabase.from('crm_coaching_notes').insert({ employee_id: f.employee, coach_id: d.userId, kind: f.kind, topic: f.topic, session_date: f.date, notes: f.notes, action_items: f.actions, follow_up_date: f.follow || null })); setF(blank); }, 'Session saved. The employee can see and acknowledge it.'); }
@@ -304,7 +306,7 @@ export function CoachingPanel({ d, name }: { d: Data; name: NameFn }) {
 
 /* ------------------------------ Incentive calculator ------------------------------ */
 export function IncentiveCalculator({ d }: { d: Data }) {
-  const role = d.role === 'BDM' ? 'BDM' : 'BDE';
+  const role = d.role === 'BDE' || d.role === 'JBDE' ? 'BDE' : 'BDM';
   const plan = d.plans.find(p => p.role === role); const target = d.targets.filter(t => t.owner_id === d.userId && t.month.startsWith(d.today.slice(0, 7))).reduce((n, t) => n + Number(t.revenue_target), 0);
   const [rev, setRev] = useState(''); const [tgt, setTgt] = useState(target ? String(target) : '');
   const r = calculateIncentive(plan ? { active: plan.active, slabs: readSlabs(plan.slabs) } : null, Number(rev) || 0, Number(tgt) || 0);

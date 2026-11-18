@@ -1,6 +1,7 @@
 import { loginSetupSchema } from '../accounts/logins';
 import { z } from 'zod';
-export const crmRoles = ['sales','support','BDE','BDM'] as const;
+import { downlineOf } from './hierarchy';
+export const crmRoles = ['SSM','SM','ASM','BDM','BDE','JBDE','sales','support'] as const;
 export const stages = ['new','contacted','qualified','proposal','won','lost'] as const;
 export const stageLabels: Record<(typeof stages)[number], string> = { new:'New', contacted:'Contacted', qualified:'Qualified', proposal:'Proposal', won:'Won', lost:'Lost' };
 /** Where a lead came from; website forms create leads automatically. */
@@ -17,6 +18,6 @@ export type AccessMember = { user_id:string; role:string; manager_id:string|null
 export function visibleOwner(actor:string, role:string, owner:string, members:AccessMember[]) {
   if (role==='admin') return true;
   const me=members.find(m=>m.user_id===actor && m.active);
-  return Boolean(me && (owner===actor || (role==='BDM' && members.some(m=>m.user_id===owner && m.manager_id===actor && m.active))));
+  return Boolean(me && (owner===actor || (role!=='support' && downlineOf(actor,members).includes(owner))));
 }
 export function progress(actual:number,target:number) { return target>0 ? Math.min(100,Math.round(actual/target*100)) : 0; }

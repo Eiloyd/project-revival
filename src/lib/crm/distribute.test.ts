@@ -21,5 +21,9 @@ describe('lead distribution', () => {
   it('a BDM can give leads only to own active BDEs or keep them', () => {
     expect(leadReceivers('BDM', 'bdm1', members)).toEqual(['bdm1', 'bde1', 'bde2']);
   });
-  it('a BDE cannot hand leads to anyone', () => { expect(leadReceivers('BDE', 'bde1', members)).toEqual([]); });
+  it('a BDE can hand leads only to own JBDEs; a JBDE to nobody', () => {
+    const withJ = [...members, { user_id: 'j1', role: 'JBDE', manager_id: 'bde1', active: true }, { user_id: 'j2', role: 'JBDE', manager_id: 'bde3', active: true }];
+    expect(leadReceivers('BDE', 'bde1', withJ)).toEqual(['bde1', 'j1']);
+    expect(leadReceivers('JBDE', 'j1', withJ)).toEqual([]);
+  });
 });

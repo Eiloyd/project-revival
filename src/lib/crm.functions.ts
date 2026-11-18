@@ -5,6 +5,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { leadSchema,memberSchema,taskSchema,ticketSchema,targetSchema,stages } from './crm/rules';
 import { incentivePlanSchema } from './crm/incentives';
+import { isManagerRole } from './crm/hierarchy';
 
 export const getCrm = createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).handler(async({context})=>{
   setResponseHeader('Cache-Control','no-store');
@@ -41,9 +42,16 @@ export const getCrm = createServerFn({method:'POST'}).middleware([requireSupabas
     db.rpc('crm_volunteer_revenue', { _since: since }),
     db.rpc('crm_my_daily_wage'),
   ]);
+  // Sales hierarchy extras from database/update-2026-11-18-sales-hierarchy.sql (null = not set up yet).
+  const [handoffs, teamVols] = await Promise.all([
+    db.from('crm_support_handoffs').select('lead_id,ticket_code,forwarded_by,note,created_at').limit(2000),
+    db.rpc('crm_team_volunteers'),
+  ]);
   return {role,userId:context.userId,today:ist,members:members?.data??[],profiles:profiles?.data??[],customers:customers?.data??[],leads:leads?.data??[],tasks:tasks?.data??[],tickets:tickets?.data??[],activities:activities.data??[],targets:targets.data??[],collections:collections.data??[],plans:plans.data??[],
     reports:reports.data??[],coaching:coaching.data??[],assignments:assignments.data??[],documents:documents.data??[],attendance:attendance.data??[],refunds:refunds.data??[],
-    paySettings:payRow.error?null:(payRow.data??null),volunteerRevenue:volRev.error?null:(volRev.data??[]),dailyWage:wage.error?null:(wage.data??null)};
+    paySettings:payRow.error?null:(payRow.data??null),volunteerRevenue:volRev.error?null:(volRev.data??[]),dailyWage:wage.error?null:(wage.data??null),
+    handoffs:handoffs.error?null:((handoffs.data??[]) as {lead_id:string;ticket_code:string;forwarded_by:string;note:string;created_at:string}[]),
+    teamVolunteers:teamVols.error?null:((teamVols.data??[]) as {id:string;volunteer_code:string;full_name:string;mobile:string;district:string;state:string;status:string;kyc_status:string;employee_id:string;created_at:string}[])};
 });
 export const createCrmLead=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>leadSchema.parse(v)).handler(async({context,data})=>{
   const {data:role}=await context.supabase.rpc('crm_role'); if(!role||role==='support') throw new Error('Sales access required.');
@@ -98,7 +106,7 @@ export const crmCustomerLookup=createServerFn({method:'POST'}).middleware([requi
  const {data:rows,error}=await context.supabase.rpc('crm_customer_lookup',{_reference:data.reference}); if(error)throw new Error('Customer lookup unavailable.'); return rows;
 });
 export const assignCrmLead=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>z.object({leadId:z.string().uuid(),ownerId:z.string().uuid().nullable()}).parse(v)).handler(async({context,data})=>{
- const {data:role}=await context.supabase.rpc('crm_role');if(role!=='admin'&&role!=='BDM')throw new Error('Only an admin or BDM can reassign leads.');
+ const {data:role}=await context.supabase.rpc('crm_role');if(!isManagerRole(String(role??'')))throw new Error('Only an admin or a manager can reassign leads.');
  const {error}=await context.supabase.rpc('crm_assign_lead',{_lead:data.leadId,_owner:data.ownerId as string});if(error)throw new Error('Lead could not be reassigned. Check that the employee is active and in your team.');return {ok:true};
 });
 
@@ -155,4 +163,18 @@ export const proposeIncentivePlan=createServerFn({method:'POST'}).middleware([re
  const summary=`${data.role} incentive plan: ${data.active?'on':'off'} · ${slabs.map(s=>`${s.min}%+ → ${s.rate}%${s.bonus?` + ₹${s.bonus}`:''}`).join(', ')||'no slabs'}`;
  const {data:code,error}=await context.supabase.rpc('critical_change_propose',{_kind:'incentive_plan',_target:data.role,_payload:{slabs,active:data.active},_summary:summary.slice(0,300)});
  if(error) throw new Error(error.message||'Change could not be proposed.'); return {code};
+});
+
+/**
+ * Won lead with Accounts-verified payment → Support desk ticket (BDE or anyone senior; admin too).
+ * The database function re-checks every rule; it exists after database/update-2026-11-18-sales-hierarchy.sql.
+ */
+export const forwardLeadToSupport=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>z.object({leadId:z.string().uuid(),note:z.string().trim().max(1000)}).parse(v)).handler(async({context,data})=>{
+ const db=context.supabase as unknown as SupabaseClient;
+ const {data:code,error}=await db.rpc('crm_forward_to_support',{_lead:data.leadId,_note:data.note});
+ if(error){
+  if(/Could not find the function|does not exist/i.test(error.message)) throw new Error('Forwarding to Support is not set up in the database yet. Run database/update-2026-11-18-sales-hierarchy.sql once.');
+  throw new Error(error.message||'The lead could not be forwarded.');
+ }
+ return {ticketCode:String(code??'')};
 });

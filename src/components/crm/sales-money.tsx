@@ -6,6 +6,7 @@ import { Button } from '../ui/button';
 import { KpiCard } from '../dashboard/shell';
 import { TargetGauge } from '../dashboard/target-gauge';
 import { getCrm, recordCrmCollection, verifyCrmCollection } from '@/lib/crm.functions';
+import { downlineOf, teamIdsOf } from '@/lib/crm/hierarchy';
 import { calculateIncentive, collectionTotals, readSlabs, volunteerTotals, type IncentiveResult } from '@/lib/crm/incentives';
 
 type Data = Awaited<ReturnType<typeof getCrm>>;
@@ -14,9 +15,9 @@ export const modeLabels: Record<string, string> = { upi: 'UPI', bank_transfer: '
 const input = 'mt-1 h-10 w-full rounded-md border border-border bg-background px-3 text-sm';
 export const istToday = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date());
 
-/** The BDM plus every active employee reporting to them. */
+/** The person plus their whole active down-line (BDM: BDEs and JBDEs; ASM: BDMs and below; …). */
 export function teamOf(d: Data, managerId: string) {
-  return [managerId, ...d.members.filter(m => m.active && m.manager_id === managerId).map(m => m.user_id)];
+  return teamIdsOf(managerId, d.members);
 }
 const revenueTarget = (d: Data, ids: string[], month: string) => d.targets.filter(t => ids.includes(t.owner_id) && t.month.startsWith(month)).reduce((n, t) => n + Number(t.revenue_target), 0);
 const planFor = (d: Data, role: 'BDE' | 'BDM') => { const p = d.plans.find(p => p.role === role); return p ? { active: p.active, slabs: readSlabs(p.slabs) } : null; };
@@ -117,7 +118,8 @@ function IncentiveCard({ title, r, sub }: { title: string; r: IncentiveResult; s
 export function IncentivePanel({ d, name }: { d: Data; name: (id: string | null) => string }) {
   const [month, setMonth] = useState(istToday().slice(0, 7));
   const mine = incentiveFor(d, d.userId, month);
-  const people = d.members.filter(m => m.active && (m.role === 'BDE' || m.role === 'BDM') && (d.role === 'admin' || m.manager_id === d.userId));
+  const below = downlineOf(d.userId, d.members);
+  const people = d.members.filter(m => m.active && (m.role === 'BDE' || m.role === 'BDM') && (d.role === 'admin' || below.includes(m.user_id)));
   const slabTable = (role: 'BDE' | 'BDM') => { const p = planFor(d, role); const slabs = p?.slabs ?? []; return <div className="dash-card p-4"><h4 className="text-sm font-semibold">{role} plan {p?.active ? '' : <span className="ml-1 text-xs font-normal text-muted-foreground">(not active)</span>}</h4>{slabs.length ? <table className="mt-2 w-full text-sm"><thead><tr className="text-left text-[11px] uppercase text-muted-foreground"><th className="py-1">Target reached</th><th>Incentive</th><th>Bonus</th></tr></thead><tbody>{slabs.map(s => <tr key={s.min} className="border-t border-border"><td className="py-1.5">{s.min}% +</td><td>{s.rate}% of verified revenue</td><td>{s.bonus ? money(s.bonus) : '—'}</td></tr>)}</tbody></table> : <p className="mt-2 text-sm text-muted-foreground">No slabs set by admin yet.</p>}</div>; };
   return <div className="space-y-6">
     <label className="block max-w-xs text-sm font-semibold">Month<input type="month" className={input} value={month} max={istToday().slice(0, 7)} onChange={e => setMonth(e.target.value || istToday().slice(0, 7))} /></label>
@@ -132,8 +134,9 @@ export function IncentivePanel({ d, name }: { d: Data; name: (id: string | null)
 /** BDM view of their own BDEs (reporting to them only — the database already limits rows to the team). */
 export function MyBdePanel({ d, name, onOpen }: { d: Data; name: (id: string | null) => string; onOpen: (ownerId: string, view: 'pipeline' | 'collections' | 'tasks') => void }) {
   const month = istToday().slice(0, 7); const today = istToday();
-  // Admin sees every BDE in the company; a BDM sees only their own team.
-  const bdes = d.members.filter(m => m.role === 'BDE' && (d.role === 'admin' || m.manager_id === d.userId));
+  // Admin sees every BDE in the company; a manager sees the BDEs anywhere in their own down-line.
+  const below = downlineOf(d.userId, d.members);
+  const bdes = d.members.filter(m => m.role === 'BDE' && (d.role === 'admin' || below.includes(m.user_id)));
   if (!bdes.length) return <p className="dash-card p-6 text-sm text-muted-foreground">No BDE reports to you yet. The admin assigns BDEs to a BDM from Employees.</p>;
   const team = bdes.map(b => b.user_id);
   const teamMoney = collectionTotals(d.collections, team, undefined, month);

@@ -15,7 +15,7 @@ const interestTone = { hot: 'success', warm: 'warning', cold: 'muted' } as const
 /** BDE writes what happened on a call or meeting; the AI suggests the next step and a follow-up message, which the BDE edits and saves to the lead. */
 export function CallCoachPanel({ d, initialLeadId }: { d: Data; initialLeadId?: string | null }) {
   const suggest = useServerFn(suggestCallFollowUp), action = useServerFn(crmAction), move = useServerFn(moveCrmLead); const qc = useQueryClient();
-  const myLeads = d.leads.filter(l => (d.role === 'BDE' || d.role === 'sales' ? l.owner_id === d.userId : true) && !['won', 'lost'].includes(l.stage));
+  const myLeads = d.leads.filter(l => (d.role === 'BDE' || d.role === 'JBDE' || d.role === 'sales' ? l.owner_id === d.userId : true) && !['won', 'lost'].includes(l.stage));
   const [leadId, setLeadId] = useState(initialLeadId ?? ''); const [kind, setKind] = useState<'call' | 'meeting'>('call');
   const [notes, setNotes] = useState(''); const [language, setLanguage] = useState<'English' | 'Hindi' | 'Hinglish'>('English');
   const [busy, setBusy] = useState(false); const [error, setError] = useState<unknown>(null); const [notice, setNotice] = useState('');
