@@ -1,3 +1,11 @@
+## Sales hierarchy, targets, Support hand-off, receipt email (18 Nov 2026)
+- [ ] Roles SSM → SM → ASM → BDM → BDE → JBDE (+ volunteers under ASM and BDE); each person's CRM shows the whole down-line
+- [ ] Admin CRM "My Teams": My SSM / SM / ASM / BDM / BDE / JBDE / Volunteers; click a person to see their team
+- [ ] Targets: BDE/JBDE individual; managers = own individual + whole team total; after admin sets it only a senior can change it, and only upwards
+- [ ] Won + payment confirmed lead → BDE or senior forwards it to the Support department
+- [ ] Every registration: reference number + acknowledgement PDF (with coordinator details, phone optional) emailed automatically via Resend
+- [ ] Owner: add Resend API key, run the new SQL file in Supabase
+
 ## Payments on more forms + BDE/BDM default access (18 Nov 2026)
 - [x] Young Innovators, Prototype Funding, Funding Programme: admin embed code payment + transaction ID box, admin "Programme payments" verify/reject
 - [ ] Owner: run database/update-2026-11-18-programme-payments.sql and update-2026-11-18-bde-bdm-default-access.sql (the 2 existing BDE/BDM accounts get CRM after this)
